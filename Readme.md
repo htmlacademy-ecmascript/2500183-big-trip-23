@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Rainer-777 Spaik](https://up.htmlacademy.ru/ecmascript/23/user/2500183).
-* Наставник: `Неизвестно`.
+* Наставник: `Arthur Litovko`.
 
 ---
 
