@@ -1,5 +1,5 @@
 import { getRandomInt, getRandomArrayElement, getIdNumber } from './util.js';
-import {POINTS_TYPES,IS_FAVORITE,EventDate,offerList,DESTINATIONS_CITY} from './const.js';
+import {POINTS_TYPES,EventDate,offerList,DESTINATIONS_CITY} from './const.js';
 
 const MIN_ID_VALUE = 1;
 const MAX_ID_VALUE = 100;
@@ -14,7 +14,7 @@ const offerValue = getRandomArrayElement(offerList);
 
 function createWaypoint() {
   return {
-    id:generatePointId(),
+    id:crypto.randomUUID(),
     type: getRandomArrayElement(POINTS_TYPES),
     favoriteType: Math.random() < 0.5,
     destination: getRandomArrayElement(DESTINATIONS_CITY),
