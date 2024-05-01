@@ -13,7 +13,8 @@
   "scripts": {
     "lint": "eslint src/",
     "build": "webpack --mode production",
-    "start": "webpack serve --mode development --open"
+    "start": "webpack serve --mode development --open",
+    "format": "prettier --write src/"
   },
   "devDependencies": {
     "@swc/core": "1.4.17",

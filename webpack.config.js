@@ -27,31 +27,31 @@ module.exports = {
   ],
   resolve: {
     extensions: ['.ts', '.js'],
-    },
+  },
   module: {
     rules: [
       {
         test: /\.m?js$/,
         exclude: /(node_modules)/,
         use: {
-          loader: "swc-loader"
-        }
+          loader: 'swc-loader',
+        },
       },
 
       {
         test: /\.ts$/,
         exclude: /(node_modules)/,
         use: {
-            loader: "swc-loader",
-            options: {
-                jsc: {
-                    parser: {
-                        syntax: "typescript"
-                    }
-                }
-            }
-        }
-      }
-    ]
-  }
+          loader: 'swc-loader',
+          options: {
+            jsc: {
+              parser: {
+                syntax: 'typescript',
+              },
+            },
+          },
+        },
+      },
+    ],
+  },
 };
