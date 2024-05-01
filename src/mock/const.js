@@ -1,7 +1,5 @@
 const POINTS_TYPES = ['taxi','bus','train','ship','drive','flight','check-in','sightseeing','restaurant'];
 
-const IS_FAVORITE = [true,false];
-
 const EventDate = {
   DATE: '2024-04-26',
   START: '2019-03-18T12:00',
@@ -24,4 +22,4 @@ const DESTINATIONS_CITY = [
   'Moscov',
 ];
 
-export{POINTS_TYPES,IS_FAVORITE,EventDate,offerList,DESTINATIONS_CITY};
+export{POINTS_TYPES,EventDate,offerList,DESTINATIONS_CITY};

@@ -16,7 +16,7 @@ function createWaypoint() {
   return {
     id:generatePointId(),
     type: getRandomArrayElement(POINTS_TYPES),
-    favoriteType: getRandomArrayElement(IS_FAVORITE),
+    favoriteType: Math.random() < 0.5,
     destination: getRandomArrayElement(DESTINATIONS_CITY),
     timeStart: EventDate.START,
     timeEnd: EventDate.END,
