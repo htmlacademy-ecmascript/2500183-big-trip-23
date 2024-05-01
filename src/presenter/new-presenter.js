@@ -4,6 +4,7 @@ import NewTripInfoHeader from '../view/trip-info-header';
 import NewTripFiltersView from '../view/trip-filters-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
 import NewTripEventsPointView from '../view/trip-events-points-view';
+import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 
 export default class BoardPresenter {
   containerListComponent = new NewTripEventsListView();
@@ -18,6 +19,7 @@ export default class BoardPresenter {
     render(new NewTripInfoHeader(), this.siteHeaderTripMainContainer,RenderPosition.AFTERBEGIN);
     render(new NewTripEventsSortView(),this.siteTripEventsSection);
     render(this.containerListComponent,this.siteTripEventsSection);
+    render(new NewTripEventsAddPointView(),this.containerListComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
       render(new NewTripEventsPointView(),this.containerListComponent.getElement());
