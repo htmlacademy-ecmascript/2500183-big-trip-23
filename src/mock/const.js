@@ -22,4 +22,12 @@ const DESTINATIONS_CITY = [
   'Moscov',
 ];
 
-export{POINTS_TYPES,EventDate,offerList,DESTINATIONS_CITY};
+const DESCRIPTION_POINT = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+  'Fusce tristique felis at fermentum pharetra',
+  'Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum',
+  'Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus'
+];
+
+export{POINTS_TYPES,EventDate,offerList,DESTINATIONS_CITY,DESCRIPTION_POINT};

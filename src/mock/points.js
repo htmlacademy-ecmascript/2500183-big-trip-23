@@ -1,5 +1,5 @@
 import { getRandomInt, getRandomArrayElement} from './util.js';
-import {POINTS_TYPES,EventDate,offerList,DESTINATIONS_CITY} from './const.js';
+import {POINTS_TYPES,EventDate,offerList,DESTINATIONS_CITY,DESCRIPTION_POINT} from './const.js';
 
 const MIN_PRICE_OFFER = 20;
 const MAX_PRICE_OFFER = 90;
@@ -22,8 +22,21 @@ function createWaypoint() {
   };
 }
 
+function createAddWaipoint() {
+  return {
+    id:crypto.randomUUID(),
+    descriptionPoint:getRandomArrayElement(DESCRIPTION_POINT),
+    srcImage: `https://loremflickr.com/248/152?random=${getRandomInt(1,9)}`,
+  };
+}
+
 function generateWaypoint() {
   return Array.from({length:MIN_VALUE_POINT},createWaypoint);
 }
 
-export {generateWaypoint};
+function generateAddWaypoint() {
+  return Array.from({length:1},createAddWaipoint);
+}
+
+
+export {generateWaypoint,generateAddWaypoint};
