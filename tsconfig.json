@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "./build/",
+    "paths": {
+      "@presenter/*": ["./src/presenter/*"],
+      "@view": ["./src/view"],
+      "@view/*": ["./src/view/*"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022"
+  }
+}
