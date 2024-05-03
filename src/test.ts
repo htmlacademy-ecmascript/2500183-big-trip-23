@@ -1,3 +1,3 @@
 
 
-console.log('Hello Types');
+console.log('Hello Types')
