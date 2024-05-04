@@ -13,14 +13,13 @@ export default class MainPresenter {
   }
 
   init() {
-    console.log(testPoints);
     render(new NewTripEventsSortView(), this.boardContainer);
     render(this.containerListComponent, this.boardContainer);
     render(new NewTripEventsAddPointView(), this.containerListComponent.getElement());
     render(new NewTripEventsEditPointView(),this.containerListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new NewTripEventsPointView(), this.containerListComponent.getElement());
-    }
+    testPoints.forEach((point) => {
+      render(new NewTripEventsPointView(point), this.containerListComponent.getElement());
+    });
   }
 }
