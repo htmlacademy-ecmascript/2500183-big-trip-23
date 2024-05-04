@@ -15,13 +15,14 @@ export default class MainPresenter {
 
   init() {
     const points = this.pointModel.getPoints();
+    const destination = this.pointModel.getDestinations();
     render(new NewTripEventsSortView(), this.boardContainer);
     render(this.containerListComponent, this.boardContainer);
     render(new NewTripEventsAddPointView(), this.containerListComponent.getElement());
     render(new NewTripEventsEditPointView(),this.containerListComponent.getElement());
 
     points.forEach((point) => {
-      render(new NewTripEventsPointView(point), this.containerListComponent.getElement());
+      render(new NewTripEventsPointView(point, destination), this.containerListComponent.getElement());
     });
   }
 }
