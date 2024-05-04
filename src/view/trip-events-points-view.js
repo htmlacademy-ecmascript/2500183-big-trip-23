@@ -1,5 +1,4 @@
 import { createElement } from '../render.js';
-import {testPoints} from '../mock/points-live.js';
 
 function createTripEventsPointElements(point) {
   const {type, isFavorite } = point;
