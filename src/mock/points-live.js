@@ -1,9 +1,9 @@
 const testPoints = [
   {
     'id': 'f4b62099-293f-4c3d-a702-94eec4a2808cy',
-    'base_price': 1500,
-    'date_from': '2019-07-10T22:55:56.845Z',
-    'date_to': '2019-07-11T11:22:13.375Z',
+    'basePrice': 1500,
+    'dateFrom': '2019-07-10T22:55:56.845Z',
+    'dateTo': '2019-07-11T11:22:13.375Z',
     'destination': 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
     'isFavorite': true,
     'offers': [
@@ -13,9 +13,9 @@ const testPoints = [
   },
   {
     'id': 'f4b62099-293f-4c3d-a702-94eec4a2808ct',
-    'base_price': 1300,
-    'date_from': '2019-07-10T22:55:56.845Z',
-    'date_to': '2019-07-11T11:22:13.375Z',
+    'basePrice': 1300,
+    'dateFrom': '2019-07-10T22:55:56.845Z',
+    'dateTo': '2019-07-11T11:22:13.375Z',
     'destination': 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
     'isFavorite': false,
     'offers': [],
@@ -23,9 +23,9 @@ const testPoints = [
   },
   {
     'id': 'f4b62099-293f-4c3d-a702-94eec4a2808cyyt',
-    'base_price': 1100,
-    'date_from': '2019-07-10T22:55:56.845Z',
-    'date_to': '2019-07-11T11:22:13.375Z',
+    'basePrice': 1100,
+    'dateFrom': '2019-07-10T22:55:56.845Z',
+    'dateTo': '2019-07-11T11:22:13.375Z',
     'destination': 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
     'isFavorite': true,
     'offers': [
