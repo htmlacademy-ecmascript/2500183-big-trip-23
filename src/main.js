@@ -14,4 +14,3 @@ const mainPagePresenter = new MainPresenter({boardContainer:mainPageElem});
 
 headerPagePresenter.init();
 mainPagePresenter.init();
-console.log('rtrrt');
