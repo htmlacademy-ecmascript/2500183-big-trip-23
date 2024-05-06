@@ -25,18 +25,32 @@ module.exports = {
       ],
     }),
   ],
+  resolve: {
+    extensions: ['.ts', '.js'],
+    },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.m?js$/,
         exclude: /(node_modules)/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          },
+          loader: "swc-loader",
         },
       },
+      {
+        test: /\.ts$/,
+        exclude: /(node_modules)/,
+        use: {
+            loader: "swc-loader",
+            options: {
+                jsc: {
+                    parser: {
+                        syntax: "typescript"
+                    }
+                }
+            }
+        }
+      }
     ]
   }
 };
