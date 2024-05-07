@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
-const duration = require('dayjs/plugin/duration');
-dayjs.extend(duration);// задать вопрос наставнику - правильно ли подключил плагин???
+dayjs.extend(duration);
 
 function getRandomInt(min = 0, max = 1) {
   min = Math.ceil(min);
