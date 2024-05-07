@@ -16,13 +16,16 @@ export default class MainPresenter {
   init() {
     const points = this.pointModel.getPoints();
     const destination = this.pointModel.getDestinations();
+
+    const offersTest = this.pointModel.getOffers();
+
     render(new NewTripEventsSortView(), this.boardContainer);
     render(this.containerListComponent, this.boardContainer);
     render(new NewTripEventsAddPointView(), this.containerListComponent.getElement());
     render(new NewTripEventsEditPointView(),this.containerListComponent.getElement());
 
     points.forEach((point) => {
-      render(new NewTripEventsPointView(point, destination), this.containerListComponent.getElement());
+      render(new NewTripEventsPointView(point, destination,offersTest), this.containerListComponent.getElement());
     });
   }
 }

@@ -13,3 +13,4 @@ const mainPagePresenter = new MainPresenter({boardContainer:mainPageElem,pointMo
 
 headerPagePresenter.init();
 mainPagePresenter.init();
+
