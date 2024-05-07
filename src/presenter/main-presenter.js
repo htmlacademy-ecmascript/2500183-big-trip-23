@@ -22,7 +22,7 @@ export default class MainPresenter {
     render(new NewTripEventsSortView(), this.boardContainer);
     render(this.containerListComponent, this.boardContainer);
     render(new NewTripEventsAddPointView(), this.containerListComponent.getElement());
-    render(new NewTripEventsEditPointView(),this.containerListComponent.getElement());
+    render(new NewTripEventsEditPointView(points[0], destination,offersTest),this.containerListComponent.getElement());
 
     points.forEach((point) => {
       render(new NewTripEventsPointView(point, destination,offersTest), this.containerListComponent.getElement());
