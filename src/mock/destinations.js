@@ -12,7 +12,7 @@ export const destination = [
   },
   {
     'id': 'bfa5cb75-a1fe-4b77-a83c-0e528e910e05',
-    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
+    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets2.',
     'name': 'Moscow',
     'pictures': [
       {
@@ -23,7 +23,7 @@ export const destination = [
   },
   {
     'id': 'bfa5cb75-a1fe-4b77-a83c-0e528e910e06',
-    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
+    'description': 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets3.',
     'name': 'New York',
     'pictures': [
       {
