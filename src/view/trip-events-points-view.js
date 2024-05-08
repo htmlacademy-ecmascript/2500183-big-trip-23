@@ -57,15 +57,18 @@ function createTripEventsPointElements(point,destination, offersTest) {
 }
 
 export default class NewTripEventsPointView extends AbstractView {
+  #point = null;
+  #destination = null;
+  #offers = null;
   constructor(point,destination,offers){
     super();
-    this.point = point;
-    this.destination = destination;
-    this.offers = offers;
+    this.#point = point;
+    this.#destination = destination;
+    this.#offers = offers;
 
   }
 
   get template() {
-    return createTripEventsPointElements(this.point,this.destination,this.offers);
+    return createTripEventsPointElements(this.#point,this.#destination,this.#offers);
   }
 }

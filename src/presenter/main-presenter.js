@@ -6,26 +6,28 @@ import NewTripEventsAddPointView from '../view/trip-events-add-point-view';//
 import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
 
 export default class MainPresenter {
-  containerListComponent = new NewTripEventsListView();
+  #containerListComponent = new NewTripEventsListView();
+  #boardContainer = null;
+  #pointModel = null;
 
   constructor({boardContainer,pointModel}) {
-    this.boardContainer = boardContainer;
-    this.pointModel = pointModel;
+    this.#boardContainer = boardContainer;
+    this.#pointModel = pointModel;
   }
 
   init() {
-    const points = this.pointModel.getPoints();
-    const destination = this.pointModel.getDestinations();
+    const points = this.#pointModel.points;
+    const destination = this.#pointModel.destinations;
 
-    const offersTest = this.pointModel.getOffers();
+    const offersTest = this.#pointModel.offers;
 
-    render(new NewTripEventsSortView(), this.boardContainer);
-    render(this.containerListComponent, this.boardContainer);
-    render(new NewTripEventsAddPointView(), this.containerListComponent.element);
-    render(new NewTripEventsEditPointView(points[0], destination,offersTest),this.containerListComponent.element);
+    render(new NewTripEventsSortView(), this.#boardContainer);
+    render(this.#containerListComponent, this.#boardContainer);
+    render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
+    render(new NewTripEventsEditPointView(points[0], destination,offersTest),this.#containerListComponent.element);
 
     points.forEach((point) => {
-      render(new NewTripEventsPointView(point, destination,offersTest), this.containerListComponent.element);
+      render(new NewTripEventsPointView(point, destination,offersTest), this.#containerListComponent.element);
     });
   }
 }

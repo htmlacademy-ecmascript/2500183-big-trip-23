@@ -4,27 +4,30 @@ import {offers} from '../offers-my.js';
 
 
 export default class PointModel {
+  #points = null;
+  #destination = null;
+  #offers = null;
   constructor() {
-    this.points = [];
-    this.destination = [];
-    this.offers = [];
+    this.#points = [];
+    this.#destination = [];
+    this.#offers = [];
   }
 
   init() {
-    this.points = testPoints;
-    this.destination = destination;
-    this.offers = offers;
+    this.#points = testPoints;
+    this.#destination = destination;
+    this.#offers = offers;
   }
 
-  getPoints() {
-    return this.points;
+  get points() {
+    return this.#points;
   }
 
-  getDestinations() {
-    return this.destination;
+  get destinations() {
+    return this.#destination;
   }
 
-  getOffers() {
-    return this.offers;
+  get offers() {
+    return this.#offers;
   }
 }
