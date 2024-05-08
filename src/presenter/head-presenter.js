@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../render';
+import { render, RenderPosition } from '../framework/render.js';
 import NewTripInfoHeader from '../view/trip-info-header';
 import NewTripFiltersView from '../view/trip-filters-view';
 
