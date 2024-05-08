@@ -27,7 +27,12 @@ export default class MainPresenter {
     render(new NewTripEventsEditPointView(points[0], destination,offersTest),this.#containerListComponent.element);
 
     points.forEach((point) => {
-      render(new NewTripEventsPointView(point, destination,offersTest), this.#containerListComponent.element);
+      this.#renderPoint(point,destination,offersTest);
     });
+  }
+
+  #renderPoint(point,destination,offersTest) {
+    const tripPointComponent = new NewTripEventsPointView(point,destination,offersTest);
+    render(tripPointComponent,this.#containerListComponent.element);
   }
 }
