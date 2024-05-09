@@ -62,7 +62,7 @@ export default class NewTripEventsPointView extends AbstractView {
   #offers = null;
   #onEditClick = null;
   #rollupButton = null;
-  constructor(point,destination,offers,onEditClick){
+  constructor(point,destination,offers,onEditClick) {
     super();
     this.#point = point;
     this.#destination = destination;

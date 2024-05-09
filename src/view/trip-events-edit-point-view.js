@@ -153,6 +153,8 @@ export default class NewTripEventsEditPointView extends AbstractView {
   #offers = null;
   #onEditClick = null;
   #rollupButton = null;
+  #rollupButtonSave = null;
+  #rollupButtonDelete = null;
   constructor(point,destination,offers,onEditClick) {
     super();
     this.#point = point;
@@ -160,7 +162,12 @@ export default class NewTripEventsEditPointView extends AbstractView {
     this.#offers = offers;
     this.#onEditClick = onEditClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
+    this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
+    this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
+
     this.#rollupButton.addEventListener('click',this.#onClick);
+    this.#rollupButtonSave.addEventListener('click',this.#onClick);
+    this.#rollupButtonDelete.addEventListener('click',this.#onClick);
   }
 
   get template() {
