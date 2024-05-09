@@ -5,7 +5,7 @@ import NewTripFiltersView from '../view/trip-filters-view';
 export default class HeaderPresenter {
   #boardContainer = null;
   #headerContainer = null;
-  constructor({boardContainer,headerContainer}) {
+  constructor({ boardContainer, headerContainer }) {
     this.#boardContainer = boardContainer;
     this.#headerContainer = headerContainer;
   }

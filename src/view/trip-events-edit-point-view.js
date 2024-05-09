@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 function generateDestList(arr) {
   let str = '';
   if (arr.length > 0) {
-
     for (let i = 0; i < arr.length; i++) {
       str += `<option value="${arr[i].name}"></option>`;
     }
@@ -15,7 +14,6 @@ function generateDestList(arr) {
 function generateOfferList(arr) {
   let str = '';
   if (arr.length > 0) {
-
     for (let i = 0; i < arr.length; i++) {
       str += `<div class="event__available-offers">
       <div class="event__offer-selector">
@@ -26,14 +24,13 @@ function generateOfferList(arr) {
           <span class="event__offer-price">${arr[i].price}</span>
         </label>
       </div>`;
-
     }
   }
   return str;
 }
 
-function createTripEventsEditPointElements(point,destination, offersTest) {
-  const {type,dateFrom, dateTo, basePrice } = point;
+function createTripEventsEditPointElements(point, destination, offersTest) {
+  const { type, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = offersTest.find((offelem) => offelem.type === point.type).offers;
   const pointOffer = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
@@ -155,7 +152,7 @@ export default class NewTripEventsEditPointView extends AbstractView {
   #rollupButton = null;
   #rollupButtonSave = null;
   #rollupButtonDelete = null;
-  constructor(point,destination,offers,onEditClick) {
+  constructor(point, destination, offers, onEditClick) {
     super();
     this.#point = point;
     this.#destination = destination;
@@ -165,13 +162,13 @@ export default class NewTripEventsEditPointView extends AbstractView {
     this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
     this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
 
-    this.#rollupButton.addEventListener('click',this.#onClick);
-    this.#rollupButtonSave.addEventListener('click',this.#onClick);
-    this.#rollupButtonDelete.addEventListener('click',this.#onClick);
+    this.#rollupButton.addEventListener('click', this.#onClick);
+    this.#rollupButtonSave.addEventListener('click', this.#onClick);
+    this.#rollupButtonDelete.addEventListener('click', this.#onClick);
   }
 
   get template() {
-    return createTripEventsEditPointElements(this.#point,this.#destination,this.#offers,this.#rollupButton);
+    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers, this.#rollupButton);
   }
 
   #onClick = (evt) => {

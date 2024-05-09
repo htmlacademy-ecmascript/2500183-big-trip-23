@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
-import {getDateCalc} from '../mock/util.js';
+import { getDateCalc } from '../mock/util.js';
 
 function createOffersList(offersList) {
   let str = '';
@@ -15,8 +15,8 @@ function createOffersList(offersList) {
   return str;
 }
 
-function createTripEventsPointElements(point,destination, offersTest) {
-  const {type, isFavorite, dateFrom, dateTo, basePrice } = point;
+function createTripEventsPointElements(point, destination, offersTest) {
+  const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = offersTest.find((offelem) => offelem.type === point.type).offers;
   const pointOffer = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
@@ -62,18 +62,18 @@ export default class NewTripEventsPointView extends AbstractView {
   #offers = null;
   #onEditClick = null;
   #rollupButton = null;
-  constructor(point,destination,offers,onEditClick) {
+  constructor(point, destination, offers, onEditClick) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
     this.#onEditClick = onEditClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
-    this.#rollupButton.addEventListener('click',this.#onClick);
+    this.#rollupButton.addEventListener('click', this.#onClick);
   }
 
   get template() {
-    return createTripEventsPointElements(this.#point,this.#destination,this.#offers,this.#rollupButton);
+    return createTripEventsPointElements(this.#point, this.#destination, this.#offers, this.#rollupButton);
   }
 
   #onClick = (evt) => {

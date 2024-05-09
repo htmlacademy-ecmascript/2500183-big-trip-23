@@ -1,7 +1,6 @@
-import {testPoints} from '../points-live.js';
-import {destination} from '../destinations.js';
-import {offers} from '../offers-my.js';
-
+import { testPoints } from '../points-live.js';
+import { destination } from '../destinations.js';
+import { offers } from '../offers-my.js';
 
 export default class PointModel {
   #points = null;
