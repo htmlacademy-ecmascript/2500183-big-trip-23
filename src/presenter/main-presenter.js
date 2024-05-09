@@ -34,14 +34,24 @@ export default class MainPresenter {
     const onEditClick = () => changeEditViewPoint();
     const onEditBackClick = () => changeBackEditViewPoint();
 
+    const onEscKeydown = (evt) => {
+      if(evt.key === 'Escape') {
+        evt.preventDefault();
+        changeBackEditViewPoint();
+      }
+    };
+
     const tripPointComponent = new NewTripEventsPointView(point,destination,offersTest,onEditClick);
     const tripEditComponent = new NewTripEventsEditPointView(point, destination,offersTest,onEditBackClick);
 
     function changeEditViewPoint() {
       replace(tripEditComponent,tripPointComponent);
+      document.addEventListener('keydown',onEscKeydown);
     }
+
     function changeBackEditViewPoint() {
       replace(tripPointComponent,tripEditComponent);
+      document.removeEventListener('keydown',onEscKeydown);
     }
 
     render(tripPointComponent,this.#containerListComponent.element);
