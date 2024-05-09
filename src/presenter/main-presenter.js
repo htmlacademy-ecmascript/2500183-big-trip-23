@@ -18,14 +18,11 @@ export default class MainPresenter {
   init() {
     const points = this.#pointModel.points;
     const destination = this.#pointModel.destinations;
-
     const offersTest = this.#pointModel.offers;
-
 
     render(new NewTripEventsSortView(), this.#boardContainer);
     render(this.#containerListComponent, this.#boardContainer);
     render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
-
 
     points.forEach((point) => {
       this.#renderPoint(point,destination,offersTest);
@@ -34,14 +31,17 @@ export default class MainPresenter {
   }
 
   #renderPoint(point,destination,offersTest) {
-    const onEditClick = () => onEditClickTest();
+    const onEditClick = () => changeEditViewPoint();
+    const onEditBackClick = () => changeBackEditViewPoint();
 
     const tripPointComponent = new NewTripEventsPointView(point,destination,offersTest,onEditClick);
-    const tripEditComponent = new NewTripEventsEditPointView(point, destination,offersTest);
+    const tripEditComponent = new NewTripEventsEditPointView(point, destination,offersTest,onEditBackClick);
 
-
-    function onEditClickTest() {
+    function changeEditViewPoint() {
       replace(tripEditComponent,tripPointComponent);
+    }
+    function changeBackEditViewPoint() {
+      replace(tripPointComponent,tripEditComponent);
     }
 
     render(tripPointComponent,this.#containerListComponent.element);
