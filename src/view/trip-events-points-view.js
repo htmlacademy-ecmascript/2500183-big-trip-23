@@ -1,33 +1,47 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import dayjs from 'dayjs';
+import { getDateCalc } from '../mock/util.js';
 
-function createTripEventsPointElements(point,destination) {
-  const {type, isFavorite} = point;
+function createOffersList(offersList) {
+  let str = '';
+  if (offersList.length > 0) {
+    offersList.forEach((element) => {
+      str += `<li class="event__offer">
+                <span class="event__offer-title">${element.title} &plus;&euro;&nbsp;</span>
+                <span class="event__offer-price">${element.price}</span>
+              </li>`;
+    });
+  }
+  return str;
+}
+
+function createTripEventsPointElements(point, destination, offersTest) {
+  const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
+  const typeOffers = offersTest.find((offelem) => offelem.type === point.type).offers;
+  const pointOffer = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
+
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">MAR 18</time>
+    <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${dayjs(dateFrom).format('MMM DD')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${currentDestination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T12:25">16:20</time>
+        <time class="event__start-time" datetime="${dayjs(dateFrom)}">${dayjs(dateFrom).format('HH:mm')}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T13:35">17:00</time>
+        <time class="event__end-time" datetime="${dayjs(dateTo)}">${dayjs(dateTo).format('HH:mm')}</time>
       </p>
-      <p class="event__duration">40M</p>
+      <p class="event__duration">${getDateCalc(dayjs(dateFrom), dayjs(dateTo))}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">600</span>
+      &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">Add breakfast</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">50</span>
-      </li>
+      ${createOffersList(pointOffer)}
     </ul>
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''} " type="button">
       <span class="visually-hidden">Add to favorite</span>
@@ -42,25 +56,28 @@ function createTripEventsPointElements(point,destination) {
 </li>`;
 }
 
-export default class NewTripEventsPointView {
-  constructor(point,destination){
-    this.point = point;
-    this.destination = destination;
+export default class NewTripEventsPointView extends AbstractView {
+  #point = null;
+  #destination = null;
+  #offers = null;
+  #onEditClick = null;
+  #rollupButton = null;
+  constructor(point, destination, offers, onEditClick) {
+    super();
+    this.#point = point;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#onEditClick = onEditClick;
+    this.#rollupButton = this.element.querySelector('.event__rollup-btn');
+    this.#rollupButton.addEventListener('click', this.#onClick);
   }
 
-  getTemplate() {
-    return createTripEventsPointElements(this.point,this.destination);
+  get template() {
+    return createTripEventsPointElements(this.#point, this.#destination, this.#offers, this.#rollupButton);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #onClick = (evt) => {
+    evt.preventDefault();
+    this.#onEditClick();
+  };
 }
