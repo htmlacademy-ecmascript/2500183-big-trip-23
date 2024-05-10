@@ -152,7 +152,10 @@ export default class NewTripEventsEditPointView extends AbstractView {
   #rollupButton = null;
   #rollupButtonSave = null;
   #rollupButtonDelete = null;
-  constructor(point, destination, offers, onEditClick) {
+  #submitSavePoint = null;
+  #submitDeletePoint = null;
+
+  constructor(point, destination, offers, onEditClick,onSubmitSave,onSubmitDelete) {
     super();
     this.#point = point;
     this.#destination = destination;
@@ -161,18 +164,30 @@ export default class NewTripEventsEditPointView extends AbstractView {
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
     this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
+    this.#submitSavePoint = onSubmitSave;
+    this.#submitDeletePoint = onSubmitDelete;
 
     this.#rollupButton.addEventListener('click', this.#onClick);
-    this.#rollupButtonSave.addEventListener('click', this.#onClick);
-    this.#rollupButtonDelete.addEventListener('click', this.#onClick);
+    this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
+    this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
   }
 
   get template() {
-    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers, this.#rollupButton);
+    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers);
   }
 
   #onClick = (evt) => {
     evt.preventDefault();
     this.#onEditClick();
+  };
+
+  #onSubmitSaveHand = (evt) => {
+    evt.preventDefault();
+    this.#submitSavePoint();
+  };
+
+  #onSubmitDeleteHand = (evt) => {
+    evt.preventDefault();
+    this.#submitDeletePoint();
   };
 }
