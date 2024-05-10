@@ -11,29 +11,24 @@ function generateDestList(arr) {
   return str;
 }
 
-function generateOfferList(arr) {
-  let str = '';
-  if (arr.length > 0) {
-    for (let i = 0; i < arr.length; i++) {
-      str += `<div class="event__available-offers">
-      <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-        <label class="event__offer-label" for="event-offer-luggage-1">
-          <span class="event__offer-title">${arr[i].title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${arr[i].price}</span>
-        </label>
-      </div>`;
-    }
-  }
-  return str;
+function generateOfferList(offers, selected) {
+  selected = new Set(selected);
+  const isChecked = (id) => selected.has(id) ? 'checked' : '';
+  return offers.map((offer) => (`<div class="event__available-offers">
+  <div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-luggage" ${isChecked(offer.id)}>
+    <label class="event__offer-label" for="${offer.id}">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </label>
+  </div>`)).join('');
 }
 
-function createTripEventsEditPointElements(point, destination, offersTest) {
+function createTripEventsEditPointElements(point, destination, offersTest,getOffers) {
   const { type, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
-  const typeOffers = offersTest.find((offelem) => offelem.type === point.type).offers;
-  const pointOffer = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
+  const typeOffers = getOffers(point.type);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -132,7 +127,7 @@ function createTripEventsEditPointElements(point, destination, offersTest) {
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        ${generateOfferList(pointOffer)}
+        ${generateOfferList(typeOffers,point.offers)}
       </section>
 
       <section class="event__section  event__section--destination">
@@ -154,26 +149,27 @@ export default class NewTripEventsEditPointView extends AbstractView {
   #rollupButtonDelete = null;
   #submitSavePoint = null;
   #submitDeletePoint = null;
+  #getOffers = null;
 
-  constructor(point, destination, offers, onEditClick,onSubmitSave,onSubmitDelete) {
+  constructor(point, destination, offers, onEditClick,onSubmitSave,onSubmitDelete,{getOffers}) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
     this.#onEditClick = onEditClick;
+    this.#getOffers = getOffers;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
     this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
     this.#submitSavePoint = onSubmitSave;
     this.#submitDeletePoint = onSubmitDelete;
-
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
     this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
   }
 
   get template() {
-    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers);
+    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers,this.#getOffers);
   }
 
   #onClick = (evt) => {

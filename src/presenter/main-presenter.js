@@ -44,7 +44,7 @@ export default class MainPresenter {
     };
 
     const tripPointComponent = new NewTripEventsPointView(point,destination,offersTest,onEditClick);
-    const tripEditComponent = new NewTripEventsEditPointView(point, destination,offersTest,onEditBackClick,onSubmitSave,onSubmitDelete);
+    const tripEditComponent = new NewTripEventsEditPointView(point, destination,offersTest,onEditBackClick,onSubmitSave,onSubmitDelete,{getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel)});
 
     function changeEditViewPoint() {
       replace(tripEditComponent,tripPointComponent);
