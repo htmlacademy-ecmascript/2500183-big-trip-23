@@ -13,8 +13,10 @@ function generateDestList(arr) {
 
 function generateOfferList(offers, selected) {
   selected = new Set(selected);
-  const isChecked = (id) => selected.has(id) ? 'checked' : '';
-  return offers.map((offer) => (`<div class="event__available-offers">
+  const isChecked = (id) => (selected.has(id) ? 'checked' : '');
+  return offers
+    .map(
+      (offer) => `<div class="event__available-offers">
   <div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-luggage" ${isChecked(offer.id)}>
     <label class="event__offer-label" for="${offer.id}">
@@ -22,10 +24,12 @@ function generateOfferList(offers, selected) {
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </label>
-  </div>`)).join('');
+  </div>`,
+    )
+    .join('');
 }
 
-function createTripEventsEditPointElements(point, destination, offersTest,getOffers) {
+function createTripEventsEditPointElements(point, destination, offersTest, getOffers) {
   const { type, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
@@ -127,7 +131,7 @@ function createTripEventsEditPointElements(point, destination, offersTest,getOff
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        ${generateOfferList(typeOffers,point.offers)}
+        ${generateOfferList(typeOffers, point.offers)}
       </section>
 
       <section class="event__section  event__section--destination">
@@ -151,7 +155,7 @@ export default class NewTripEventsEditPointView extends AbstractView {
   #submitDeletePoint = null;
   #getOffers = null;
 
-  constructor(point, destination, offers, onEditClick,onSubmitSave,onSubmitDelete,{getOffers}) {
+  constructor(point, destination, offers, onEditClick, onSubmitSave, onSubmitDelete, { getOffers }) {
     super();
     this.#point = point;
     this.#destination = destination;
@@ -169,7 +173,7 @@ export default class NewTripEventsEditPointView extends AbstractView {
   }
 
   get template() {
-    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers,this.#getOffers);
+    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers, this.#getOffers);
   }
 
   #onClick = (evt) => {
