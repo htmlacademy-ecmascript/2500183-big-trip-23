@@ -1,5 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
+import {markUpDestinationPhotos} from '../template/pictures.js';
+import { markUpOfferSelectores } from '../template/offers-selector.js';
 
 function generateDestList(arr) {
   let str = '';
@@ -9,24 +11,6 @@ function generateDestList(arr) {
     }
   }
   return str;
-}
-
-function generateOfferList(offers, selected) {
-  selected = new Set(selected);
-  const isChecked = (id) => (selected.has(id) ? 'checked' : '');
-  return offers
-    .map(
-      (offer) => `<div class="event__available-offers">
-  <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-luggage" ${isChecked(offer.id)}>
-    <label class="event__offer-label" for="${offer.id}">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
-  </div>`,
-    )
-    .join('');
 }
 
 function createTripEventsEditPointElements(point, destination, offersTest, getOffers) {
@@ -131,12 +115,13 @@ function createTripEventsEditPointElements(point, destination, offersTest, getOf
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        ${generateOfferList(typeOffers, point.offers)}
+        ${markUpOfferSelectores(typeOffers, point.offers)}
       </section>
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${currentDestination.description}</p>
+        ${markUpDestinationPhotos(currentDestination.pictures)}
       </section>
     </section>
   </form>
