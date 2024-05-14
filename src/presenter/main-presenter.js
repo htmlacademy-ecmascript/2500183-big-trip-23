@@ -10,7 +10,7 @@ export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
   #boardContainer = null;
   #pointModel = null;
-  #escapeHandler = null;
+  // #escapeHandler = null;
 
   constructor({ boardContainer, pointModel }) {
     this.#boardContainer = boardContainer;
@@ -45,7 +45,9 @@ export default class MainPresenter {
       }
     };
 
-    const tripPointComponent = new NewTripEventsPointView(point, destination, offersTest, onEditClick);
+    const tripPointComponent = new NewTripEventsPointView(point, destination, offersTest, onEditClick, {
+      getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
+    });
     const tripEditComponent = new NewTripEventsEditPointView(
       point,
       destination,

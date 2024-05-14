@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
-import {markUpDestinationPhotos} from '../template/pictures.js';
+import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
 
 function generateDestList(arr) {
@@ -13,10 +13,11 @@ function generateDestList(arr) {
   return str;
 }
 
-function createTripEventsEditPointElements(point, destination, offersTest, getOffers) {
+function createTripEventsEditPointElements(point, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
+  //console.log(typeOffers);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -158,7 +159,7 @@ export default class NewTripEventsEditPointView extends AbstractView {
   }
 
   get template() {
-    return createTripEventsEditPointElements(this.#point, this.#destination, this.#offers, this.#getOffers);
+    return createTripEventsEditPointElements(this.#point, this.#destination, this.#getOffers);
   }
 
   #onClick = (evt) => {
