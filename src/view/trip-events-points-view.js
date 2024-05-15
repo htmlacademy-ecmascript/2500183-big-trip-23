@@ -15,13 +15,14 @@ function createOffersList(offersList) {
   return str;
 }
 
-function createTripEventsPointElements(point, destination, offersTest,getOffers) {
+function createTripEventsPointElements(point,destination,offerstest) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
-  const typeOffers = offersTest.find((offelem) => offelem.type === point.type).offers;
+  const typeOffers = offerstest.find((offelem) => offelem.type === point.type).offers;
   const pointOffer = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  //const typeOffers2 = getOffers(point.type);
-  console.log(getOffers(point.type));
+  //const typeOfferstest = getOffers(point.type);
+
+  //console.log(typeOfferstest);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -74,10 +75,11 @@ export default class NewTripEventsPointView extends AbstractView {
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#getOffers = getOffers;
+    //console.log(this.#getOffers(this.#point.type));
   }
 
   get template() {
-    return createTripEventsPointElements(this.#point, this.#destination, this.#offers,this.#getOffers);
+    return createTripEventsPointElements(this.#point,this.#destination,this.#offers);
   }
 
   #onClick = (evt) => {

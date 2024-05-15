@@ -4,18 +4,16 @@ import NewTripEventsListView from '../view/trip-events-list-view';
 import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
-//import EscapeHandler from '../tools/escape-handler.js';
+import EscapeHandler from '../tools/escape-handler.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
   #boardContainer = null;
   #pointModel = null;
-  // #escapeHandler = null;
 
   constructor({ boardContainer, pointModel }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
-    //this.#escapeHandler = new EscapeHandler(changeBackEditViewPoint);
   }
 
   init() {
@@ -32,18 +30,16 @@ export default class MainPresenter {
     });
   }
 
-  #renderPoint(point, destination, offersTest) {
+  #renderPoint(point, destination, offersTest,) {
+
+    const escapeHandler = new EscapeHandler(changeBackEditViewPoint.bind(this));
+
     const onEditClick = () => changeEditViewPoint();
     const onEditBackClick = () => changeBackEditViewPoint();
+
+
     const onSubmitSave = () => savePoint();
     const onSubmitDelete = () => deletePoint();
-
-    const onEscKeydown = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        changeBackEditViewPoint();
-      }
-    };
 
     const tripPointComponent = new NewTripEventsPointView(point, destination, offersTest, onEditClick, {
       getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
@@ -60,22 +56,21 @@ export default class MainPresenter {
 
     function changeEditViewPoint() {
       replace(tripEditComponent, tripPointComponent);
-      document.addEventListener('keydown', onEscKeydown);
-      //this.#escapeHandler.enable();
+      escapeHandler.enable();
     }
 
     function changeBackEditViewPoint() {
       replace(tripPointComponent, tripEditComponent);
-      document.removeEventListener('keydown', onEscKeydown);
+      escapeHandler.disable();
     }
 
     function savePoint() {
       replace(tripPointComponent, tripEditComponent);
-      document.removeEventListener('keydown', onEscKeydown);
+      escapeHandler.disable();
     }
     function deletePoint() {
       replace(tripPointComponent, tripEditComponent);
-      document.removeEventListener('keydown', onEscKeydown);
+      escapeHandler.disable();
     }
 
     render(tripPointComponent, this.#containerListComponent.element);

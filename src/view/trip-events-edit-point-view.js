@@ -17,7 +17,6 @@ function createTripEventsEditPointElements(point, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
-  //console.log(typeOffers);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
