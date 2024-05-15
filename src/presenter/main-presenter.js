@@ -1,10 +1,11 @@
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
-import NewTripEventsPointView from '../view/trip-events-points-view';
+//import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
-import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
-import EscapeHandler from '../tools/escape-handler.js';
+//import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
+//import EscapeHandler from '../tools/escape-handler.js';
+import PointPresenter from './point-presenter.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
@@ -30,8 +31,12 @@ export default class MainPresenter {
     });
   }
 
-  #renderPoint(point, destination, offersTest,) {
+  #renderPoint(point, destination, offersTest) {
+    const pointPresenter = new PointPresenter(this.#containerListComponent.element,point,destination,offersTest);
+    //console.log(pointPresenter.init(point, destination, offersTest);
+    pointPresenter.init();
 
+/*
     const escapeHandler = new EscapeHandler(changeBackEditViewPoint.bind(this));
 
     const onEditClick = () => changeEditViewPoint();
@@ -74,5 +79,6 @@ export default class MainPresenter {
     }
 
     render(tripPointComponent, this.#containerListComponent.element);
+  }*/
   }
 }
