@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
 import { getDateCalc } from '../mock/util.js';
+//import {upadateItem} from '../utils/data.js';
 
 function createOffersList(offersList) {
   let str = '';
@@ -19,6 +20,8 @@ function createTripEventsPointElements(point,destination,getOffers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
+
+  //console.log(point);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -62,15 +65,20 @@ export default class NewTripEventsPointView extends AbstractView {
   #onEditClick = null;
   #rollupButton = null;
   #getOffers = null;
-  constructor(point, destination, offers, onEditClick, {getOffers }) {
+  #onFavoritClick = null;
+  #favoriteButton = null;
+  constructor(point, destination, offers, onEditClick, {getOffers },onFavoritClick) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
     this.#getOffers = getOffers;
     this.#onEditClick = onEditClick;
+    this.#onFavoritClick = onFavoritClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButton.addEventListener('click', this.#onClick);
+    this.#favoriteButton = this.element.querySelector('.event__favorite-btn');
+    this.#favoriteButton.addEventListener('click', this.#onClickFavorite);
   }
 
   get template() {
@@ -80,5 +88,10 @@ export default class NewTripEventsPointView extends AbstractView {
   #onClick = (evt) => {
     evt.preventDefault();
     this.#onEditClick();
+  };
+
+  #onClickFavorite = (evt) => {
+    evt.preventDefault();
+    this.#onFavoritClick();
   };
 }

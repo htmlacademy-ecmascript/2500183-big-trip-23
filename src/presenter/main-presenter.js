@@ -3,6 +3,7 @@ import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
+import { updateData } from '../utils/data.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
@@ -35,7 +36,12 @@ export default class MainPresenter {
       destination,
       offersTest,
       pointModel: this.#pointModel,
+      onPointUpdate:this.#handleDataChanges
     });
     pointPresenter.init();
   }
+
+  #handleDataChanges = (updateItem) => {
+    this.#pointModel.points = updateData(this.#pointModel.points, updateItem);
+  };
 }
