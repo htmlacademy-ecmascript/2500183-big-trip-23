@@ -3,7 +3,6 @@ import EscapeHandler from '../tools/escape-handler.js';
 import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
 
-
 export default class PointPresenter {
   #containerListComponent = null;
   #escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this));
@@ -14,16 +13,15 @@ export default class PointPresenter {
   #tripEditComponent = null;
   #pointModel = null;
 
-  constructor(containerListComponent,point, destination, offersTest) {
-    super();
-    this.#containerListComponent = containerListComponent;
+  constructor({ container, point, destination, offersTest, pointModel }) {
+    this.#containerListComponent = container;
     this.#point = point;
     this.#destination = destination;
     this.#offersTest = offersTest;
+    this.#pointModel = pointModel;
   }
 
-  #init() {
-
+  init() {
     this.#tripPointComponent = new NewTripEventsPointView(this.#point, this.#destination, this.#offersTest, this.#onEditClick, {
       getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
     });
@@ -48,7 +46,6 @@ export default class PointPresenter {
     replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
   }
-
 
   #savePoint() {
     replace(this.#tripPointComponent, this.#tripEditComponent);

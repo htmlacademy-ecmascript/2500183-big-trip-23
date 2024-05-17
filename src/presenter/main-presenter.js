@@ -1,10 +1,7 @@
 import { render } from '../framework/render.js';
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
-//import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
-//import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
-//import EscapeHandler from '../tools/escape-handler.js';
 import PointPresenter from './point-presenter.js';
 
 export default class MainPresenter {
@@ -32,53 +29,13 @@ export default class MainPresenter {
   }
 
   #renderPoint(point, destination, offersTest) {
-    const pointPresenter = new PointPresenter(this.#containerListComponent.element,point,destination,offersTest);
-    //console.log(pointPresenter.init(point, destination, offersTest);
-    pointPresenter.init();
-
-/*
-    const escapeHandler = new EscapeHandler(changeBackEditViewPoint.bind(this));
-
-    const onEditClick = () => changeEditViewPoint();
-    const onEditBackClick = () => changeBackEditViewPoint();
-
-
-    const onSubmitSave = () => savePoint();
-    const onSubmitDelete = () => deletePoint();
-
-    const tripPointComponent = new NewTripEventsPointView(point, destination, offersTest, onEditClick, {
-      getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
-    });
-    const tripEditComponent = new NewTripEventsEditPointView(
+    const pointPresenter = new PointPresenter({
+      container: this.#containerListComponent.element,
       point,
       destination,
       offersTest,
-      onEditBackClick,
-      onSubmitSave,
-      onSubmitDelete,
-      { getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel) },
-    );
-
-    function changeEditViewPoint() {
-      replace(tripEditComponent, tripPointComponent);
-      escapeHandler.enable();
-    }
-
-    function changeBackEditViewPoint() {
-      replace(tripPointComponent, tripEditComponent);
-      escapeHandler.disable();
-    }
-
-    function savePoint() {
-      replace(tripPointComponent, tripEditComponent);
-      escapeHandler.disable();
-    }
-    function deletePoint() {
-      replace(tripPointComponent, tripEditComponent);
-      escapeHandler.disable();
-    }
-
-    render(tripPointComponent, this.#containerListComponent.element);
-  }*/
+      pointModel: this.#pointModel,
+    });
+    pointPresenter.init();
   }
 }

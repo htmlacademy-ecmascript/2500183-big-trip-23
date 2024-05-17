@@ -15,14 +15,10 @@ function createOffersList(offersList) {
   return str;
 }
 
-function createTripEventsPointElements(point,destination,offerstest) {
+function createTripEventsPointElements(point,destination,getOffers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
-  const typeOffers = offerstest.find((offelem) => offelem.type === point.type).offers;
-  const pointOffer = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  //const typeOfferstest = getOffers(point.type);
-
-  //console.log(typeOfferstest);
+  const typeOffers = getOffers(point.type);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -44,7 +40,7 @@ function createTripEventsPointElements(point,destination,offerstest) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      ${createOffersList(pointOffer)}
+      ${createOffersList(typeOffers)}
     </ul>
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''} " type="button">
       <span class="visually-hidden">Add to favorite</span>
@@ -66,20 +62,19 @@ export default class NewTripEventsPointView extends AbstractView {
   #onEditClick = null;
   #rollupButton = null;
   #getOffers = null;
-  constructor(point, destination, offers, onEditClick,{ getOffers }) {
+  constructor(point, destination, offers, onEditClick, {getOffers }) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
+    this.#getOffers = getOffers;
     this.#onEditClick = onEditClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButton.addEventListener('click', this.#onClick);
-    this.#getOffers = getOffers;
-    //console.log(this.#getOffers(this.#point.type));
   }
 
   get template() {
-    return createTripEventsPointElements(this.#point,this.#destination,this.#offers);
+    return createTripEventsPointElements(this.#point, this.#destination,this.#getOffers);
   }
 
   #onClick = (evt) => {
