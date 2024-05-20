@@ -16,32 +16,31 @@ export default class MainPresenter {
   }
 
   init() {
-    const points = this.#pointModel.points;
-    const destination = this.#pointModel.destinations;
-    const offersTest = this.#pointModel.offers;
+    this.points = this.#pointModel.points;
+    this.destination = this.#pointModel.destinations;
 
+    this.#renderPoint();
+  }
+
+  #renderPoint() {
     render(new NewTripEventsSortView(), this.#boardContainer);
     render(this.#containerListComponent, this.#boardContainer);
     render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
 
-    points.forEach((point) => {
-      this.#renderPoint(point, destination, offersTest);
+    this.points.forEach((point) => {
+      const pointPresenter = new PointPresenter({
+        container: this.#containerListComponent.element,
+        point,
+        destination: this.destination,
+        pointModel: this.#pointModel,
+        onPointUpdate:this.#handleDataChanges
+      });
+      pointPresenter.init();
     });
-  }
-
-  #renderPoint(point, destination, offersTest) {
-    const pointPresenter = new PointPresenter({
-      container: this.#containerListComponent.element,
-      point,
-      destination,
-      offersTest,
-      pointModel: this.#pointModel,
-      onPointUpdate:this.#handleDataChanges
-    });
-    pointPresenter.init();
   }
 
   #handleDataChanges = (updateItem) => {
-    this.#pointModel.points = updateData(this.#pointModel.points, updateItem);
+    //this.#pointModel.points = updateData(this.#pointModel.points, updateItem);
+    //console.log(updateData(this.#pointModel.points, updateItem));
   };
 }

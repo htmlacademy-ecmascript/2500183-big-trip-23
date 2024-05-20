@@ -21,8 +21,6 @@ function createTripEventsPointElements(point,destination,getOffers) {
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
 
-  //console.log(point);
-
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${dayjs(dateFrom).format('MMM DD')}</time>
@@ -67,7 +65,7 @@ export default class NewTripEventsPointView extends AbstractView {
   #getOffers = null;
   #onFavoritClick = null;
   #favoriteButton = null;
-  constructor(point, destination, offers, onEditClick, {getOffers },onFavoritClick) {
+  constructor({point, destination, offers, onEditClick,getOffers,onFavoritClick}) {
     super();
     this.#point = point;
     this.#destination = destination;

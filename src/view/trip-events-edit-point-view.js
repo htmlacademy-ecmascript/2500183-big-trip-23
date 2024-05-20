@@ -17,6 +17,7 @@ function createTripEventsEditPointElements(point, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
+  console.log(currentDestination.pictures);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -140,11 +141,10 @@ export default class NewTripEventsEditPointView extends AbstractView {
   #submitDeletePoint = null;
   #getOffers = null;
 
-  constructor(point, destination, offers, onEditClick, onSubmitSave, onSubmitDelete, { getOffers }) {
+  constructor({point, destination,onEditClick, onSubmitSave, onSubmitDelete,getOffers}) {
     super();
     this.#point = point;
     this.#destination = destination;
-    this.#offers = offers;
     this.#onEditClick = onEditClick;
     this.#getOffers = getOffers;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');

@@ -15,28 +15,33 @@ export default class PointPresenter {
   #pointModel = null;
   #handlePointUpdate = null;
 
-  constructor({ container, point, destination, offersTest, pointModel,onPointUpdate }) {
+  constructor({ container, point, destination, pointModel,onPointUpdate }) {
     this.#containerListComponent = container;
     this.#point = point;
     this.#destination = destination;
-    this.#offersTest = offersTest;
     this.#pointModel = pointModel;
-    this. #handlePointUpdate = onPointUpdate;
+    this.#handlePointUpdate = onPointUpdate;
   }
 
   init() {
-    this.#tripPointComponent = new NewTripEventsPointView(this.#point, this.#destination, this.#offersTest, this.#onEditClick, {
+
+    this.#tripPointComponent = new NewTripEventsPointView({
+      point:this.#point,
+      destination:this.#destination,
+      offers:this.#offersTest,
+      onEditClick:this.#onEditClick,
       getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
-    },this.onFavoritClick);
-    this.#tripEditComponent = new NewTripEventsEditPointView(
-      this.#point,
-      this.#destination,
-      this.#offersTest,
-      this.#onEditBackClick,
-      this.#onSubmitSave,
-      this.#onSubmitDelete,
-      { getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel) },
-    );
+      onFavoritClick:this.onFavoritClick,
+    });
+
+    this.#tripEditComponent = new NewTripEventsEditPointView({
+      point: this.#point,
+      destination: this.#destination,
+      onEditClick: this.#onEditBackClick,
+      onSubmitSave: this.#onSubmitSave,
+      onSubmitDelete: this.#onSubmitDelete,
+      getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),});
+
     render(this.#tripPointComponent, this.#containerListComponent);
   }
 
@@ -61,9 +66,8 @@ export default class PointPresenter {
   }
 
   updateIsFavorite() {
-    const updatePoint = upadateItem(this.#point,{isFavorite: !this.#point.isFavorite});
-    console.log(updatePoint);
-    this.#handlePointUpdate(updatePoint);
+   // const updatePoint = upadateItem(this.#point,{isFavorite: !this.#point.isFavorite});
+    //this.#handlePointUpdate(updatePoint);
   }
 
   #onEditClick = () => this.#changeEditViewPoint();
