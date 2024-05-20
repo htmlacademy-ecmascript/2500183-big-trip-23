@@ -6,12 +6,8 @@ import {upadateItem} from '../utils/data.js';
 
 export default class PointPresenter {
   #containerListComponent = null;
-  #escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this));
   #point = null;
   #destination = null;
-  #offersTest = null;
-  #tripPointComponent = null;
-  #tripEditComponent = null;
   #pointModel = null;
   #handlePointUpdate = null;
 
@@ -24,55 +20,62 @@ export default class PointPresenter {
   }
 
   init() {
+    this.#renderPointsTest(this.#point,this.#destination,this.#pointModel.getOffersByType.bind(this.#pointModel));
+  }
 
-    this.#tripPointComponent = new NewTripEventsPointView({
-      point:this.#point,
-      destination:this.#destination,
-      offers:this.#offersTest,
-      onEditClick:this.#onEditClick,
-      getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
-      onFavoritClick:this.onFavoritClick,
+  #renderPointsTest(point,destination,getOffers) {
+    const escapeHandler = new EscapeHandler(changeBackEditViewPoint.bind(this));
+    const tripPointComponent = new NewTripEventsPointView({
+      point,
+      destination,
+      onEditClick:() =>{
+        changeEditViewPoint();
+      },
+      getOffers,
+      onFavoritClick:() => {
+        updateIsFavorite();
+      },
+    });
+    const tripEditComponent = new NewTripEventsEditPointView({
+      point,
+      destination,
+      onEditClick:() =>{
+        changeBackEditViewPoint();
+      },
+      onSubmitSave: () => {
+        savePoint();
+      },
+      onSubmitDelete: () => {
+        deletePoint();
+      },
+      getOffers,
     });
 
-    this.#tripEditComponent = new NewTripEventsEditPointView({
-      point: this.#point,
-      destination: this.#destination,
-      onEditClick: this.#onEditBackClick,
-      onSubmitSave: this.#onSubmitSave,
-      onSubmitDelete: this.#onSubmitDelete,
-      getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),});
+    render(tripPointComponent, this.#containerListComponent);
 
-    render(this.#tripPointComponent, this.#containerListComponent);
+    function changeEditViewPoint() {
+      replace(tripEditComponent,tripPointComponent);
+      escapeHandler.enable();
+    }
+    function changeBackEditViewPoint() {
+      replace(tripPointComponent,tripEditComponent);
+      escapeHandler.disable();
+    }
+
+    function savePoint() {
+      replace(tripPointComponent,tripEditComponent);
+      escapeHandler.disable();
+    }
+
+    function deletePoint() {
+      replace(tripPointComponent,tripEditComponent);
+      escapeHandler.disable();
+    }
+
+    function updateIsFavorite() {
+      // const updatePoint = upadateItem(this.#point,{isFavorite: !this.#point.isFavorite});
+       //this.#handlePointUpdate(updatePoint);
+     }
+
   }
-
-  #changeEditViewPoint() {
-    replace(this.#tripEditComponent, this.#tripPointComponent);
-    this.#escapeHandler.enable();
-  }
-
-  #changeBackEditViewPoint() {
-    replace(this.#tripPointComponent, this.#tripEditComponent);
-    this.#escapeHandler.disable();
-  }
-
-  #savePoint() {
-    replace(this.#tripPointComponent, this.#tripEditComponent);
-    this.#escapeHandler.disable();
-  }
-
-  #deletePoint() {
-    replace(this.#tripPointComponent, this.#tripEditComponent);
-    this.#escapeHandler.disable();
-  }
-
-  updateIsFavorite() {
-   // const updatePoint = upadateItem(this.#point,{isFavorite: !this.#point.isFavorite});
-    //this.#handlePointUpdate(updatePoint);
-  }
-
-  #onEditClick = () => this.#changeEditViewPoint();
-  #onEditBackClick = () => this.#changeBackEditViewPoint();
-  #onSubmitSave = () => this.#savePoint();
-  #onSubmitDelete = () => this.#deletePoint();
-  onFavoritClick = () => this.updateIsFavorite();
 }
