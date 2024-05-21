@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
 import { getDateCalc } from '../mock/util.js';
+//import {upadateItem} from '../utils/data.js';
 
 function createOffersList(offersList) {
   let str = '';
@@ -15,11 +16,10 @@ function createOffersList(offersList) {
   return str;
 }
 
-function createTripEventsPointElements(point, destination, offersTest) {
+function createTripEventsPointElements(point,destination,getOffers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
-  const typeOffers = offersTest.find((offelem) => offelem.type === point.type).offers;
-  const pointOffer = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
+  const typeOffers = getOffers(point.type);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -41,7 +41,7 @@ function createTripEventsPointElements(point, destination, offersTest) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      ${createOffersList(pointOffer)}
+      ${createOffersList(typeOffers)}
     </ul>
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''} " type="button">
       <span class="visually-hidden">Add to favorite</span>
@@ -62,22 +62,35 @@ export default class NewTripEventsPointView extends AbstractView {
   #offers = null;
   #onEditClick = null;
   #rollupButton = null;
-  constructor(point, destination, offers, onEditClick) {
+  #getOffers = null;
+  #onFavoritClick = null;
+  #favoriteButton = null;
+
+  constructor({point, destination, offers, onEditClick,getOffers,onFavoritClick}) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
+    this.#getOffers = getOffers;
     this.#onEditClick = onEditClick;
+    this.#onFavoritClick = onFavoritClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButton.addEventListener('click', this.#onClick);
+    this.#favoriteButton = this.element.querySelector('.event__favorite-btn');
+    this.#favoriteButton.addEventListener('click', this.#onClickTest);
   }
 
   get template() {
-    return createTripEventsPointElements(this.#point, this.#destination, this.#offers, this.#rollupButton);
+    return createTripEventsPointElements(this.#point, this.#destination,this.#getOffers);
   }
 
   #onClick = (evt) => {
     evt.preventDefault();
     this.#onEditClick();
+  };
+
+  #onClickTest = (evt) => {
+    evt.preventDefault();
+    this.#onFavoritClick();
   };
 }
