@@ -9,16 +9,19 @@ export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
   #boardContainer = null;
   #pointModel = null;
+  #pointPresenters = new Map();
+  #points = [];
+  #destination = [];
 
   constructor({ boardContainer, pointModel }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
+
   }
 
   init() {
-    this.points = this.#pointModel.points;
-    this.destination = this.#pointModel.destinations;
-
+    this.#points = this.#pointModel.points;
+    this.#destination = this.#pointModel.destinations;
     this.#renderPoint();
   }
 
@@ -27,20 +30,24 @@ export default class MainPresenter {
     render(this.#containerListComponent, this.#boardContainer);
     render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
 
-    this.points.forEach((point) => {
+    this.#points.forEach((point) => {
       const pointPresenter = new PointPresenter({
         container: this.#containerListComponent.element,
-        point,
-        destination: this.destination,
+        destination: this.#destination,
         pointModel: this.#pointModel,
-        onPointUpdate:this.#handleDataChanges
+        onPointUpdate: this.#handleDataTest,
       });
-      pointPresenter.init();
+
+      pointPresenter.init(point);
+      this.#pointPresenters.set(point.id,pointPresenter);
     });
+
+
   }
 
-  #handleDataChanges = (updateItem) => {
-    //this.#pointModel.points = updateData(this.#pointModel.points, updateItem);
-    //console.log(updateData(this.#pointModel.points, updateItem));
+  #handleDataTest = (updatePoint) => {
+    this.#points = updateData(this.#points,updatePoint);
+    this.#pointPresenters.get(updatePoint.id).init(updatePoint);
   };
 }
+
