@@ -36,6 +36,7 @@ export default class MainPresenter {
         destination: this.#destination,
         pointModel: this.#pointModel,
         onPointUpdate: this.#handleDataTest,
+        onModeChange: this.#handleModeChange
       });
 
       pointPresenter.init(point);
@@ -48,6 +49,10 @@ export default class MainPresenter {
   #handleDataTest = (updatePoint) => {
     this.#points = updateData(this.#points,updatePoint);
     this.#pointPresenters.get(updatePoint.id).init(updatePoint);
+  };
+
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 }
 

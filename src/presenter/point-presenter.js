@@ -4,21 +4,29 @@ import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
 import {updateItem} from '../utils/data.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class PointPresenter {
   #containerListComponent = null;
   #destination = null;
   #pointModel = null;
   #handlePointUpdates = null;
+  #handleModeChange = null;
   #point = [];
   #tripPointComponent = null;
   #tripEditComponent = null;
   #escapeHandler = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({ container,destination, pointModel,onPointUpdate }) {
+  constructor({ container,destination, pointModel,onPointUpdate,onModeChange}) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
     this.#handlePointUpdates = onPointUpdate;
+    this.#handleModeChange = onModeChange;
   }
 
   init(myTest) {
@@ -64,11 +72,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#containerListComponent.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#tripPointComponent, prevPointComponent);
     }
 
-    if (this.#containerListComponent.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#tripPointComponent, prevPointEditComponent);
     }
 
@@ -76,25 +84,40 @@ export default class PointPresenter {
     remove(prevPointEditComponent);
   }
 
+  destroy() {
+    remove(this.#tripPointComponent);
+    remove(this.#tripEditComponent);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#changeBackEditViewPoint();
+    }
+  }
 
   #changeEditViewPoint = () => {
     replace(this.#tripEditComponent,this.#tripPointComponent);
     this.#escapeHandler.enable();
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   };
 
   #changeBackEditViewPoint = () => {
     replace(this.#tripPointComponent,this.#tripEditComponent);
     this.#escapeHandler.disable();
+    this.#mode = Mode.DEFAULT;
   };
 
   #savePoint = () => {
     replace(this.#tripPointComponent,this.#tripEditComponent);
     this.#escapeHandler.disable();
+    this.#mode = Mode.DEFAULT;
   };
 
   #deletePoint = () => {
     replace(this.#tripPointComponent,this.#tripEditComponent);
     this.#escapeHandler.disable();
+    this.#mode = Mode.DEFAULT;
   };
 
   #updateFavorite(point) {
