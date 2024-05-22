@@ -24,4 +24,12 @@ const DESCRIPTION_POINT = [
   'Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus',
 ];
 
-export { POINTS_TYPES, EventDate, offerList, DESTINATIONS_CITY, DESCRIPTION_POINT };
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
+
+export { POINTS_TYPES, EventDate, offerList, DESTINATIONS_CITY, DESCRIPTION_POINT, SortType };

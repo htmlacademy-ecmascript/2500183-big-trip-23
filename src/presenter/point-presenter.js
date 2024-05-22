@@ -1,8 +1,8 @@
-import { render, replace,remove } from '../framework/render.js';
+import { render, replace, remove } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
 import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
-import {updateItem} from '../utils/data.js';
+import { updateItem } from '../utils/data.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -21,7 +21,7 @@ export default class PointPresenter {
   #escapeHandler = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ container,destination, pointModel,onPointUpdate,onModeChange}) {
+  constructor({ container, destination, pointModel, onPointUpdate, onModeChange }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -30,10 +30,10 @@ export default class PointPresenter {
   }
 
   init(myTest) {
-    this.#renderPointsTest(myTest,this.#destination,this.#pointModel.getOffersByType.bind(this.#pointModel));
+    this.#renderPointsTest(myTest, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
   }
 
-  #renderPointsTest(point,destination,getOffers) {
+  #renderPointsTest(point, destination, getOffers) {
     this.#point = point;
 
     const prevPointComponent = this.#tripPointComponent;
@@ -42,20 +42,20 @@ export default class PointPresenter {
     this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
 
     this.#tripPointComponent = new NewTripEventsPointView({
-      point:this.#point,
+      point: this.#point,
       destination,
-      onEditClick:() =>{
+      onEditClick: () => {
         this.#changeEditViewPoint();
       },
       getOffers,
-      onFavoritClick:() => {
+      onFavoritClick: () => {
         this.#updateFavorite(this.#point);
       },
     });
     this.#tripEditComponent = new NewTripEventsEditPointView({
       point,
       destination,
-      onEditClick:() =>{
+      onEditClick: () => {
         this.#changeBackEditViewPoint();
       },
       onSubmitSave: () => {
@@ -96,32 +96,32 @@ export default class PointPresenter {
   }
 
   #changeEditViewPoint = () => {
-    replace(this.#tripEditComponent,this.#tripPointComponent);
+    replace(this.#tripEditComponent, this.#tripPointComponent);
     this.#escapeHandler.enable();
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
   };
 
   #changeBackEditViewPoint = () => {
-    replace(this.#tripPointComponent,this.#tripEditComponent);
+    replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };
 
   #savePoint = () => {
-    replace(this.#tripPointComponent,this.#tripEditComponent);
+    replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };
 
   #deletePoint = () => {
-    replace(this.#tripPointComponent,this.#tripEditComponent);
+    replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };
 
   #updateFavorite(point) {
-    const updatePoint = updateItem(point,{isFavorite:!point.isFavorite});
+    const updatePoint = updateItem(point, { isFavorite: !point.isFavorite });
     this.#handlePointUpdates(updatePoint);
   }
 }
