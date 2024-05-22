@@ -19,7 +19,7 @@ export const offers = [
       },
       {
         id: '0dcc727c-a915-451c-8f82-6a5782d12501',
-        title: "Drive quickly, I'm in a hurry",
+        title: 'Drive quickly, I\'m in a hurry',
         price: 82,
       },
       {

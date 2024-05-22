@@ -24,7 +24,6 @@ export default class MainPresenter {
 
   init() {
     this.#clearTrip();
-   // sortPoints();
 
     this.#points = sortPoints(this.#pointModel.points,this.#activeSortType);
     this.#points = this.#pointModel.points;
@@ -77,6 +76,5 @@ export default class MainPresenter {
   #handleSortChange = (nextSortType) => {
     this.#activeSortType = nextSortType;
     this.init();
-    //console.log(nextSortType);
   };
 }
