@@ -5,7 +5,7 @@ import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
 import { updateData } from '../utils/data.js';
 import {SortType} from '../mock/const.js';
-//import {sortPoints} from '../tools/sort.js';
+import {sortPoints} from '../tools/sort.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
@@ -26,7 +26,7 @@ export default class MainPresenter {
     this.#clearTrip();
    // sortPoints();
 
-   // this.#points = sortPoints(this.#pointModel.points,this.#activeSortType);
+    this.#points = sortPoints(this.#pointModel.points,this.#activeSortType);
     this.#points = this.#pointModel.points;
     this.#destination = this.#pointModel.destinations;
     this.#renderPoint();
@@ -75,8 +75,8 @@ export default class MainPresenter {
   };
 
   #handleSortChange = (nextSortType) => {
-    //this.#activeSortType = nextSortType;
+    this.#activeSortType = nextSortType;
     this.init();
-    console.log(nextSortType);
+    //console.log(nextSortType);
   };
 }
