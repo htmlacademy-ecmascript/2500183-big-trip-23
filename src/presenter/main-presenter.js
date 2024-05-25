@@ -4,6 +4,8 @@ import NewTripEventsListView from '../view/trip-events-list-view';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
 import { updateData } from '../utils/data.js';
+import { SortType } from '../mock/const.js';
+import { sortPoints } from '../tools/sort.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
@@ -11,48 +13,66 @@ export default class MainPresenter {
   #pointModel = null;
   #pointPresenters = new Map();
   #points = [];
-  #destination = [];
+  #destinations = [];
+  #newTripEventsSortView = null;
+  #activeSortType = SortType.DAY;
 
   constructor({ boardContainer, pointModel }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
-
   }
 
   init() {
     this.#points = this.#pointModel.points;
-    this.#destination = this.#pointModel.destinations;
-    this.#renderPoint();
+    this.#destinations = this.#pointModel.destinations;
+    this.#renderPoints();
   }
 
-  #renderPoint() {
-    render(new NewTripEventsSortView(), this.#boardContainer);
+  #renderPoints() {
+    this.#newTripEventsSortView = new NewTripEventsSortView({
+      onSortChanges: this.#handleSortChange,
+      activeSortType: this.#activeSortType,
+    });
+    render(this.#newTripEventsSortView, this.#boardContainer);
     render(this.#containerListComponent, this.#boardContainer);
     render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
 
     this.#points.forEach((point) => {
       const pointPresenter = new PointPresenter({
         container: this.#containerListComponent.element,
-        destination: this.#destination,
+        destination: this.#destinations,
         pointModel: this.#pointModel,
         onPointUpdate: this.#handleDataTest,
-        onModeChange: this.#handleModeChange
+        onModeChange: this.#handleModeChange,
       });
 
       pointPresenter.init(point);
-      this.#pointPresenters.set(point.id,pointPresenter);
+      this.#pointPresenters.set(point.id, pointPresenter);
     });
-
-
   }
 
   #handleDataTest = (updatePoint) => {
-    this.#points = updateData(this.#points,updatePoint);
+    this.#points = updateData(this.#points, updatePoint);
     this.#pointPresenters.get(updatePoint.id).init(updatePoint);
   };
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
-}
 
+  #sorType = (sortype) => {
+    this.#containerListComponent.element.innerHTML = '';
+    this.#points = sortPoints(this.#pointModel.points, sortype);
+
+    render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
+
+    this.#points.forEach((point) => {
+      this.#pointPresenters.get(point.id).rerender();
+    });
+  };
+
+  #handleSortChange = (nextSortType) => {
+    this.#activeSortType = nextSortType;
+    this.#sorType(this.#activeSortType);
+  };
+}

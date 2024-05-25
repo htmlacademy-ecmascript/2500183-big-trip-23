@@ -16,7 +16,7 @@ function createOffersList(offersList) {
   return str;
 }
 
-function createTripEventsPointElements(point,destination,getOffers) {
+function createTripEventsPointElements(point, destination, getOffers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
@@ -66,7 +66,7 @@ export default class NewTripEventsPointView extends AbstractView {
   #onFavoritClick = null;
   #favoriteButton = null;
 
-  constructor({point, destination, offers, onEditClick,getOffers,onFavoritClick}) {
+  constructor({ point, destination, offers, onEditClick, getOffers, onFavoritClick }) {
     super();
     this.#point = point;
     this.#destination = destination;
@@ -81,7 +81,7 @@ export default class NewTripEventsPointView extends AbstractView {
   }
 
   get template() {
-    return createTripEventsPointElements(this.#point, this.#destination,this.#getOffers);
+    return createTripEventsPointElements(this.#point, this.#destination, this.#getOffers);
   }
 
   #onClick = (evt) => {

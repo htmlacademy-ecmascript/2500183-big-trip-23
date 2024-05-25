@@ -140,7 +140,7 @@ export default class NewTripEventsEditPointView extends AbstractView {
   #submitDeletePoint = null;
   #getOffers = null;
 
-  constructor({point, destination,onEditClick, onSubmitSave, onSubmitDelete,getOffers}) {
+  constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers }) {
     super();
     this.#point = point;
     this.#destination = destination;
