@@ -1,6 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {SortType} from '../mock/const.js';
-
+import { SortType } from '../mock/const.js';
 
 const DISABLED_SORT_TYPES = [SortType.EVENT, SortType.OFFERS];
 const SORT_PREFIX = 'sort-';
@@ -17,26 +16,24 @@ const getSortTemplate = (activeSortType) =>
     .join('')}
 </form>`;
 
-
 export default class NewTripEventsSortView extends AbstractView {
   #handleSortChange = null;
   #activeSortType = '';
 
-  constructor({onSortChanges,activeSortType}) {
+  constructor({ onSortChanges, activeSortType }) {
     super();
     this.#handleSortChange = onSortChanges;
     this.#activeSortType = activeSortType || SortType.DAY;
 
-    this.element.addEventListener('change',this.#sortChangeHandler);
+    this.element.addEventListener('change', this.#sortChangeHandler);
   }
-
 
   get template() {
     return getSortTemplate(this.#activeSortType);
   }
 
   #sortChangeHandler = (evt) => {
-    const sortType = evt.target.id.replace(SORT_PREFIX,'');
+    const sortType = evt.target.id.replace(SORT_PREFIX, '');
     this.#handleSortChange(sortType);
   };
 }

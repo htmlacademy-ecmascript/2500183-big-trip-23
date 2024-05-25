@@ -29,8 +29,14 @@ export default class PointPresenter {
     this.#handleModeChange = onModeChange;
   }
 
-  init(myTest) {
-    this.#renderPointsTest(myTest, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
+  init(point) {
+    this.#renderPointsTest(point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
+  }
+
+  rerender() {
+
+    this.#mode = Mode.DEFAULT;
+    render(this.#tripPointComponent, this.#containerListComponent);
   }
 
   #renderPointsTest(point, destination, getOffers) {
