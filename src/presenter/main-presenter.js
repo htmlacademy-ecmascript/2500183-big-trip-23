@@ -60,13 +60,19 @@ export default class MainPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
+  #sorType = (sortype) => {
+    this.#containerListComponent.element.innerHTML = '';
+    this.#points = sortPoints(this.#pointModel.points, sortype);
+
+    render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
+
+    this.#points.forEach((point) => {
+      this.#pointPresenters.get(point.id).rerender();
+    });
+  };
+
   #handleSortChange = (nextSortType) => {
     this.#activeSortType = nextSortType;
-    this.#containerListComponent.element.innerHTML = '';
-    this.#points = sortPoints(this.#pointModel.points, this.#activeSortType);
-
-    for (const point of this.#points) {
-      this.#pointPresenters.get(point.id).rerender();
-    }
+    this.#sorType(this.#activeSortType);
   };
 }
