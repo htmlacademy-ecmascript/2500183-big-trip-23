@@ -19,11 +19,6 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
   const currentDestination = destination.find((element) => element.id === state.point.destination);
   const typeOffers = getOffers(state.point.type);
 
-  //const myTTT = currentDestination.description.length;
-  //const myTTT2 = currentDestination.pictures.length;
-
-  //console.log(myTTT2 === 0);
-
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -175,9 +170,9 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#submitDeletePoint();
   };
 
-  reset = () => {
+  reset() {
     this.updateElement({
       point: {...this.#initialPoint},
     });
-  };
+  }
 }
