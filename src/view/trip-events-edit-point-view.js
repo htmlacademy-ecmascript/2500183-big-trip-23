@@ -95,6 +95,8 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #submitSavePoint = null;
   #submitDeletePoint = null;
   #getOffers = null;
+  #eventTypeGroup = null;
+  #eventInputDestination = null;
 
   constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers }) {
     super();
@@ -108,6 +110,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#submitSavePoint = onSubmitSave;
     this.#submitDeletePoint = onSubmitDelete;
     this._restoreHandlers();
+    console.log('dfdff');
   }
 
   get template() {
@@ -118,12 +121,14 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
     this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
+    this.#eventTypeGroup = this.element.querySelector('.event__type-group');
+    this.#eventInputDestination = this.element.querySelector('.event__input--destination');
 
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
     this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#eventTypeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationTypeHandler);
+    this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
+    this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
   }
 
   #eventTypeHandler = (evt) => {
@@ -163,11 +168,11 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
+    this.reset();
     this.#submitSavePoint();
   };
 
   #onSubmitDeleteHand = (evt) => {
-    this.reset();
     evt.preventDefault();
     this.reset();
     this.#submitDeletePoint();
