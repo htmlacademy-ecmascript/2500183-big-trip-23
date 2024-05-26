@@ -1,4 +1,3 @@
-//import AbstractView from '../framework/view/abstract-view.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
@@ -19,6 +18,7 @@ function createTripEventsEditPointElements(point, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice,id } = point;
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
+  console.log(typeOffers);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -72,7 +72,7 @@ function createTripEventsEditPointElements(point, destination, getOffers) {
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
         ${markUpOfferSelectores(typeOffers, point.offers)}
       </section>
 
