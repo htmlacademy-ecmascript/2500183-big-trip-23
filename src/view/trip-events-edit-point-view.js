@@ -14,11 +14,10 @@ const createEventTypeTemplate = (type, pointType, id) => `
 
 const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
 
-function createTripEventsEditPointElements(point, destination, getOffers) {
-  const { type, dateFrom, dateTo, basePrice,id } = point;
-  const currentDestination = destination.find((element) => element.id === point.destination);
-  const typeOffers = getOffers(point.type);
-  console.log(typeOffers);
+function createTripEventsEditPointElements(state, destination, getOffers) {
+  const { type, dateFrom, dateTo, basePrice,id } = state.point;
+  const currentDestination = destination.find((element) => element.id === state.point.destination);
+  const typeOffers = getOffers(state.point.type);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -73,7 +72,7 @@ function createTripEventsEditPointElements(point, destination, getOffers) {
     <section class="event__details">
       <section class="event__section  event__section--offers">
         ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
-        ${markUpOfferSelectores(typeOffers, point.offers)}
+        ${markUpOfferSelectores(typeOffers, state.point.offers)}
       </section>
 
       <section class="event__section  event__section--destination">
@@ -87,8 +86,8 @@ function createTripEventsEditPointElements(point, destination, getOffers) {
 }
 
 export default class NewTripEventsEditPointView extends AbstractStatefulView {
-  #point = null;
   #destination = null;
+  #initialPoint = null;
   #onEditClick = null;
   #rollupButton = null;
   #rollupButtonSave = null;
@@ -99,7 +98,10 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers }) {
     super();
-    this.#point = point;
+    this.#initialPoint = point;
+    this._setState({
+      point: {...point},
+    });
     this.#destination = destination;
     this.#onEditClick = onEditClick;
     this.#getOffers = getOffers;
@@ -114,7 +116,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createTripEventsEditPointElements(this.#point, this.#destination, this.#getOffers);
+    return createTripEventsEditPointElements(this._state, this.#destination, this.#getOffers);
   }
 
   #onClick = (evt) => {
