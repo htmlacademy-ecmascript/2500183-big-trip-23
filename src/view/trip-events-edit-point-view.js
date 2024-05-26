@@ -114,6 +114,14 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     return createTripEventsEditPointElements(this._state, this.#destination, this.#getOffers);
   }
 
+  reset() {
+    this.updateElement({
+      point: {
+        ...this.#initialPoint,
+      },
+    });
+  }
+
   _restoreHandlers() {
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
@@ -169,10 +177,5 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     evt.preventDefault();
     this.#submitDeletePoint();
   };
-
-  reset() {
-    this.updateElement({
-      point: {...this.#initialPoint},
-    });
-  }
 }
+
