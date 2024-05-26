@@ -110,7 +110,6 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#submitSavePoint = onSubmitSave;
     this.#submitDeletePoint = onSubmitDelete;
     this._restoreHandlers();
-    console.log('dfdff');
   }
 
   get template() {
