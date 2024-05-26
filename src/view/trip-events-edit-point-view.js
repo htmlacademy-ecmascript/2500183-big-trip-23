@@ -157,8 +157,8 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   #onClick = (evt) => {
     evt.preventDefault();
-    this.#onEditClick();
     this.reset();
+    this.#onEditClick();
   };
 
   #onSubmitSaveHand = (evt) => {
@@ -167,13 +167,15 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   };
 
   #onSubmitDeleteHand = (evt) => {
+    this.reset();
     evt.preventDefault();
+    this.reset();
     this.#submitDeletePoint();
   };
 
   reset = () => {
     this.updateElement({
-      point: this.#initialPoint,
+      point: {...this.#initialPoint},
     });
   };
 }
