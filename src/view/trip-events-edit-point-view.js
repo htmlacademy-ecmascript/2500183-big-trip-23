@@ -19,6 +19,11 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
   const currentDestination = destination.find((element) => element.id === state.point.destination);
   const typeOffers = getOffers(state.point.type);
 
+  //const myTTT = currentDestination.description.length;
+  //const myTTT2 = currentDestination.pictures.length;
+
+  //console.log(myTTT2 === 0);
+
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -41,7 +46,7 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${generateDestList(destination)}
         </datalist>
@@ -76,7 +81,7 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
       </section>
 
       <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        ${currentDestination.description.length || currentDestination.pictures.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
         <p class="event__destination-description">${currentDestination.description}</p>
         ${markUpDestinationPhotos(currentDestination.pictures)}
       </section>
@@ -105,19 +110,55 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#destination = destination;
     this.#onEditClick = onEditClick;
     this.#getOffers = getOffers;
-    this.#rollupButton = this.element.querySelector('.event__rollup-btn');
-    this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
-    this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
     this.#submitSavePoint = onSubmitSave;
     this.#submitDeletePoint = onSubmitDelete;
-    this.#rollupButton.addEventListener('click', this.#onClick);
-    this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
-    this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
+    this._restoreHandlers();
   }
 
   get template() {
     return createTripEventsEditPointElements(this._state, this.#destination, this.#getOffers);
   }
+
+  _restoreHandlers() {
+    this.#rollupButton = this.element.querySelector('.event__rollup-btn');
+    this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
+    this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
+
+    this.#rollupButton.addEventListener('click', this.#onClick);
+    this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
+    this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#eventTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationTypeHandler);
+  }
+
+  #eventTypeHandler = (evt) => {
+    evt.preventDefault();
+    const newType = evt.target.value;
+
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        type: newType
+      },
+    });
+  };
+
+  #destinationTypeHandler = (evt) => {
+    evt.preventDefault();
+    const newDestination = evt.target.value;
+
+    const typeDestination = this.#destination.find((destination) => destination.name === newDestination);
+    if (!typeDestination) {
+      return;
+    }
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        destination: typeDestination.id
+      }
+    });
+  };
+
 
   #onClick = (evt) => {
     evt.preventDefault();
@@ -132,5 +173,11 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #onSubmitDeleteHand = (evt) => {
     evt.preventDefault();
     this.#submitDeletePoint();
+  };
+
+  reset = () => {
+    this.updateElement({
+      point: {...this.#initialPoint},
+    });
   };
 }
