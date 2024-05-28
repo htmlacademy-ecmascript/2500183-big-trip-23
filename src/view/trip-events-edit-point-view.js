@@ -235,13 +235,5 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     });
   };
 
-  removeElement() {
-    super.removeElement();
-
-    if (this.this.#datepickerStart) {
-      this.this.#datepickerStart.destroy();
-      this.this.#datepickerStart = null;
-    }
-  }
 }
 
