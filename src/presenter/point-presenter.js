@@ -3,6 +3,7 @@ import EscapeHandler from '../tools/escape-handler.js';
 import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
 import { updateItem } from '../utils/data.js';
+import {UserAction, UpdateType} from '../mock/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -20,13 +21,15 @@ export default class PointPresenter {
   #tripEditComponent = null;
   #escapeHandler = null;
   #mode = Mode.DEFAULT;
+  #handleModelEvent = null;
 
-  constructor({ container, destination, pointModel, onPointUpdate, onModeChange }) {
+  constructor({ container, destination, pointModel, onPointUpdate, onModeChange,onModelEvent }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
     this.#handlePointUpdates = onPointUpdate;
     this.#handleModeChange = onModeChange;
+    this.#handleModelEvent = onModelEvent;
   }
 
   init(point) {
@@ -56,6 +59,8 @@ export default class PointPresenter {
       getOffers,
       onFavoritClick: () => {
         this.#updateFavorite(this.#point);
+        this.#handleModelEvent(UserAction.UPDATE_TASK,
+          UpdateType.MINOR,);
       },
     });
     this.#tripEditComponent = new NewTripEventsEditPointView({

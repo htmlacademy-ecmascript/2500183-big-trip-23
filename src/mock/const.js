@@ -30,4 +30,16 @@ const defaultDestination = {
   ],
 };
 
-export {SortType, EVENT_TYPES,defaultPoint,defaultDestination,};
+const UserAction = {
+  UPDATE_TASK: 'UPDATE_POINT',
+  ADD_TASK: 'ADD_POINT',
+  DELETE_TASK: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {SortType, EVENT_TYPES,defaultPoint,defaultDestination,UpdateType,UserAction};

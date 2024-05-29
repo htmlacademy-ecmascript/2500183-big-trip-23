@@ -20,6 +20,8 @@ export default class MainPresenter {
   constructor({ boardContainer, pointModel }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
+
+    this.#pointModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
@@ -72,5 +74,13 @@ export default class MainPresenter {
   #handleSortChange = (nextSortType) => {
     this.#activeSortType = nextSortType;
     this.#sorType(this.#activeSortType);
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   };
 }
