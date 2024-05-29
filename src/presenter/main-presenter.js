@@ -1,7 +1,7 @@
 import { render } from '../framework/render.js';
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
-//import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
+import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
 import { updateData } from '../utils/data.js';
 import { SortType } from '../mock/const.js';
@@ -35,7 +35,7 @@ export default class MainPresenter {
     });
     render(this.#newTripEventsSortView, this.#boardContainer);
     render(this.#containerListComponent, this.#boardContainer);
-    //render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
+    render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
 
     this.#points.forEach((point) => {
       const pointPresenter = new PointPresenter({
