@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
 
-const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+import {EVENT_TYPES} from '../mock/const.js';
 
 const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">

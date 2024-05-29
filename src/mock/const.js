@@ -1,29 +1,3 @@
-const POINTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-
-const EventDate = {
-  DATE: '2024-04-26',
-  START: '2019-03-18T12:00',
-  END: '2019-03-20T14:30',
-};
-const offerList = [
-  { name: 'Add breakfast', price: '30' },
-  { name: 'Add luggage', price: '50' },
-  { name: 'Rent a car', price: ' 200' },
-  { name: 'Switch to comfort', price: '80' },
-  { name: 'Book tickets', price: ' 40' },
-  { name: 'Lunch in city', price: ' 30' },
-];
-
-const DESTINATIONS_CITY = ['Geneva', 'Chamonix', 'New-York', 'Amsterdam', 'Moscov'];
-
-const DESCRIPTION_POINT = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  'Fusce tristique felis at fermentum pharetra',
-  'Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum',
-  'Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus',
-];
-
 const SortType = {
   DAY: 'day',
   EVENT: 'event',
@@ -32,4 +6,28 @@ const SortType = {
   OFFERS: 'offers',
 };
 
-export { POINTS_TYPES, EventDate, offerList, DESTINATIONS_CITY, DESCRIPTION_POINT, SortType };
+const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+
+const defaultPoint = {
+  id: '',
+  basePrice: 0,
+  dateFrom: '2024-05-14T07:27:07.173Z',
+  dateTo: '2024-05-15T08:12:07.173Z',
+  isFavorite: false,
+  offers: [],
+  type: EVENT_TYPES[0],
+};
+
+const defaultDestination = {
+  id: 'baedd0da-d74e-45ef-ad35-ee37057c3242',
+  description: 'Kioto - with an embankment of a mighty river as a centre of attraction',
+  name: 'Kioto',
+  pictures: [
+    {
+      src: 'https://23.objects.htmlacademy.pro/static/destinations/17.jpg',
+      description: 'Kioto with crowded streets',
+    },
+  ],
+};
+
+export {SortType, EVENT_TYPES,defaultPoint,defaultDestination,};
