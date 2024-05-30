@@ -2,6 +2,10 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
+
 
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
@@ -97,6 +101,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #getOffers = null;
   #eventTypeGroup = null;
   #eventInputDestination = null;
+  #datepickerStart = null;
 
   constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers }) {
     super();
@@ -128,6 +133,9 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
     this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
     this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
+
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
   }
 
   #eventTypeHandler = (evt) => {
@@ -177,10 +185,57 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#submitDeletePoint();
   };
 
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        dateFrom: userDate,
+      }
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        dateTo: userDate,
+      }
+    });
+  };
+
+  #setDatepickerStart() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('[name ="event-start-time"]'),
+      {
+        dateFormat: 'd/m/y h:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.point.dateFrom,
+        maxDate: this._state.point.dateFrom,
+        onChange: this.#dateFromChangeHandler
+      }
+    );
+  }
+
+  #setDatepickerEnd() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('[name ="event-end-time"]'),
+      {
+        dateFormat: 'd/m/y h:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.point.dateTo,
+        minDate: this._state.point.dateTo,
+        onChange: this.#dateToChangeHandler,
+      }
+    );
+  }
+
   reset = () => {
     this.updateElement({
       point: {...this.#initialPoint},
     });
   };
+
 }
 
