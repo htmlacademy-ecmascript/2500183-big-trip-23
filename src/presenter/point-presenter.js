@@ -134,6 +134,6 @@ export default class PointPresenter {
   #updateFavorite(point) {
     const updatePoint = updateItem(point, { isFavorite: !point.isFavorite });
     //this.#handlePointUpdates(updatePoint);
-    this.#pointModel.updatePoint('PATCH', updatePoint);
+    this.#pointModel.updatePoint(UpdateType.PATCH, updatePoint);
   }
 }
