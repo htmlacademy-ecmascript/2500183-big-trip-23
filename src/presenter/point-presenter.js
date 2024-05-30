@@ -59,8 +59,8 @@ export default class PointPresenter {
       getOffers,
       onFavoritClick: () => {
         this.#updateFavorite(this.#point);
-        this.#handleModelEvent(UserAction.UPDATE_TASK,
-          UpdateType.MINOR,);
+        //this.#handleModelEvent(UserAction.UPDATE_TASK,
+        //  UpdateType.MINOR,);
       },
     });
     this.#tripEditComponent = new NewTripEventsEditPointView({
@@ -133,6 +133,7 @@ export default class PointPresenter {
 
   #updateFavorite(point) {
     const updatePoint = updateItem(point, { isFavorite: !point.isFavorite });
-    this.#handlePointUpdates(updatePoint);
+    //this.#handlePointUpdates(updatePoint);
+    this.#pointModel.updatePoint('PATCH', updatePoint);
   }
 }
