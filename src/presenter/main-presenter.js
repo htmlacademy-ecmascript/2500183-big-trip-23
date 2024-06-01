@@ -39,7 +39,6 @@ export default class MainPresenter {
     render(this.#newTripEventsSortView, this.#boardContainer);
     render(this.#containerListComponent, this.#boardContainer);
     //render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
-
     this.#points.forEach((point) => {
       const pointPresenter = new PointPresenter({
         container: this.#containerListComponent.element,
@@ -103,7 +102,14 @@ export default class MainPresenter {
 
         break;
       case UpdateType.MINOR:
+        this.#containerListComponent.element.innerHTML = '';
+        console.log(updateType,);
+        //this.#pointPresenters.render();
         // - обновить список (например, когда задача ушла в архив)
+        this.#points.forEach((point) => {
+          this.#pointPresenters.get(point.id).rerender();
+        });
+        //
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)

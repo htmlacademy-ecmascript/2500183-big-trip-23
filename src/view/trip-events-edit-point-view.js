@@ -185,8 +185,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   #onSubmitDeleteHand = (evt) => {
     evt.preventDefault();
-    this.reset();
-    this.#submitDeletePoint();
+    this.#handleViewAction(UserAction.DELETE_POINT,UpdateType.MINOR,this._state.point);
   };
 
   #dateFromChangeHandler = ([userDate]) => {
