@@ -32,7 +32,7 @@ export default class PointPresenter {
   }
 
   init(point) {
-    this.#renderPointsTest(point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
+    this.#renderPoints(point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
   }
 
   rerender() {
@@ -41,7 +41,7 @@ export default class PointPresenter {
     render(this.#tripPointComponent, this.#containerListComponent);
   }
 
-  #renderPointsTest(point, destination, getOffers) {
+  #renderPoints(point, destination, getOffers) {
     this.#point = point;
 
     const prevPointComponent = this.#tripPointComponent;
@@ -73,6 +73,7 @@ export default class PointPresenter {
         this.#deletePoint();
       },
       getOffers,
+      onViewAction: this.#handleViewAction,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {

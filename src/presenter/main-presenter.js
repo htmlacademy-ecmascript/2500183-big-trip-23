@@ -56,7 +56,7 @@ export default class MainPresenter {
 
   #handleDataFavorite = (updatePoint) => {
     this.#points = updateData(this.#points, updatePoint);
-    this.#pointPresenters.get(updatePoint.id).init(updatePoint);
+  // this.#pointPresenters.get(updatePoint.id).init(updatePoint);
   };
 
   #handleModeChange = () => {
@@ -99,6 +99,8 @@ export default class MainPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this. #handleDataFavorite(data);
+        this.#pointPresenters.get(data.id).init(data);
+
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)

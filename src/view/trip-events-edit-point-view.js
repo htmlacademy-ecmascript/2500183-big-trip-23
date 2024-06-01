@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
+import {UpdateType,UserAction} from '../mock/const.js';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -102,8 +103,9 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #eventTypeGroup = null;
   #eventInputDestination = null;
   #datepickerStart = null;
+  #handleViewAction = null;
 
-  constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers }) {
+  constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers,onViewAction }) {
     super();
     this.#initialPoint = point;
     this._setState({
@@ -114,6 +116,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#getOffers = getOffers;
     this.#submitSavePoint = onSubmitSave;
     this.#submitDeletePoint = onSubmitDelete;
+    this.#handleViewAction = onViewAction;
     this._restoreHandlers();
   }
 
@@ -175,8 +178,9 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
-    this.reset();
     this.#submitSavePoint();
+    this.#handleViewAction(UserAction.UPDATE_POINT,UpdateType.PATCH,this._state.point);
+    this.reset();
   };
 
   #onSubmitDeleteHand = (evt) => {
