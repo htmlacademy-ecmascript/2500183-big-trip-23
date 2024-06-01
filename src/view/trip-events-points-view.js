@@ -21,6 +21,7 @@ function createTripEventsPointElements(point, destination, getOffers) {
   const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
 
+
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${dayjs(dateFrom).format('MMM DD')}</time>

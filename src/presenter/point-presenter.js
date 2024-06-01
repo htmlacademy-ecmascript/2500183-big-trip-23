@@ -3,7 +3,7 @@ import EscapeHandler from '../tools/escape-handler.js';
 import NewTripEventsPointView from '../view/trip-events-points-view';
 import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
 import { updateItem } from '../utils/data.js';
-import {UserAction, UpdateType} from '../mock/const.js';
+import {UpdateType,UserAction} from '../mock/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -20,16 +20,15 @@ export default class PointPresenter {
   #tripPointComponent = null;
   #tripEditComponent = null;
   #escapeHandler = null;
+  #handleViewAction = null;
   #mode = Mode.DEFAULT;
-  #handleModelEvent = null;
 
-  constructor({ container, destination, pointModel, onPointUpdate, onModeChange,onModelEvent }) {
+  constructor({ container, destination, pointModel,onModeChange,onViewAction }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
-    this.#handlePointUpdates = onPointUpdate;
     this.#handleModeChange = onModeChange;
-    this.#handleModelEvent = onModelEvent;
+    this.#handleViewAction = onViewAction;
   }
 
   init(point) {
@@ -59,8 +58,6 @@ export default class PointPresenter {
       getOffers,
       onFavoritClick: () => {
         this.#updateFavorite(this.#point);
-        //this.#handleModelEvent(UserAction.UPDATE_TASK,
-        //  UpdateType.MINOR,);
       },
     });
     this.#tripEditComponent = new NewTripEventsEditPointView({
@@ -117,6 +114,7 @@ export default class PointPresenter {
     replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
+    //this.#tripEditComponent.reset();
   };
 
   #savePoint = () => {
@@ -133,7 +131,6 @@ export default class PointPresenter {
 
   #updateFavorite(point) {
     const updatePoint = updateItem(point, { isFavorite: !point.isFavorite });
-    //this.#handlePointUpdates(updatePoint);
-    this.#pointModel.updatePoint(UpdateType.PATCH, updatePoint);
+    this.#handleViewAction(UserAction.UPDATE_POINT,UpdateType.PATCH,updatePoint);
   }
 }
