@@ -3,12 +3,11 @@ import { destination } from '../destinations.js';
 import { offers } from '../offers-my.js';
 import Observable from '../../framework/observable.js';
 
-
 export default class PointModel extends Observable {
+  #points = [];
+  #destination = [];
+  #offers = [];
 
-  #points = null;
-  #destination = null;
-  #offers = null;
   constructor() {
     super();
     this.#points = [];
@@ -45,20 +44,13 @@ export default class PointModel extends Observable {
       throw new Error('Can\'t update unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      update,
-      ...this.#points.slice(index + 1),
-    ];
+    this.#points = [...this.#points.slice(0, index), update, ...this.#points.slice(index + 1)];
 
     this._notify(updateType, update);
   }
 
   addPoint(updateType, update) {
-    this.#points = [
-      update,
-      ...this.#points,
-    ];
+    this.#points = [update, ...this.#points];
 
     this._notify(updateType, update);
   }
@@ -70,11 +62,9 @@ export default class PointModel extends Observable {
       throw new Error('Can\'t delete unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
+    this.#points = [...this.#points.slice(0, index), ...this.#points.slice(index + 1)];
 
     this._notify(updateType);
   }
+
 }

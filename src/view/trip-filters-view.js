@@ -1,6 +1,25 @@
 import AbstractView from '../framework/view/abstract-view.js';
+//import {FILTER_TYPES} from '../mock/const.js';
+/*
+const createFilterItemTemplate = (value, isChecked, isDisabled) => `
+  <div class="trip-filters__filter">
+    <input id="filter-${value}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter"
+      value="${value}" ${getIsCheckedAttr(isChecked)} ${getIsDisabledAttr(isDisabled)}>
+    <label class="trip-filters__filter-label" for="filter-${value}">${firstLetterUpperCase(value)}</label>
+  </div>
+`;
+*/
+
+const firstLetterUpperCase = (word) => {
+  const [firstLetter, ...rest] = word;
+  //return `${firstLetter.toUpperCase()}${rest.join('')}`;
+  console.log(firstLetter);
+
+  console.log(...rest);
+};
 
 function createFormFiltersElements() {
+  firstLetterUpperCase('интересно');
   return `<form class="trip-filters" action="#" method="get">
   <div class="trip-filters__filter">
     <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>

@@ -1,12 +1,16 @@
-import { render } from '../framework/render.js';
+import { UpdateType, UserAction, SortType} from '../mock/const.js';
+import { sortPoints } from '../tools/sort.js';
+import {filterBy} from '../tools/filter.js';
+import {remove, render, RenderPosition} from '../framework/render.js';
+
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
 //import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
 import { updateData } from '../utils/data.js';
-import { SortType } from '../mock/const.js';
-import { sortPoints } from '../tools/sort.js';
-import {UpdateType,UserAction} from '../mock/const.js';
+//import { SortType } from '../mock/const.js';
+
+
 
 
 export default class MainPresenter {
@@ -18,11 +22,16 @@ export default class MainPresenter {
   #destinations = [];
   #newTripEventsSortView = null;
   #activeSortType = SortType.DAY;
+  #filterModel = null;
 
-  constructor({ boardContainer, pointModel }) {
+  constructor({ boardContainer, pointModel,filterModel }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
+    this.#filterModel = filterModel;
+   // this.#pointModel.addObserver(this.#handleModelEvent);
+
     this.#pointModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
@@ -55,7 +64,7 @@ export default class MainPresenter {
 
   #handleDataFavorite = (updatePoint) => {
     this.#points = updateData(this.#points, updatePoint);
-  // this.#pointPresenters.get(updatePoint.id).init(updatePoint);
+    // this.#pointPresenters.get(updatePoint.id).init(updatePoint);
   };
 
   #handleModeChange = () => {
@@ -97,22 +106,24 @@ export default class MainPresenter {
     // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
-        this. #handleDataFavorite(data);
+        this.#handleDataFavorite(data);
         this.#pointPresenters.get(data.id).init(data);
 
         break;
       case UpdateType.MINOR:
-        this.#containerListComponent.element.innerHTML = '';
-        console.log(updateType,);
+        //this.#containerListComponent.element.innerHTML = '';
+        console.log(updateType);
         //this.#pointPresenters.render();
         // - обновить список (например, когда задача ушла в архив)
-        this.#points.forEach((point) => {
-          this.#pointPresenters.get(point.id).rerender();
-        });
+        //this.#points.forEach((point) => {
+          //this.#pointPresenters.get(point.id).rerender();
+        //});
         //
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        //console.log(updateType);
+        //console.log(this.#pointModel.tripEvents);
         break;
     }
   };

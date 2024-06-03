@@ -3,12 +3,11 @@ import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
-import {UpdateType,UserAction} from '../mock/const.js';
+import { UpdateType, UserAction } from '../mock/const.js';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
-
-import {EVENT_TYPES} from '../mock/const.js';
+import { EVENT_TYPES } from '../mock/const.js';
 
 const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">
@@ -20,7 +19,7 @@ const createEventTypeTemplate = (type, pointType, id) => `
 const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
-  const { type, dateFrom, dateTo, basePrice,id } = state.point;
+  const { type, dateFrom, dateTo, basePrice, id } = state.point;
   const currentDestination = destination.find((element) => element.id === state.point.destination);
   const typeOffers = getOffers(state.point.type);
 
@@ -105,11 +104,11 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #datepickerStart = null;
   #handleViewAction = null;
 
-  constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers,onViewAction }) {
+  constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers, onViewAction }) {
     super();
     this.#initialPoint = point;
     this._setState({
-      point: {...point},
+      point: { ...point },
     });
     this.#destination = destination;
     this.#onEditClick = onEditClick;
@@ -148,7 +147,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        type: newType
+        type: newType,
       },
     });
   };
@@ -164,28 +163,27 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        destination: typeDestination.id
-      }
+        destination: typeDestination.id,
+      },
     });
   };
 
-
   #onClick = (evt) => {
     evt.preventDefault();
-    this.reset();
+    this.resetStateVue();
     this.#onEditClick();
   };
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
     this.#submitSavePoint();
-    this.#handleViewAction(UserAction.UPDATE_POINT,UpdateType.PATCH,this._state.point);
-    this.reset();
+    this.#handleViewAction(UserAction.UPDATE_POINT, UpdateType.PATCH, this._state.point);
+    this.resetStateVue();
   };
 
   #onSubmitDeleteHand = (evt) => {
     evt.preventDefault();
-    this.#handleViewAction(UserAction.DELETE_POINT,UpdateType.MINOR,this._state.point);
+    this.#handleViewAction(UserAction.DELETE_POINT, UpdateType.MINOR, this._state.point);
   };
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -193,7 +191,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
       point: {
         ...this._state.point,
         dateFrom: userDate,
-      }
+      },
     });
   };
 
@@ -202,43 +200,35 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
       point: {
         ...this._state.point,
         dateTo: userDate,
-      }
+      },
     });
   };
 
   #setDatepickerStart() {
-    this.#datepickerStart = flatpickr(
-      this.element.querySelector('[name ="event-start-time"]'),
-      {
-        dateFormat: 'd/m/y h:i',
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.point.dateFrom,
-        maxDate: this._state.point.dateFrom,
-        onChange: this.#dateFromChangeHandler
-      }
-    );
+    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-start-time"]'), {
+      dateFormat: 'd/m/y h:i',
+      enableTime: true,
+      time_24hr: true,
+      defaultDate: this._state.point.dateFrom,
+      maxDate: this._state.point.dateFrom,
+      onChange: this.#dateFromChangeHandler,
+    });
   }
 
   #setDatepickerEnd() {
-    this.#datepickerStart = flatpickr(
-      this.element.querySelector('[name ="event-end-time"]'),
-      {
-        dateFormat: 'd/m/y h:i',
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.point.dateTo,
-        minDate: this._state.point.dateTo,
-        onChange: this.#dateToChangeHandler,
-      }
-    );
+    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-end-time"]'), {
+      dateFormat: 'd/m/y h:i',
+      enableTime: true,
+      time_24hr: true,
+      defaultDate: this._state.point.dateTo,
+      minDate: this._state.point.dateTo,
+      onChange: this.#dateToChangeHandler,
+    });
   }
 
-  reset = () => {
+  resetStateVue = () => {
     this.updateElement({
-      point: {...this.#initialPoint},
+      point: { ...this.#initialPoint },
     });
   };
-
 }
-

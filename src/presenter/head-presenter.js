@@ -11,7 +11,7 @@ export default class HeaderPresenter {
   }
 
   init() {
-    render(new NewTripFiltersView(), this.#headerContainer);
+   // render(new NewTripFiltersView(), this.#headerContainer);
     render(new NewTripInfoHeader(), this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 }

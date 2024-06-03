@@ -3,8 +3,7 @@ import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
 
-import {EVENT_TYPES,defaultPoint,defaultDestination} from '../mock/const.js';
-
+import { EVENT_TYPES, defaultPoint, defaultDestination } from '../mock/const.js';
 
 const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">
@@ -16,9 +15,9 @@ const createEventTypeTemplate = (type, pointType, id) => `
 function createTripEventsAddPointElements() {
   const { type, dateFrom, dateTo, basePrice, id } = defaultPoint;
   const currentDestination = defaultDestination;
-  const typeOffers = defaultPoint. offers;
+  const typeOffers = defaultPoint.offers;
 
-  return`<li class="trip-events__item">
+  return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -71,7 +70,7 @@ function createTripEventsAddPointElements() {
     <section class="event__details">
       <section class="event__section  event__section--offers">
         ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
-        ${markUpOfferSelectores(typeOffers,defaultPoint.offers)}
+        ${markUpOfferSelectores(typeOffers, defaultPoint.offers)}
       </section>
 
       <section class="event__section  event__section--destination">
@@ -88,7 +87,6 @@ export default class NewTripEventsAddPointView extends AbstractView {
   constructor() {
     super();
   }
-
 
   get template() {
     return createTripEventsAddPointElements(defaultPoint);
