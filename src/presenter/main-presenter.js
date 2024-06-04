@@ -1,6 +1,6 @@
 import { UpdateType, UserAction, SortType} from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
-import {filterBy,FiltersTypes} from '../tools/filter.js';
+import {filterBy,FiltersTypes,TripEmptyMessages} from '../tools/filter.js';
 import {remove, render} from '../framework/render.js';
 
 import NewTripEventsSortView from '../view/trip-events-sort-view';
@@ -35,6 +35,7 @@ export default class MainPresenter {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
     const filteredPoints = filterBy[this.#filterType](points);
+    console.log(TripEmptyMessages[this.#filterType]);// пример пустого сообщения!!!
     return sortPoints(filteredPoints, this.#activeSortType);
   }
 
@@ -128,7 +129,7 @@ export default class MainPresenter {
         this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:
-        this.#clearPoints({resetSortType: true});
+        this.#clearPoints({resetSortType: true});// тут постараюсь добавить логику добавления точки!!!
         this.#renderEventsBody();
         break;
     }
