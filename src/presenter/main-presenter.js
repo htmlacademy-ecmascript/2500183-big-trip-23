@@ -1,13 +1,12 @@
 import { UpdateType, UserAction, SortType} from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
 import {filterBy,FiltersTypes} from '../tools/filter.js';
-import {remove, render, RenderPosition} from '../framework/render.js';
+import {remove, render} from '../framework/render.js';
 
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
 //import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
-import { updateData } from '../utils/data.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
@@ -84,11 +83,6 @@ export default class MainPresenter {
     });
   }
 
-  #handleDataFavorite = (updatePoint) => {
-    this.#points = updateData(this.#points, updatePoint);
-    // this.#pointPresenters.get(updatePoint.id).init(updatePoint);
-  };
-
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
@@ -127,13 +121,8 @@ export default class MainPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#handleDataFavorite(data);
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:

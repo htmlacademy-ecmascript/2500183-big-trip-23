@@ -79,10 +79,6 @@ export default class NewTripEventsPointView extends AbstractView {
     this.#favoriteButton.addEventListener('click', this.#onClickFavorite);
   }
 
-  get template() {
-    return createTripEventsPointElements(this.#point, this.#destination, this.#getOffers);
-  }
-
   #onClick = (evt) => {
     evt.preventDefault();
     this.#onEditClick();
@@ -92,4 +88,8 @@ export default class NewTripEventsPointView extends AbstractView {
     evt.preventDefault();
     this.#onFavoritClick();
   };
+
+  get template() {
+    return createTripEventsPointElements(this.#point, this.#destination, this.#getOffers);
+  }
 }
