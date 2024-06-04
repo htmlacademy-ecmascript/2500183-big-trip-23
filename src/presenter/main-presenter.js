@@ -9,9 +9,6 @@ import NewTripEventsListView from '../view/trip-events-list-view';
 import PointPresenter from './point-presenter.js';
 import { updateData } from '../utils/data.js';
 
-
-
-
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
   #boardContainer = null;
@@ -34,8 +31,6 @@ export default class MainPresenter {
   }
 
   init() {
-    //this.#points = this.points;
-    //this.#destinations
     this.#renderEventsBody();
   }
 
@@ -98,19 +93,24 @@ export default class MainPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #sorType = (sortype) => {
-    this.#containerListComponent.element.innerHTML = '';
-    this.#points = sortPoints(this.#pointModel.points, sortype);
-
-    this.#points.forEach((point) => {
-      this.#pointPresenters.get(point.id).rerender();
-    });
-  };
-
-  #handleSortChange = (nextSortType) => {
+  #handleSortChange = (nextSortType) => { // работаю над сортировкооооойййй........
+    if (this.#activeSortType === nextSortType) {
+      return;
+    }
     this.#activeSortType = nextSortType;
-    this.#sorType(this.#activeSortType);
+    this.#clearPoints();
+    sortPoints(this.#pointModel.points, this.#activeSortType);
+    this.#renderEventsBody();
   };
+
+  #clearPoints({resetSortType = false} = {}) {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+
+    if (resetSortType) {
+      this.#activeSortType = SortType.DAY;
+    }
+  }
 
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
@@ -151,3 +151,4 @@ export default class MainPresenter {
     }
   };
 }
+

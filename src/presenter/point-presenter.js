@@ -96,6 +96,7 @@ export default class PointPresenter {
   destroy() {
     remove(this.#tripPointComponent);
     remove(this.#tripEditComponent);
+    this.#escapeHandler.enable();
   }
 
   resetView() {
