@@ -14,7 +14,6 @@ export default class PointPresenter {
   #containerListComponent = null;
   #destination = null;
   #pointModel = null;
-  #handlePointUpdates = null;
   #handleModeChange = null;
   #point = [];
   #tripPointComponent = null;
@@ -22,6 +21,7 @@ export default class PointPresenter {
   #escapeHandler = null;
   #handleViewAction = null;
   #mode = Mode.DEFAULT;
+
 
   constructor({ container, destination, pointModel, onModeChange, onViewAction }) {
     this.#containerListComponent = container;
@@ -34,11 +34,6 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
     this.#renderPoints(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));//определить ,откуда пришла точка!!!
-  }
-
-  rerender() {
-    this.#mode = Mode.DEFAULT;
-    render(this.#tripPointComponent, this.#containerListComponent);
   }
 
   #renderPoints(point, destination, getOffers) {
@@ -66,14 +61,9 @@ export default class PointPresenter {
       onEditClick: () => {
         this.#changeBackEditViewPoint();
       },
-      onSubmitSave: () => {
-        this.#savePoint();
-      },
-      onSubmitDelete: () => {
-        this.#deletePoint();
-      },
       getOffers,
-      onViewAction: this.#handleViewAction,
+      onDelete:() => this.#handleDeleteClick(),
+      onSubmitSave:this.#handleFormSubmit,// изменить имя,когда закончу
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -116,23 +106,30 @@ export default class PointPresenter {
     replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
-    //this.#tripEditComponent.reset();
-  };
-
-  #savePoint = () => {
-    replace(this.#tripPointComponent, this.#tripEditComponent);
-    this.#escapeHandler.disable();
-    this.#mode = Mode.DEFAULT;
-  };
-
-  #deletePoint = () => {
-    replace(this.#tripPointComponent, this.#tripEditComponent);
-    this.#escapeHandler.disable();
-    this.#mode = Mode.DEFAULT;
   };
 
   #updateFavorite(point) {
     const updatePoint = updateItem(point, { isFavorite: !point.isFavorite });
     this.#handleViewAction(UserAction.UPDATE_POINT, UpdateType.PATCH, updatePoint);
   }
+
+  #handleDeleteClick = () => {
+    this.#handleViewAction(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      this.#point
+    );
+    this.#escapeHandler.disable();
+    this.#mode = Mode.DEFAULT;
+  };
+
+  #handleFormSubmit = ({point}) => {
+    this.#handleViewAction(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+    this.#escapeHandler.disable();
+    this.#mode = Mode.DEFAULT;
+  };
 }

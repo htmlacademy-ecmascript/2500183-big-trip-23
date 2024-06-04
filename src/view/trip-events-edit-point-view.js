@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
-import { UpdateType, UserAction } from '../mock/const.js';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -96,15 +95,14 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #rollupButton = null;
   #rollupButtonSave = null;
   #rollupButtonDelete = null;
-  #submitSavePoint = null;
-  #submitDeletePoint = null;
   #getOffers = null;
   #eventTypeGroup = null;
   #eventInputDestination = null;
   #datepickerStart = null;
-  #handleViewAction = null;
+  #handleDeleteClik = null;
+  #handleEditSubmit = null;
 
-  constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers, onViewAction }) {
+  constructor({ point, destination, onEditClick, getOffers, onDelete, onSubmitSave}) {
     super();
     this.#initialPoint = point;
     this._setState({
@@ -113,9 +111,9 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#destination = destination;
     this.#onEditClick = onEditClick;
     this.#getOffers = getOffers;
-    this.#submitSavePoint = onSubmitSave;
-    this.#submitDeletePoint = onSubmitDelete;
-    this.#handleViewAction = onViewAction;
+    this.#handleDeleteClik = onDelete;
+    this.#handleEditSubmit = onSubmitSave;
+
     this._restoreHandlers();
   }
 
@@ -176,14 +174,15 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
-    this.#submitSavePoint();
-    this.#handleViewAction(UserAction.UPDATE_POINT, UpdateType.PATCH, this._state.point);
+    if (this.#handleEditSubmit) {
+      this.#handleEditSubmit({...this._state});
+    }
     this.resetStateVue();
   };
 
   #onSubmitDeleteHand = (evt) => {
     evt.preventDefault();
-    this.#handleViewAction(UserAction.DELETE_POINT, UpdateType.MINOR, this._state.point);
+    this.#handleDeleteClik(this._state.point);
   };
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -208,7 +207,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-start-time"]'), {
       dateFormat: 'd/m/y h:i',
       enableTime: true,
-      time_24hr: true,
+      'time_24hr': true,
       defaultDate: this._state.point.dateFrom,
       maxDate: this._state.point.dateFrom,
       onChange: this.#dateFromChangeHandler,
@@ -219,7 +218,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-end-time"]'), {
       dateFormat: 'd/m/y h:i',
       enableTime: true,
-      time_24hr: true,
+      'time_24hr': true,
       defaultDate: this._state.point.dateTo,
       minDate: this._state.point.dateTo,
       onChange: this.#dateToChangeHandler,

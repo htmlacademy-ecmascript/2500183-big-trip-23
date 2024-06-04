@@ -97,7 +97,7 @@ export default class MainPresenter {
     this.#renderEventsBody();
   };
 
-  #clearPoints({resetSortType = false} = {}) {
+  #clearPoints({resetSortType = false} = {}) { // тут логика установки сортировки!!!
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
@@ -127,15 +127,13 @@ export default class MainPresenter {
         break;
       case UpdateType.MINOR:
         console.log(updateType);
-       //this.#clearPoints();
-        //this.#renderEventsBody();
-
+        this.#clearPoints();
+        this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:
         console.log(updateType);
-        //this.#clearPoints({resetSortType: true});
-        // this.#renderEventsBody();
-
+        this.#clearPoints({resetSortType: true});
+        this.#renderEventsBody();
         break;
     }
   };
