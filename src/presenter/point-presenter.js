@@ -32,7 +32,8 @@ export default class PointPresenter {
   }
 
   init(point) {
-    this.#renderPoints(point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
+    this.#point = point;
+    this.#renderPoints(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));//определить ,откуда пришла точка!!!
   }
 
   rerender() {

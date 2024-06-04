@@ -1,6 +1,6 @@
 import { UpdateType, UserAction, SortType} from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
-import {filterBy} from '../tools/filter.js';
+import {filterBy,FiltersTypes} from '../tools/filter.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 
 import NewTripEventsSortView from '../view/trip-events-sort-view';
@@ -8,7 +8,6 @@ import NewTripEventsListView from '../view/trip-events-list-view';
 //import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
 import { updateData } from '../utils/data.js';
-//import { SortType } from '../mock/const.js';
 
 
 
@@ -23,35 +22,63 @@ export default class MainPresenter {
   #newTripEventsSortView = null;
   #activeSortType = SortType.DAY;
   #filterModel = null;
+  #filterType = FiltersTypes.EVERYTHING;
 
   constructor({ boardContainer, pointModel,filterModel }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
-   // this.#pointModel.addObserver(this.#handleModelEvent);
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
-    this.#points = this.#pointModel.points;
-    this.#destinations = this.#pointModel.destinations;
+    //this.#points = this.points;
+    //this.#destinations
+    this.#renderEventsBody();
+  }
+
+  get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointModel.points;
+    const filteredPoints = filterBy[this.#filterType](points);
+    return sortPoints(filteredPoints, this.#activeSortType);
+  }
+
+  get destinations() {
+    return this.#pointModel.destinations;
+  }
+
+  get offers() {
+    return this.#pointModel.offers;
+  }
+
+  #renderEventsBody() {
+    this.#renderSort();
     this.#renderPoints();
   }
 
-  #renderPoints() {
+  #renderSort() {
+    if (this.#newTripEventsSortView !== null) {
+      remove(this.#newTripEventsSortView);
+    }
+
     this.#newTripEventsSortView = new NewTripEventsSortView({
       onSortChanges: this.#handleSortChange,
       activeSortType: this.#activeSortType,
     });
+
     render(this.#newTripEventsSortView, this.#boardContainer);
     render(this.#containerListComponent, this.#boardContainer);
-    //render(new NewTripEventsAddPointView(), this.#containerListComponent.element);
-    this.#points.forEach((point) => {
+  }
+
+
+  #renderPoints() {
+    this.points.forEach((point) => { // здесь точка этапа фильтроВ
       const pointPresenter = new PointPresenter({
         container: this.#containerListComponent.element,
-        destination: this.#destinations,
+        destination: this.destinations,// заменил на геттер !!!
         pointModel: this.#pointModel,
         onModeChange: this.#handleModeChange,
         onViewAction: this.#handleViewAction,
@@ -108,22 +135,18 @@ export default class MainPresenter {
       case UpdateType.PATCH:
         this.#handleDataFavorite(data);
         this.#pointPresenters.get(data.id).init(data);
-
         break;
       case UpdateType.MINOR:
-        //this.#containerListComponent.element.innerHTML = '';
         console.log(updateType);
-        //this.#pointPresenters.render();
-        // - обновить список (например, когда задача ушла в архив)
-        //this.#points.forEach((point) => {
-          //this.#pointPresenters.get(point.id).rerender();
-        //});
-        //
+       //this.#clearPoints();
+        //this.#renderEventsBody();
+
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
-        //console.log(updateType);
-        //console.log(this.#pointModel.tripEvents);
+        console.log(updateType);
+        //this.#clearPoints({resetSortType: true});
+        // this.#renderEventsBody();
+
         break;
     }
   };
