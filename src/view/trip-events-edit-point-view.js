@@ -101,6 +101,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #datepickerStart = null;
   #handleDeleteClik = null;
   #handleEditSubmit = null;
+  #eventInputPrice = null;
 
   constructor({ point, destination, onEditClick, getOffers, onDelete, onSubmitSave}) {
     super();
@@ -127,12 +128,15 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
     this.#eventTypeGroup = this.element.querySelector('.event__type-group');
     this.#eventInputDestination = this.element.querySelector('.event__input--destination');
+    this.#eventInputPrice = this.element.querySelector('.event__input--price');
 
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
     this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
     this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
     this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
+
+    this.#eventInputPrice.addEventListener('change', this.#priceInputHandler);
 
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
@@ -199,6 +203,16 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
       point: {
         ...this._state.point,
         dateTo: userDate,
+      },
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    const userPrice = evt.target.value;
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        basePrice: userPrice,
       },
     });
   };

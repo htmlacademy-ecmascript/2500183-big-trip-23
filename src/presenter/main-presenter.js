@@ -13,8 +13,6 @@ export default class MainPresenter {
   #boardContainer = null;
   #pointModel = null;
   #pointPresenters = new Map();
-  #points = [];
-  #destinations = [];
   #newTripEventsSortView = null;
   #activeSortType = SortType.DAY;
   #filterModel = null;
