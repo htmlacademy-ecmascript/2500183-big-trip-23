@@ -5,6 +5,7 @@ import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 import { EVENT_TYPES } from '../mock/const.js';
 
@@ -44,7 +45,7 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name || '')}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${generateDestList(destination)}
         </datalist>

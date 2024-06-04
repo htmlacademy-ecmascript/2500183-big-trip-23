@@ -24,8 +24,8 @@
     "eslint": "8.57.0",
     "eslint-config-htmlacademy": "9.0.0",
     "html-webpack-plugin": "5.6.0",
-    "style-loader": "3.3.3",
     "prettier": "3.2.5",
+    "style-loader": "3.3.3",
     "swc-loader": "0.2.6",
     "typescript": "5.4.5",
     "typescript-eslint": "7.8.0",
@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "dayjs": "1.11.11",
-    "flatpickr": "4.6.13"
+    "flatpickr": "4.6.13",
+    "he": "1.2.0"
   }
 }
