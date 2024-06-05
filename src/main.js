@@ -14,9 +14,9 @@ const siteHeaderFilterElement = document.querySelector('.trip-controls__filters'
 const siteHeaderTripMainContainer = document.querySelector('.trip-main');
 const mainPageElem = document.querySelector('.trip-events');
 
-const headerPagePresenter = new HeaderPresenter({ boardContainer: siteHeaderTripMainContainer, headerContainer: siteHeaderFilterElement });
+const headerPagePresenter = new HeaderPresenter({ boardContainer: siteHeaderTripMainContainer});
 const filterPresenter = new FilterPresenter({pointModel:pointModel, filterModel: filterModel, filterContainer:siteHeaderFilterElement});
-const mainPagePresenter = new MainPresenter({ boardContainer: mainPageElem, pointModel: pointModel, filterModel: filterModel});
+const mainPagePresenter = new MainPresenter({ boardContainer: mainPageElem, pointModel: pointModel, filterModel: filterModel,addPointContainer:siteHeaderTripMainContainer});
 
 filterPresenter.init();
 headerPagePresenter.init();

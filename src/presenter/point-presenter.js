@@ -15,7 +15,7 @@ export default class PointPresenter {
   #destination = null;
   #pointModel = null;
   #handleModeChange = null;
-  #point = [];
+  #point = null;
   #tripPointComponent = null;
   #tripEditComponent = null;
   #escapeHandler = null;

@@ -5,29 +5,34 @@ import {remove, render} from '../framework/render.js';
 
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
-//import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import PointPresenter from './point-presenter.js';
+import AddPointPresenter2 from './add-point-presenter.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
   #boardContainer = null;
   #pointModel = null;
+  #addPointContainer = null;
   #pointPresenters = new Map();
   #newTripEventsSortView = null;
   #activeSortType = SortType.DAY;
   #filterModel = null;
   #filterType = FiltersTypes.EVERYTHING;
 
-  constructor({ boardContainer, pointModel,filterModel }) {
+
+  constructor({ boardContainer, pointModel,filterModel,addPointContainer }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
+    this.#addPointContainer = addPointContainer;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    console.log(this.#addPointContainer);//где найти кнопку для показа формы добавления!!!
   }
 
   init() {
+    this.#rendeAddPoint();//добавил форму добавления!!!
     this.#renderEventsBody();
   }
 
@@ -134,5 +139,18 @@ export default class MainPresenter {
         break;
     }
   };
+
+  #rendeAddPoint() {
+    const addPointPresenter = new AddPointPresenter2({
+      container: this.#containerListComponent.element,
+      destination: this.destinations,// заменил на геттер !!!
+      pointModel: this.#pointModel,
+      onModeChange: this.#handleModeChange,
+      onViewAction: this.#handleViewAction,
+      addPointContainer: this.#addPointContainer
+    });
+    addPointPresenter.init();
+    //console.log(addPointPresenter);
+  }
 }
 
