@@ -113,7 +113,6 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#getOffers = getOffers;
     this.#handleDeleteClik = onDelete;
     this.#handleEditSubmit = onSubmitSave;
-
     this._restoreHandlers();
   }
 
