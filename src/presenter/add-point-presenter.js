@@ -65,7 +65,8 @@ export default class AddPointPresenter {
   };
 
   handleAddFormSubmit = ({ point }) => {
-    this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
+    //this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
     //this.#escapeHandler.disable();
+    console.log( point );
   };
 }
