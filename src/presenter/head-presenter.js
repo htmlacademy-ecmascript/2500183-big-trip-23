@@ -3,7 +3,7 @@ import NewTripInfoHeader from '../view/trip-info-header';
 
 export default class HeaderPresenter {
   #boardContainer = null;
-  constructor({ boardContainer}) {
+  constructor({ boardContainer }) {
     this.#boardContainer = boardContainer;
   }
 

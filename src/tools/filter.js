@@ -10,9 +10,9 @@ const FiltersTypes = {
   PAST: 'past',
 };
 
-const isPointFuture = ({dateFrom}) => dayjs().isBefore(dateFrom);
-const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dateFrom) && dayjs().isBefore(dateTo);
-const isPointPast = ({dateTo}) => dayjs().isAfter(dateTo);
+const isPointFuture = ({ dateFrom }) => dayjs().isBefore(dateFrom);
+const isPointPresent = ({ dateFrom, dateTo }) => dayjs().isAfter(dateFrom) && dayjs().isBefore(dateTo);
+const isPointPast = ({ dateTo }) => dayjs().isAfter(dateTo);
 
 const filterBy = {
   [FiltersTypes.EVERYTHING]: (points) => [...points],
@@ -28,5 +28,4 @@ const TripEmptyMessages = {
   [FiltersTypes.PAST]: 'There are no past events now',
 };
 
-
-export { TripEmptyMessages,FiltersTypes,filterBy};
+export { TripEmptyMessages, FiltersTypes, filterBy };

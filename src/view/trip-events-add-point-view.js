@@ -16,7 +16,7 @@ const createEventTypeTemplate = (type, pointType, id) => `
   </div>
 `;
 
-function createTripEventsAddPointElements(state,destination) {
+function createTripEventsAddPointElements(state, destination) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
 
   const currentDestination = defaultDestination;
@@ -94,8 +94,9 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
   #rollupButtonSave;
   #rollupButtonCancel;
   #resetAddForm = null;
+  #submitTest = null;
 
-  constructor({point,destination,resetForm}) {
+  constructor({ point, destination, resetForm, onSubmitSave}) {
     super();
     this.#initialPoint = point;
     this._setState({
@@ -103,11 +104,12 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
     });
     this.#destination = destination;
     this.#resetAddForm = resetForm;
+    this.#submitTest = onSubmitSave;
     this._restoreHandlers();
   }
 
   get template() {
-    return createTripEventsAddPointElements(this._state,this.#destination);
+    return createTripEventsAddPointElements(this._state, this.#destination);
   }
 
   _restoreHandlers() {
@@ -116,7 +118,6 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
     this.#eventInputPrice = this.element.querySelector('.event__input--price');
     this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
     this.#rollupButtonCancel = this.element.querySelector('.event__reset-btn');
-
 
     this.#rollupButtonCancel.addEventListener('click', this.#onSubmitCancelHand);
     this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
@@ -212,8 +213,8 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
     //this.#handleEditSubmit({...this._state});
     //}
     //this.resetStateVue();
-    console.log(this._state.point);
-
+    this.#submitTest({...this._state});
+    //console.log(this._state.point);
   };
 
   #onSubmitCancelHand = (evt) => {

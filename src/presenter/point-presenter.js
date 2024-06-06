@@ -22,7 +22,6 @@ export default class PointPresenter {
   #handleViewAction = null;
   #mode = Mode.DEFAULT;
 
-
   constructor({ container, destination, pointModel, onModeChange, onViewAction }) {
     this.#containerListComponent = container;
     this.#destination = destination;
@@ -33,7 +32,7 @@ export default class PointPresenter {
 
   init(point) {
     this.#point = point;
-    this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));//определить ,откуда пришла точка!!!
+    this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel)); //определить ,откуда пришла точка!!!
   }
 
   #renderPoint(point, destination, getOffers) {
@@ -62,8 +61,8 @@ export default class PointPresenter {
         this.#changeBackEditViewPoint();
       },
       getOffers,
-      onDelete:() => this.#handleDeleteClick(),
-      onSubmitSave:this.#handleFormSubmit,// изменить имя,когда закончу
+      onDelete: () => this.#handleDeleteClick(),
+      onSubmitSave: this.#handleFormSubmit, // изменить имя,когда закончу
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -114,21 +113,13 @@ export default class PointPresenter {
   }
 
   #handleDeleteClick = () => {
-    this.#handleViewAction(
-      UserAction.DELETE_POINT,
-      UpdateType.MINOR,
-      this.#point
-    );
+    this.#handleViewAction(UserAction.DELETE_POINT, UpdateType.MINOR, this.#point);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };
 
-  #handleFormSubmit = ({point}) => {
-    this.#handleViewAction(
-      UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
-      point,
-    );
+  #handleFormSubmit = ({ point }) => {
+    this.#handleViewAction(UserAction.UPDATE_POINT, UpdateType.MINOR, point);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };

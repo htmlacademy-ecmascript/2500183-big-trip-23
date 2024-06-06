@@ -8,7 +8,6 @@ const SortType = {
 
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-
 const defaultPoint = {
   id: '',
   basePrice: 0,
@@ -43,4 +42,4 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export { SortType, EVENT_TYPES, defaultPoint, defaultDestination, UpdateType, UserAction, };
+export { SortType, EVENT_TYPES, defaultPoint, defaultDestination, UpdateType, UserAction };

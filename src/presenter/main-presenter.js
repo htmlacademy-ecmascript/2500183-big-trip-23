@@ -1,7 +1,7 @@
-import { UpdateType, UserAction, SortType} from '../mock/const.js';
+import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
-import {filterBy,FiltersTypes,TripEmptyMessages} from '../tools/filter.js';
-import {remove, render} from '../framework/render.js';
+import { filterBy, FiltersTypes, TripEmptyMessages } from '../tools/filter.js';
+import { remove, render } from '../framework/render.js';
 
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
@@ -19,8 +19,7 @@ export default class MainPresenter {
   #filterModel = null;
   #filterType = FiltersTypes.EVERYTHING;
 
-
-  constructor({ boardContainer, pointModel,filterModel,addPointContainer }) {
+  constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
@@ -28,11 +27,10 @@ export default class MainPresenter {
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    console.log(this.#addPointContainer);//где найти кнопку для показа формы добавления!!!
   }
 
   init() {
-    this.#rendeAddPoint();//добавил форму добавления!!!
+    this.#rendeAddPoint(); //добавил форму добавления!!!
     this.#renderEventsBody();
   }
 
@@ -40,7 +38,7 @@ export default class MainPresenter {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
     const filteredPoints = filterBy[this.#filterType](points);
-    console.log(TripEmptyMessages[this.#filterType]);// пример пустого сообщения!!!
+    console.log(TripEmptyMessages[this.#filterType]); // пример пустого сообщения!!!
     return sortPoints(filteredPoints, this.#activeSortType);
   }
 
@@ -71,12 +69,12 @@ export default class MainPresenter {
     render(this.#containerListComponent, this.#boardContainer);
   }
 
-
   #renderPoints() {
-    this.points.forEach((point) => { // здесь точка этапа фильтроВ
+    this.points.forEach((point) => {
+      // здесь точка этапа фильтроВ
       const pointPresenter = new PointPresenter({
         container: this.#containerListComponent.element,
-        destination: this.destinations,// заменил на геттер !!!
+        destination: this.destinations, // заменил на геттер !!!
         pointModel: this.#pointModel,
         onModeChange: this.#handleModeChange,
         onViewAction: this.#handleViewAction,
@@ -91,7 +89,8 @@ export default class MainPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleSortChange = (nextSortType) => { // работаю над сортировкооооойййй........
+  #handleSortChange = (nextSortType) => {
+    // работаю над сортировкооооойййй........
     if (this.#activeSortType === nextSortType) {
       return;
     }
@@ -101,7 +100,8 @@ export default class MainPresenter {
     this.#renderEventsBody();
   };
 
-  #clearPoints({resetSortType = false} = {}) { // тут логика установки сортировки!!!
+  #clearPoints({ resetSortType = false } = {}) {
+    // тут логика установки сортировки!!!
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
@@ -134,7 +134,7 @@ export default class MainPresenter {
         this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:
-        this.#clearPoints({resetSortType: true});// тут постараюсь добавить логику добавления точки!!!
+        this.#clearPoints({ resetSortType: true }); // тут постараюсь добавить логику добавления точки!!!
         this.#renderEventsBody();
         break;
     }
@@ -143,14 +143,12 @@ export default class MainPresenter {
   #rendeAddPoint() {
     const addPointPresenter = new AddPointPresenter({
       container: this.#containerListComponent.element,
-      destination: this.destinations,// заменил на геттер !!!
+      destination: this.destinations, // заменил на геттер !!!
       pointModel: this.#pointModel,
       onModeChange: this.#handleModeChange,
       onViewAction: this.#handleViewAction,
-      addPointContainer: this.#addPointContainer
+      addPointContainer: this.#addPointContainer,
     });
     addPointPresenter.init();
-    //console.log(addPointPresenter);
   }
 }
-

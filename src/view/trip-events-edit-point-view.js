@@ -102,7 +102,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #handleEditSubmit = null;
   #eventInputPrice = null;
 
-  constructor({ point, destination, onEditClick, getOffers, onDelete, onSubmitSave}) {
+  constructor({ point, destination, onEditClick, getOffers, onDelete, onSubmitSave }) {
     super();
     this.#initialPoint = point;
     this._setState({
@@ -178,7 +178,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
     if (this.#handleEditSubmit) {
-      this.#handleEditSubmit({...this._state});
+      this.#handleEditSubmit({ ...this._state });
     }
     this.resetStateVue();
   };

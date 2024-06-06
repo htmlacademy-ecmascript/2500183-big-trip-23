@@ -1,9 +1,8 @@
-
-import { remove, render,RenderPosition} from '../framework/render.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import { UpdateType, UserAction } from '../mock/const.js';
-import { EVENT_TYPES, defaultPoint } from '../mock/const.js';
+import { defaultPoint } from '../mock/const.js';
 
 export default class AddPointPresenter {
   #containerListComponent = null;
@@ -20,7 +19,7 @@ export default class AddPointPresenter {
   #getOffers = null;
   #tripAddComponent = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction,addPointContainer }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -38,10 +37,13 @@ export default class AddPointPresenter {
   }
 
   #clickAddPoint = () => {
-
-    this.#tripAddComponent = new NewTripEventsAddPointView ({point:this.#defaulPoint,destination:this.#destination,resetForm:this.removeAddForm
+    this.#tripAddComponent = new NewTripEventsAddPointView({
+      point: this.#defaulPoint,
+      destination: this.#destination,
+      resetForm: this.removeAddForm,
+      onSubmitSave: this.handleAddFormSubmit
     });
-    render(this.#tripAddComponent,this.#containerListComponent,RenderPosition.AFTERBEGIN);
+    render(this.#tripAddComponent, this.#containerListComponent, RenderPosition.AFTERBEGIN);
     this.#escapeHandler.enable();
     this.#handleModeChange();
     this.#buttonAddPoint.disabled = true;
@@ -61,5 +63,9 @@ export default class AddPointPresenter {
     remove(this.#tripAddComponent);
     this.activateButton();
   };
-}
 
+  handleAddFormSubmit = ({ point }) => {
+    this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
+    //this.#escapeHandler.disable();
+  };
+}
