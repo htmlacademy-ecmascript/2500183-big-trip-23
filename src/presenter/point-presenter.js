@@ -33,10 +33,10 @@ export default class PointPresenter {
 
   init(point) {
     this.#point = point;
-    this.#renderPoints(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));//определить ,откуда пришла точка!!!
+    this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));//определить ,откуда пришла точка!!!
   }
 
-  #renderPoints(point, destination, getOffers) {
+  #renderPoint(point, destination, getOffers) {
     this.#point = point;
 
     const prevPointComponent = this.#tripPointComponent;

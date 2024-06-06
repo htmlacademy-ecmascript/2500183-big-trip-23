@@ -12,11 +12,11 @@ const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-i
 const defaultPoint = {
   id: '',
   basePrice: 0,
-  dateFrom: '2024-05-14T07:27:07.173Z',
-  dateTo: '2024-05-15T08:12:07.173Z',
+  dateFrom: new Date().toISOString(),
+  dateTo: new Date().toISOString(),
   isFavorite: false,
   offers: [],
-  type: EVENT_TYPES[0],
+  type: EVENT_TYPES[5],
 };
 
 const defaultDestination = {

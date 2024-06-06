@@ -34,7 +34,7 @@ export default class PointModel extends Observable {
   }
 
   getOffersByType(type) {
-    return this.#offers.find((offer) => offer.type === type).offers;
+    return this.#offers.find((offer) => offer.type === type).offers || '';
   }
 
   updatePoint(updateType, update) {

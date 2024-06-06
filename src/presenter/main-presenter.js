@@ -6,7 +6,7 @@ import {remove, render} from '../framework/render.js';
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
 import PointPresenter from './point-presenter.js';
-import AddPointPresenter2 from './add-point-presenter.js';
+import AddPointPresenter from './add-point-presenter.js';
 
 export default class MainPresenter {
   #containerListComponent = new NewTripEventsListView();
@@ -141,7 +141,7 @@ export default class MainPresenter {
   };
 
   #rendeAddPoint() {
-    const addPointPresenter = new AddPointPresenter2({
+    const addPointPresenter = new AddPointPresenter({
       container: this.#containerListComponent.element,
       destination: this.destinations,// заменил на геттер !!!
       pointModel: this.#pointModel,

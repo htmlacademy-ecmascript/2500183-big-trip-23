@@ -1,9 +1,11 @@
-import { render,RenderPosition} from '../framework/render.js';
+
+import { remove, render,RenderPosition} from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import { UpdateType, UserAction } from '../mock/const.js';
+import { EVENT_TYPES, defaultPoint } from '../mock/const.js';
 
-export default class AddPointPresenter2 {
+export default class AddPointPresenter {
   #containerListComponent = null;
   #destination = null;
   #pointModel = null;
@@ -13,6 +15,10 @@ export default class AddPointPresenter2 {
   #handleViewAction = null;
   #addPointContainer = null;
   #buttonAddPoint = null;
+  #defaulPoint = null;
+  #vueAddPoint = null;
+  #getOffers = null;
+  #tripAddComponent = null;
 
   constructor({ container, destination, pointModel, onModeChange, onViewAction,addPointContainer }) {
     this.#containerListComponent = container;
@@ -22,10 +28,9 @@ export default class AddPointPresenter2 {
     this.#handleViewAction = onViewAction;
     this.#addPointContainer = addPointContainer;
     this.#buttonAddPoint = this.#addPointContainer.querySelector('.trip-main__event-add-btn');
+    this.#defaulPoint = defaultPoint;
 
-    document.addEventListener('keydown', this.#onEscKeyDown);
-
-    this.#escapeHandler = new EscapeHandler(this.#handleModeChange);
+    this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
   }
 
   init() {
@@ -33,17 +38,28 @@ export default class AddPointPresenter2 {
   }
 
   #clickAddPoint = () => {
-    render(new NewTripEventsAddPointView(),this.#containerListComponent,RenderPosition.AFTERBEGIN);
+
+    this.#tripAddComponent = new NewTripEventsAddPointView ({point:this.#defaulPoint,destination:this.#destination,resetForm:this.removeAddForm
+    });
+    render(this.#tripAddComponent,this.#containerListComponent,RenderPosition.AFTERBEGIN);
     this.#escapeHandler.enable();
-    this.#escapeHandler = new EscapeHandler(this.#handleModeChange);
     this.#handleModeChange();
     this.#buttonAddPoint.disabled = true;
   };
 
-  #onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      console.log('test');
-      this.#handleModeChange();// спросить почему не работает!!!
-    }
+  #onEscKeyDown = () => {
+    this.activateButton();
+    this.#escapeHandler.disable();
+    this.removeAddForm();
+  };
+
+  activateButton = () => {
+    this.#buttonAddPoint.disabled = false;
+  };
+
+  removeAddForm = () => {
+    remove(this.#tripAddComponent);
+    this.activateButton();
   };
 }
+

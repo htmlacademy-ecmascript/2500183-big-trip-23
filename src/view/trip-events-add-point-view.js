@@ -1,9 +1,13 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
+import flatpickr from 'flatpickr';
 
-import { EVENT_TYPES, defaultPoint, defaultDestination } from '../mock/const.js';
+import { EVENT_TYPES, defaultDestination } from '../mock/const.js';
+import he from 'he';
+
+const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
 
 const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">
@@ -12,10 +16,11 @@ const createEventTypeTemplate = (type, pointType, id) => `
   </div>
 `;
 
-function createTripEventsAddPointElements() {
-  const { type, dateFrom, dateTo, basePrice, id } = defaultPoint;
+function createTripEventsAddPointElements(state,destination) {
+  const { type, dateFrom, dateTo, basePrice, id } = state.point;
+
   const currentDestination = defaultDestination;
-  const typeOffers = defaultPoint.offers;
+  const typeOffers = state.point.offers;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -34,14 +39,13 @@ function createTripEventsAddPointElements() {
           </fieldset>
         </div>
       </div>
-
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name || '')}" list="destination-list-1">
         <datalist id="destination-list-1">
-        <option value="${defaultDestination.name}"></option>
+          ${generateDestList(destination)}
         </datalist>
       </div>
 
@@ -58,19 +62,16 @@ function createTripEventsAddPointElements() {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(basePrice.toString())}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+      <button class="event__reset-btn" type="reset">Cancel</button>
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
         ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
-        ${markUpOfferSelectores(typeOffers, defaultPoint.offers)}
+        ${markUpOfferSelectores(typeOffers, state.point.offers)}
       </section>
 
       <section class="event__section  event__section--destination">
@@ -83,12 +84,153 @@ function createTripEventsAddPointElements() {
 </li>`;
 }
 
-export default class NewTripEventsAddPointView extends AbstractView {
-  constructor() {
+export default class NewTripEventsAddPointView extends AbstractStatefulView {
+  #initialPoint = null;
+  #destination = null;
+  #eventInputDestination = null;
+  #eventTypeGroup = null;
+  #eventInputPrice = null;
+  #datepickerStart;
+  #rollupButtonSave;
+  #rollupButtonCancel;
+  #resetAddForm = null;
+
+  constructor({point,destination,resetForm}) {
     super();
+    this.#initialPoint = point;
+    this._setState({
+      point: { ...point },
+    });
+    this.#destination = destination;
+    this.#resetAddForm = resetForm;
+    this._restoreHandlers();
   }
 
   get template() {
-    return createTripEventsAddPointElements(defaultPoint);
+    return createTripEventsAddPointElements(this._state,this.#destination);
   }
+
+  _restoreHandlers() {
+    this.#eventInputDestination = this.element.querySelector('.event__input--destination');
+    this.#eventTypeGroup = this.element.querySelector('.event__type-group');
+    this.#eventInputPrice = this.element.querySelector('.event__input--price');
+    this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
+    this.#rollupButtonCancel = this.element.querySelector('.event__reset-btn');
+
+
+    this.#rollupButtonCancel.addEventListener('click', this.#onSubmitCancelHand);
+    this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
+    this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
+    this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
+    this.#eventInputPrice.addEventListener('change', this.#priceInputHandler);
+
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
+  }
+
+  #destinationTypeHandler = (evt) => {
+    evt.preventDefault();
+    const newDestination = evt.target.value;
+
+    const typeDestination = this.#destination.find((destination) => destination.name === newDestination);
+    if (!typeDestination) {
+      return;
+    }
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        destination: typeDestination.id,
+      },
+    });
+  };
+
+  #eventTypeHandler = (evt) => {
+    evt.preventDefault();
+    const newType = evt.target.value;
+
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        type: newType,
+      },
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    const userPrice = evt.target.value;
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        basePrice: userPrice,
+      },
+    });
+  };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        dateFrom: userDate,
+      },
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        dateTo: userDate,
+      },
+    });
+  };
+
+  #setDatepickerStart() {
+    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-start-time"]'), {
+      dateFormat: 'd/m/y h:i',
+      enableTime: true,
+      'time_24hr': true,
+      defaultDate: this._state.point.dateFrom,
+      maxDate: this._state.point.dateFrom,
+      onChange: this.#dateFromChangeHandler,
+    });
+  }
+
+  #setDatepickerEnd() {
+    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-end-time"]'), {
+      dateFormat: 'd/m/y h:i',
+      enableTime: true,
+      'time_24hr': true,
+      defaultDate: this._state.point.dateTo,
+      minDate: this._state.point.dateTo,
+      onChange: this.#dateToChangeHandler,
+    });
+  }
+
+  #onSubmitSaveHand = (evt) => {
+    evt.preventDefault();
+    //if (this.#handleEditSubmit) {
+    //this.#handleEditSubmit({...this._state});
+    //}
+    //this.resetStateVue();
+    console.log(this._state.point);
+
+  };
+
+  #onSubmitCancelHand = (evt) => {
+    evt.preventDefault();
+    this.resetStateVue();
+    this.#resetAddForm();
+    console.log(this._state.point);
+  };
+
+  resetStateVue = () => {
+    this.updateElement({
+      point: { ...this.#initialPoint },
+    });
+  };
 }
+
+/*
+<button class="event__rollup-btn" type="button">
+</button> - убрал кнопку из разметки, спросить можно ли так!!!
+*/
