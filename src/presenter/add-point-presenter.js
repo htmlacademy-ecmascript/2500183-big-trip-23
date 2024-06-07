@@ -28,9 +28,17 @@ export default class AddPointPresenter {
     this.#addPointContainer = addPointContainer;
     this.#buttonAddPoint = this.#addPointContainer.querySelector('.trip-main__event-add-btn');
     this.#defaulPoint = defaultPoint;
+    this.#getOffers = this.#pointModel.getOffersByType.bind(this.#pointModel);
 
-    this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
+    this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);//toLowerCase()
+
+    //const test = defaultPoint.type.toLowerCase();
+
+    //console.log(this.#getOffers(test));
+
   }
+
+
 
   init() {
     this.#buttonAddPoint.addEventListener('click', this.#clickAddPoint);
@@ -38,10 +46,12 @@ export default class AddPointPresenter {
 
   #clickAddPoint = () => {
     this.#tripAddComponent = new NewTripEventsAddPointView({
-      point: this.#defaulPoint,
+      offers:this.#pointModel.offers,
       destination: this.#destination,
+      point:defaultPoint,
       resetForm: this.removeAddForm,
-      onSubmitSave: this.handleAddFormSubmit
+      onSubmitSave: this.handleAddFormSubmit,
+      getOffers: this.#getOffers
     });
     render(this.#tripAddComponent, this.#containerListComponent, RenderPosition.AFTERBEGIN);
     this.#escapeHandler.enable();
@@ -65,7 +75,8 @@ export default class AddPointPresenter {
   };
 
   handleAddFormSubmit = ({ point }) => {
-    //this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
+    //this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point); - работает!!! не с первого раза
+    //remove(this.#tripAddComponent);
     //this.#escapeHandler.disable();
     console.log( point );
   };

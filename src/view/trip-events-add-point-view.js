@@ -7,6 +7,8 @@ import flatpickr from 'flatpickr';
 import { EVENT_TYPES, defaultDestination } from '../mock/const.js';
 import he from 'he';
 
+const EDIT_TIME_FORMAT = 'DD/MM/YY HH:mm';
+
 const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
 
 const createEventTypeTemplate = (type, pointType, id) => `
@@ -16,11 +18,11 @@ const createEventTypeTemplate = (type, pointType, id) => `
   </div>
 `;
 
-function createTripEventsAddPointElements(state, destination) {
+function createTripEventsAddPointElements(state,destination,offers,getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
-
+  const currentDestination2 = destination.find((element) => element.id === state.point.destination) || '';
   const currentDestination = defaultDestination;
-  const typeOffers = state.point.offers;
+  const typeOffers = getOffers(type.toLowerCase());
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -62,11 +64,14 @@ function createTripEventsAddPointElements(state, destination) {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" value="${he.encode(basePrice.toString())}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Cancel</button>
+      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
@@ -95,21 +100,26 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
   #rollupButtonCancel;
   #resetAddForm = null;
   #submitTest = null;
+  #offers = null;
+  #getOffers = null;
 
-  constructor({ point, destination, resetForm, onSubmitSave}) {
+  constructor({ offers, destination, point, resetForm, onSubmitSave,getOffers}) {
     super();
     this.#initialPoint = point;
+    this.#getOffers = getOffers;
     this._setState({
-      point: { ...point },
+      point: { ...point,
+      },
     });
     this.#destination = destination;
     this.#resetAddForm = resetForm;
     this.#submitTest = onSubmitSave;
+    this.offers = offers;
     this._restoreHandlers();
   }
 
   get template() {
-    return createTripEventsAddPointElements(this._state, this.#destination);
+    return createTripEventsAddPointElements(this._state, this.#destination,this.offers,this.#getOffers);
   }
 
   _restoreHandlers() {
@@ -229,6 +239,14 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
       point: { ...this.#initialPoint },
     });
   };
+
+  parsePointToState(point) {
+    return {...point,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
+  }
 }
 
 /*
