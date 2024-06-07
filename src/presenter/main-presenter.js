@@ -28,7 +28,7 @@ export default class MainPresenter {
     this.#addPointContainer = addPointContainer;
     this.#addPointPresenter = new AddPointPresenter({
       container: this.#containerListComponent.element,
-      destination: this.destinations, // заменил на геттер !!!
+      destination: this.destinations,
       pointModel: this.#pointModel,
       onModeChange: this.#handleModeChange,
       onViewAction: this.#handleViewAction,
@@ -43,7 +43,7 @@ export default class MainPresenter {
   }
 
   init() {
-    this.#rendeAddPoint(); //добавил форму добавления!!!
+    this.#rendeAddPoint();
     this.#renderEventsBody();
   }
 
@@ -147,9 +147,10 @@ export default class MainPresenter {
         break;
       case UpdateType.MINOR:
         this.#clearPoints();
+        this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:
-        this.#clearPoints({ resetSortType: true }); // тут постараюсь добавить логику добавления точки!!!
+        this.#clearPoints({ resetSortType: true });
         break;
     }
   };
@@ -157,8 +158,4 @@ export default class MainPresenter {
   #rendeAddPoint() {
     this.#addPointPresenter.init();
   }
-
-  #deleteAddPointPresenter = () => {
-    this.#addPointPresenter.removeAddForm();
-  };
 }
