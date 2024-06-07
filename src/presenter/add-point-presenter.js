@@ -30,15 +30,8 @@ export default class AddPointPresenter {
     this.#defaulPoint = defaultPoint;
     this.#getOffers = this.#pointModel.getOffersByType.bind(this.#pointModel);
 
-    this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);//toLowerCase()
-
-    //const test = defaultPoint.type.toLowerCase();
-
-    //console.log(this.#getOffers(test));
-
+    this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
   }
-
-
 
   init() {
     this.#buttonAddPoint.addEventListener('click', this.#clickAddPoint);
@@ -57,6 +50,7 @@ export default class AddPointPresenter {
     this.#escapeHandler.enable();
     this.#handleModeChange();
     this.#buttonAddPoint.disabled = true;
+    //remove(prevPointComponent);
   };
 
   #onEscKeyDown = () => {
@@ -75,7 +69,7 @@ export default class AddPointPresenter {
   };
 
   handleAddFormSubmit = ({ point }) => {
-    this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point); //- работает!!! не с первого раза
+    this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point); //g- работает!!! не с первого раза
     //remove(this.#tripAddComponent);
     //this.#escapeHandler.disable();
     console.log( point );

@@ -20,8 +20,9 @@ const generateDestList = (destination) => `${destination.map((dest) => `<option 
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
-  const currentDestination = destination.find((element) => element.id === state.point.destination);
+  const currentDestination = destination.find((element) => element.id === state.point.destination) || '';
   const typeOffers = getOffers(state.point.type);
+
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">

@@ -3,11 +3,10 @@ import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
+import { nanoid } from 'nanoid';
 
 import { EVENT_TYPES, defaultDestination } from '../mock/const.js';
 import he from 'he';
-
-const EDIT_TIME_FORMAT = 'DD/MM/YY HH:mm';
 
 const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
 
@@ -20,11 +19,11 @@ const createEventTypeTemplate = (type, pointType, id) => `
 
 function createTripEventsAddPointElements(state,destination,offers,getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
-  const typeLowerCase = type.toLowerCase();
-  const currentDestination2 = destination.find((element) => element.id === state.point.destination) || '';
-  const currentDestination = defaultDestination;
-  const typeOffers = getOffers(type.toLowerCase());
-  console.log(typeLowerCase);
+
+  const currentDestination = destination.find((element) => element.id === state.point.destination) || {};
+  //const currentDestination = defaultDestination;
+  const typeOffers = getOffers(type);
+
   console.log(state.point);
 
   return `<li class="trip-events__item">
@@ -33,7 +32,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${typeLowerCase}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -84,7 +83,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
 
       <section class="event__section  event__section--destination">
         ${currentDestination.description.length || currentDestination.pictures.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        <p class="event__destination-description">${currentDestination.description}</p>
+        ${currentDestination.description ? '<p class="event__destination-description"></p>' : ''}
         ${markUpDestinationPhotos(currentDestination.pictures)}
       </section>
     </section>
@@ -110,8 +109,12 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
     super();
     this.#initialPoint = point;
     this.#getOffers = getOffers;
+    console.log(point.type);
     this._setState({
       point: { ...point,
+        id: nanoid(),
+        type: point.type.toLowerCase(),
+
       },
     });
     this.#destination = destination;
@@ -232,7 +235,7 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
 
   #onSubmitCancelHand = (evt) => {
     evt.preventDefault();
-    this.resetStateVue();
+    //this.resetStateVue();
     this.#resetAddForm();
     console.log(this._state.point);
   };
