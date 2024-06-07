@@ -21,12 +21,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
 
   const currentDestination = destination.find((element) => element.id === state.point.destination) || {};
-  //const currentDestination = defaultDestination;
   const typeOffers = getOffers(type);
-
-  if(!currentDestination) {
-    console.log('yyyy');
-  }
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -113,8 +108,8 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
       id: nanoid(),
       type: point.type.toLowerCase(),
     };
+
     this.#getOffers = getOffers;
-    console.log(point.type);
     this._setState({
       point: { ...point,
         id: nanoid(),
@@ -229,19 +224,15 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
-    //if (this.#handleEditSubmit) {
-    //this.#handleEditSubmit({...this._state});
-    //}
-    this.resetStateVue();
     this.#submitTest({...this._state});
-    //console.log(this._state.point);
+    this.resetStateVue();
+    this.#resetAddForm();
   };
 
   #onSubmitCancelHand = (evt) => {
     evt.preventDefault();
     this.resetStateVue();
     this.#resetAddForm();
-    console.log(this._state.point);
   };
 
   resetStateVue = () => {

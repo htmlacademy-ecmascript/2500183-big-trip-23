@@ -45,7 +45,7 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name || '')}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.length ? he.encode(currentDestination.name) : ''}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${generateDestList(destination)}
         </datalist>
@@ -79,9 +79,9 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
       </section>
 
       <section class="event__section  event__section--destination">
-        ${currentDestination.description.length || currentDestination.pictures.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        <p class="event__destination-description">${currentDestination.description}</p>
-        ${markUpDestinationPhotos(currentDestination.pictures)}
+        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+        <p class="event__destination-description">${currentDestination.length ? currentDestination.description : ''}</p>
+        ${markUpDestinationPhotos(currentDestination.length ? currentDestination.pictures : '')}
       </section>
     </section>
   </form>
