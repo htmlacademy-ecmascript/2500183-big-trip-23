@@ -5,7 +5,7 @@ import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
 import { nanoid } from 'nanoid';
 
-import { EVENT_TYPES, defaultDestination } from '../mock/const.js';
+import { EVENT_TYPES} from '../mock/const.js';
 import he from 'he';
 
 const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
@@ -24,7 +24,9 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
   //const currentDestination = defaultDestination;
   const typeOffers = getOffers(type);
 
-  console.log(state.point);
+  if(!currentDestination) {
+    console.log('yyyy');
+  }
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -80,12 +82,12 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
         ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
         ${markUpOfferSelectores(typeOffers, state.point.offers)}
       </section>
-
       <section class="event__section  event__section--destination">
-        ${currentDestination.description.length || currentDestination.pictures.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        ${currentDestination.description ? '<p class="event__destination-description"></p>' : ''}
-        ${markUpDestinationPhotos(currentDestination.pictures)}
+        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+        <p class="event__destination-description"></p>
+        ${currentDestination.length ? markUpDestinationPhotos(currentDestination.pictures) : ''}
       </section>
+
     </section>
   </form>
 </li>`;
@@ -107,14 +109,16 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
 
   constructor({ offers, destination, point, resetForm, onSubmitSave,getOffers}) {
     super();
-    this.#initialPoint = point;
+    this.#initialPoint = { ...point,
+      id: nanoid(),
+      type: point.type.toLowerCase(),
+    };
     this.#getOffers = getOffers;
     console.log(point.type);
     this._setState({
       point: { ...point,
         id: nanoid(),
         type: point.type.toLowerCase(),
-
       },
     });
     this.#destination = destination;
@@ -228,14 +232,14 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
     //if (this.#handleEditSubmit) {
     //this.#handleEditSubmit({...this._state});
     //}
-    //this.resetStateVue();
+    this.resetStateVue();
     this.#submitTest({...this._state});
     //console.log(this._state.point);
   };
 
   #onSubmitCancelHand = (evt) => {
     evt.preventDefault();
-    //this.resetStateVue();
+    this.resetStateVue();
     this.#resetAddForm();
     console.log(this._state.point);
   };
@@ -245,14 +249,6 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
       point: { ...this.#initialPoint },
     });
   };
-
-  parsePointToState(point) {
-    return {...point,
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false,
-    };
-  }
 }
 
 /*
