@@ -21,7 +21,7 @@ export default class MainPresenter {
   #addPointPresenter = null;
   #closeAddForm = null;
 
-  constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
+  constructor({ boardContainer, pointModel, filterModel, addPointContainer}) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
@@ -33,6 +33,7 @@ export default class MainPresenter {
       onModeChange: this.#handleModeChange,
       onViewAction: this.#handleViewAction,
       addPointContainer: this.#addPointContainer,
+      resetSorting:this.#handleSortChange,
     });
     this.#closeAddForm = this.#addPointPresenter.removeAddForm;
 
@@ -119,6 +120,8 @@ export default class MainPresenter {
 
     if (resetSortType) {
       this.#activeSortType = SortType.DAY;
+      this.#filterType = FiltersTypes.EVERYTHING;
+      this.#renderEventsBody();
     }
   }
 
@@ -143,11 +146,12 @@ export default class MainPresenter {
         break;
       case UpdateType.MINOR:
         this.#clearPoints();
-        this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:
         this.#clearPoints({ resetSortType: true }); // тут постараюсь добавить логику добавления точки!!!
-        this.#renderEventsBody();
+        //this.#renderEventsBody();
+        //this.#handleSortChange(SortType.DAY); бросить в add поинт презентер
+        //this.#renderEventsBody();
         break;
     }
   };

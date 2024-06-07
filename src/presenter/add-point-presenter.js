@@ -1,7 +1,7 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
 import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
-import { UpdateType, UserAction } from '../mock/const.js';
+import { UpdateType, UserAction,SortType } from '../mock/const.js';
 import { defaultPoint } from '../mock/const.js';
 
 const ModeAdded = {
@@ -24,8 +24,9 @@ export default class AddPointPresenter {
   #getOffers = null;
   #tripAddComponent = null;
   #mode = ModeAdded.DEFAULT;
+  #resetSorting = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer,resetSorting }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -35,7 +36,7 @@ export default class AddPointPresenter {
     this.#buttonAddPoint = this.#addPointContainer.querySelector('.trip-main__event-add-btn');
     this.#defaulPoint = defaultPoint;
     this.#getOffers = this.#pointModel.getOffersByType.bind(this.#pointModel);
-
+    this.#resetSorting = resetSorting;
     this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
   }
 
@@ -79,5 +80,6 @@ export default class AddPointPresenter {
 
   handleAddFormSubmit = ({ point }) => {
     this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
+    this.#resetSorting(SortType.DAY);
   };
 }
