@@ -20,7 +20,12 @@ const createEventTypeTemplate = (type, pointType, id) => `
 function createTripEventsAddPointElements(state,destination,offers,getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
 
-  const currentDestination = destination.find((element) => element.id === state.point.destination) || {};
+  let currentDestination = destination.find((element) => element.id === state.point.destination) || {};
+
+  if (state.point.destination.length) {
+    currentDestination = destination.find((element) => element.id === state.point.destination);
+  }
+
   const typeOffers = getOffers(type);
 
   return `<li class="trip-events__item">
@@ -44,7 +49,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name || '')}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.length ? he.encode(currentDestination.name) : ''}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${generateDestList(destination)}
         </datalist>

@@ -18,15 +18,25 @@ export default class MainPresenter {
   #activeSortType = SortType.DAY;
   #filterModel = null;
   #filterType = FiltersTypes.EVERYTHING;
+  #addPointPresenter = null;
 
   constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
     this.#addPointContainer = addPointContainer;
+    this.#addPointPresenter = new AddPointPresenter({
+      container: this.#containerListComponent.element,
+      destination: this.destinations, // заменил на геттер !!!
+      pointModel: this.#pointModel,
+      onModeChange: this.#handleModeChange,
+      onViewAction: this.#handleViewAction,
+      addPointContainer: this.#addPointContainer,
+    });
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    console.log(this.#addPointPresenter.removeAddForm);
   }
 
   init() {
@@ -141,14 +151,10 @@ export default class MainPresenter {
   };
 
   #rendeAddPoint() {
-    const addPointPresenter = new AddPointPresenter({
-      container: this.#containerListComponent.element,
-      destination: this.destinations, // заменил на геттер !!!
-      pointModel: this.#pointModel,
-      onModeChange: this.#handleModeChange,
-      onViewAction: this.#handleViewAction,
-      addPointContainer: this.#addPointContainer,
-    });
-    addPointPresenter.init();
+    this.#addPointPresenter.init();
   }
+
+  #deleteAddPointPresenter = () => {
+    this.#addPointPresenter.removeAddForm();
+  };
 }

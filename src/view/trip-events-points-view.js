@@ -17,7 +17,7 @@ function createOffersList(offersList) {
 
 function createTripEventsPointElements(point, destination, getOffers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
-  const currentDestination = destination.find((element) => element.id === point.destination) || {};
+  const currentDestination = destination.find((element) => element.id === point.destination);
   const typeOffers = getOffers(point.type);
 
   return `<li class="trip-events__item">
