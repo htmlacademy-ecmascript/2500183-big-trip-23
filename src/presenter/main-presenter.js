@@ -19,6 +19,7 @@ export default class MainPresenter {
   #filterModel = null;
   #filterType = FiltersTypes.EVERYTHING;
   #addPointPresenter = null;
+  #closeAddForm = null;
 
   constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
@@ -33,10 +34,10 @@ export default class MainPresenter {
       onViewAction: this.#handleViewAction,
       addPointContainer: this.#addPointContainer,
     });
+    this.#closeAddForm = this.#addPointPresenter.removeAddForm;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    console.log(this.#addPointPresenter.removeAddForm);
   }
 
   init() {
@@ -88,6 +89,7 @@ export default class MainPresenter {
         pointModel: this.#pointModel,
         onModeChange: this.#handleModeChange,
         onViewAction: this.#handleViewAction,
+        closeAddForm: this.#closeAddForm,
       });
 
       pointPresenter.init(point);

@@ -21,18 +21,20 @@ export default class PointPresenter {
   #escapeHandler = null;
   #handleViewAction = null;
   #mode = Mode.DEFAULT;
+  #closeAddForm = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction,closeAddForm }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
     this.#handleModeChange = onModeChange;
     this.#handleViewAction = onViewAction;
+    this.#closeAddForm = closeAddForm;
   }
 
   init(point) {
     this.#point = point;
-    this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel)); //определить ,откуда пришла точка!!!
+    this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
   }
 
   #renderPoint(point, destination, getOffers) {
@@ -48,6 +50,7 @@ export default class PointPresenter {
       destination,
       onEditClick: () => {
         this.#changeEditViewPoint();
+        this.#closeAddForm();
       },
       getOffers,
       onFavoritClick: () => {

@@ -4,6 +4,11 @@ import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
 import { UpdateType, UserAction } from '../mock/const.js';
 import { defaultPoint } from '../mock/const.js';
 
+const ModeAdded = {
+  DEFAULT: 'DEFAULT',
+  ADDED: 'ADDED',
+};
+
 export default class AddPointPresenter {
   #containerListComponent = null;
   #destination = null;
@@ -18,6 +23,7 @@ export default class AddPointPresenter {
   #vueAddPoint = null;
   #getOffers = null;
   #tripAddComponent = null;
+  #mode = ModeAdded.DEFAULT;
 
   constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer }) {
     this.#containerListComponent = container;
@@ -50,7 +56,7 @@ export default class AddPointPresenter {
     this.#escapeHandler.enable();
     this.#handleModeChange();
     this.#buttonAddPoint.disabled = true;
-    //remove(prevPointComponent);
+    this.#mode = ModeAdded.ADDED;
   };
 
   #onEscKeyDown = () => {
@@ -64,14 +70,14 @@ export default class AddPointPresenter {
   };
 
   removeAddForm = () => {
-    remove(this.#tripAddComponent);
-    this.activateButton();
+    if(this.#mode === ModeAdded.ADDED) {
+      remove(this.#tripAddComponent);
+      this.activateButton();
+      this.#mode = ModeAdded.DEFAULT;
+    }
   };
 
   handleAddFormSubmit = ({ point }) => {
-    this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point); //g- работает!!! не с первого раза
-    //remove(this.#tripAddComponent);
-    //this.#escapeHandler.disable();
-    console.log( point );
+    this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
   };
 }
