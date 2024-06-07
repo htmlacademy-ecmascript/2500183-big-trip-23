@@ -1,11 +1,9 @@
 import { render, replace, remove } from '../framework/render.js';
-import Filters from '../view/trip-filters-view2'; //новое
+import Filters from '../view/trip-filters-view.js'; //новое
 
 import { FiltersTypes, filterBy } from '../tools/filter.js';
 
 import { UpdateType } from '../mock/const';
-
-//const filterContainer = document.querySelector('.trip-controls__filters'); remember
 
 export default class FilterPresenter {
   #pointModel = null;
