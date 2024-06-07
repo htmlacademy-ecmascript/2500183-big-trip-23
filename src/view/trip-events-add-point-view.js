@@ -208,7 +208,6 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
       enableTime: true,
       'time_24hr': true,
       defaultDate: this._state.point.dateFrom,
-      minDate: this._state.point.dateTo,
       maxDate: this._state.point.dateFrom,
       onChange: this.#dateFromChangeHandler,
     });
