@@ -20,9 +20,12 @@ const createEventTypeTemplate = (type, pointType, id) => `
 
 function createTripEventsAddPointElements(state,destination,offers,getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
+  const typeLowerCase = type.toLowerCase();
   const currentDestination2 = destination.find((element) => element.id === state.point.destination) || '';
   const currentDestination = defaultDestination;
   const typeOffers = getOffers(type.toLowerCase());
+  console.log(typeLowerCase);
+  console.log(state.point);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -30,7 +33,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${typeLowerCase}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 

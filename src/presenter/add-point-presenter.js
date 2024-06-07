@@ -75,7 +75,7 @@ export default class AddPointPresenter {
   };
 
   handleAddFormSubmit = ({ point }) => {
-    //this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point); - работает!!! не с первого раза
+    this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point); //- работает!!! не с первого раза
     //remove(this.#tripAddComponent);
     //this.#escapeHandler.disable();
     console.log( point );
