@@ -34,6 +34,7 @@ export default class MainPresenter {
       onViewAction: this.#handleViewAction,
       addPointContainer: this.#addPointContainer,
       resetSorting:this.#handleSortChange,
+      filterModel:this.#filterModel
     });
     this.#closeAddForm = this.#addPointPresenter.removeAddForm;
 
@@ -149,9 +150,6 @@ export default class MainPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearPoints({ resetSortType: true }); // тут постараюсь добавить логику добавления точки!!!
-        //this.#renderEventsBody();
-        //this.#handleSortChange(SortType.DAY); бросить в add поинт презентер
-        //this.#renderEventsBody();
         break;
     }
   };
