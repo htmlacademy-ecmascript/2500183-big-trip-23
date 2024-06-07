@@ -72,10 +72,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+      <button class="event__reset-btn" type="reset">Cancel</button>
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
@@ -85,7 +82,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
       <section class="event__section  event__section--destination">
         ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
         <p class="event__destination-description"></p>
-        ${currentDestination.length ? markUpDestinationPhotos(currentDestination.pictures) : ''}
+        ${currentDestination.length && currentDestination.pictures ? markUpDestinationPhotos(currentDestination.pictures) : ''}
       </section>
 
     </section>
@@ -211,6 +208,7 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
       enableTime: true,
       'time_24hr': true,
       defaultDate: this._state.point.dateFrom,
+      minDate: this._state.point.dateTo,
       maxDate: this._state.point.dateFrom,
       onChange: this.#dateFromChangeHandler,
     });
