@@ -1,7 +1,7 @@
 import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
-import { filterBy, FiltersTypes} from '../tools/filter.js';//TripEmptyMessages
-import { remove, render,replace } from '../framework/render.js';
+import { filterBy, FiltersTypes } from '../tools/filter.js'; //TripEmptyMessages
+import { remove, render, replace } from '../framework/render.js';
 
 import TripEmptyPointView from '../view/trip-empty-point-view.js';
 import NewTripEventsSortView from '../view/trip-events-sort-view';
@@ -23,7 +23,7 @@ export default class MainPresenter {
   #closeAddForm = null;
   #tripEmptyPoint = null;
 
-  constructor({ boardContainer, pointModel, filterModel, addPointContainer}) {
+  constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel; //pointModel
     this.#filterModel = filterModel;
@@ -35,14 +35,13 @@ export default class MainPresenter {
       onModeChange: this.#handleModeChange,
       onViewAction: this.#handleViewAction,
       addPointContainer: this.#addPointContainer,
-      resetSorting:this.#handleSortChange,
-      filterModel:this.#filterModel
+      resetSorting: this.#handleSortChange,
+      filterModel: this.#filterModel,
     });
     this.#closeAddForm = this.#addPointPresenter.removeAddForm;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-
   }
 
   init() {
@@ -53,7 +52,7 @@ export default class MainPresenter {
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
-    const filteredPoints = filterBy[this.#filterType](points);//
+    const filteredPoints = filterBy[this.#filterType](points); //
     return sortPoints(filteredPoints, this.#activeSortType);
   }
 
@@ -86,7 +85,7 @@ export default class MainPresenter {
   }
 
   #renderPoints() {
-    if(!this.points.length){
+    if (!this.points.length) {
       this.#renderEmptyPoint();
     }
     this.points.forEach((point) => {
@@ -165,17 +164,16 @@ export default class MainPresenter {
     this.#addPointPresenter.init();
   }
 
-  #renderEmptyPoint = () =>{
+  #renderEmptyPoint = () => {
     const prevEmptyPointComponent = this.#tripEmptyPoint;
 
-    this.#tripEmptyPoint = new TripEmptyPointView({filterType:this.#filterModel.filter});
+    this.#tripEmptyPoint = new TripEmptyPointView({ filterType: this.#filterModel.filter });
 
     if (prevEmptyPointComponent === null) {
-      render(this.#tripEmptyPoint,this.#containerListComponent.element);
+      render(this.#tripEmptyPoint, this.#containerListComponent.element);
       return;
     }
     replace(this.#tripEmptyPoint, prevEmptyPointComponent);
     remove(prevEmptyPointComponent);
   };
 }
-

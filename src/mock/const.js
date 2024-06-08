@@ -8,15 +8,14 @@ const SortType = {
 
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
+export const upFirst = (str) => str[0].toUpperCase() + str.slice(1);
+
 const defaultPoint = {
-  id: '',
   basePrice: 0,
-  dateFrom: new Date().toISOString(),
-  dateTo: new Date().toISOString(),
   destination: '',
   isFavorite: false,
   offers: [],
-  type: EVENT_TYPES[5],
+  type: 'flight',
 };
 
 const defaultDestination = {

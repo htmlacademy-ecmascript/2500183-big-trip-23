@@ -55,24 +55,24 @@ function createTripEventsPointElements(point, destination, getOffers) {
 </li>`;
 }
 
-export default class NewTripEventsPointView extends AbstractView {
+export default class PointView extends AbstractView {
   #point = null;
   #destination = null;
   #offers = null;
   #onEditClick = null;
   #rollupButton = null;
   #getOffers = null;
-  #onFavoritClick = null;
+  #onFavoriteClick = null;
   #favoriteButton = null;
 
-  constructor({ point, destination, offers, onEditClick, getOffers, onFavoritClick }) {
+  constructor({ point, destination, offers, onEditClick, getOffers, onFavoriteClick }) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
     this.#getOffers = getOffers;
     this.#onEditClick = onEditClick;
-    this.#onFavoritClick = onFavoritClick;
+    this.#onFavoriteClick = onFavoriteClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#favoriteButton = this.element.querySelector('.event__favorite-btn');
@@ -86,7 +86,7 @@ export default class NewTripEventsPointView extends AbstractView {
 
   #onClickFavorite = (evt) => {
     evt.preventDefault();
-    this.#onFavoritClick();
+    this.#onFavoriteClick();
   };
 
   get template() {

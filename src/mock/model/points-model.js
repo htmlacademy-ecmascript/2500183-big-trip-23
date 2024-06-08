@@ -5,20 +5,27 @@ import Observable from '../../framework/observable.js';
 
 export default class PointModel extends Observable {
   #points = [];
-  #destination = [];
+  #destinations = [];
   #offers = [];
+  #types = [];
 
   constructor() {
     super();
     this.#points = [];
-    this.#destination = [];
+    this.#destinations = [];
     this.#offers = [];
   }
 
   init() {
     this.#points = testPoints;
-    this.#destination = destination;
+    this.#destinations = destination;
     this.#offers = offers;
+
+    this.#types = this.#offers.map((offer) => offer.type);
+  }
+
+  get types() {
+    return this.#types;
   }
 
   get points() {
@@ -26,11 +33,19 @@ export default class PointModel extends Observable {
   }
 
   get destinations() {
-    return this.#destination;
+    return this.#destinations;
   }
 
   get offers() {
     return this.#offers;
+  }
+
+  getDestinationById(id) {
+    return this.destinations.find((element) => element.id === id);
+  }
+
+  getDestinationByName(name) {
+    return this.destinations.find((element) => element.name === name);
   }
 
   getOffersByType(type) {
@@ -50,6 +65,7 @@ export default class PointModel extends Observable {
   }
 
   addPoint(updateType, update) {
+    update.id = crypto.randomUUID();
     this.#points = [update, ...this.#points];
 
     this._notify(updateType, update);

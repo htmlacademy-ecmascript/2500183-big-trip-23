@@ -1,9 +1,9 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
-import NewTripEventsAddPointView from '../view/trip-events-add-point-view';
-import { UpdateType, UserAction,SortType } from '../mock/const.js';
+import NewPointView from '../view/trip-events-add-point-view';
+import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { defaultPoint } from '../mock/const.js';
-import {FiltersTypes} from '../tools/filter.js';
+import { FiltersTypes } from '../tools/filter.js';
 
 const ModeAdded = {
   DEFAULT: 'DEFAULT',
@@ -28,7 +28,7 @@ export default class AddPointPresenter {
   #resetSorting = null;
   #filterModel = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer,resetSorting,filterModel }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer, resetSorting, filterModel }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -48,13 +48,12 @@ export default class AddPointPresenter {
   }
 
   #clickAddPoint = () => {
-    this.#tripAddComponent = new NewTripEventsAddPointView({
-      offers:this.#pointModel.offers,
+    this.#tripAddComponent = new NewPointView({
+      offers: this.#pointModel.offers,
       destination: this.#destination,
-      point:defaultPoint,
       resetForm: this.removeAddForm,
       onSubmitSave: this.handleAddFormSubmit,
-      getOffers: this.#getOffers
+      getOffers: this.#getOffers,
     });
     render(this.#tripAddComponent, this.#containerListComponent, RenderPosition.AFTERBEGIN);
     this.#escapeHandler.enable();
@@ -76,7 +75,7 @@ export default class AddPointPresenter {
   };
 
   removeAddForm = () => {
-    if(this.#mode === ModeAdded.ADDED) {
+    if (this.#mode === ModeAdded.ADDED) {
       remove(this.#tripAddComponent);
       this.activateButton();
       this.#mode = ModeAdded.DEFAULT;

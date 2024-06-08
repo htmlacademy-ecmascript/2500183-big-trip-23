@@ -1,28 +1,20 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
-import { markUpOfferSelectores } from '../template/offers-selector.js';
+import { markUpOffers } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
-import { nanoid } from 'nanoid';
 
-import { EVENT_TYPES} from '../mock/const.js';
+import { EVENT_TYPES, defaultPoint } from '../mock/const.js';
 import he from 'he';
+import { DEFAULT_PICKER_OPTIONS } from '../const.js';
+import { createEventTypeTemplate } from '../template/type-event.js';
 
 const generateDestList = (destination) => `${destination.map((elem) => `<option value="${elem.name}"></option>`).join('')}`;
 
-const createEventTypeTemplate = (type, pointType, id) => `
-  <div class="event__type-item">
-    <input id="event-type-${type.toLowerCase()}-${id}" class="event__type-input visually-hidden" type="radio" name="event-type-${id}" value="${type.toLowerCase()}" ${type.toLowerCase() === pointType ? 'checked' : ''}>
-    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${id}">${type}</label>
-  </div>
-`;
-
-function createTripEventsAddPointElements(state,destination,offers,getOffers) {
-  const { type, dateFrom, dateTo, basePrice, id} = state.point;
+function createTripEventsAddPointElements(state, destination, offers, getOffers) {
+  const { type, dateFrom, dateTo, basePrice, id } = state.point;
   const currentDestination = destination.find((element) => element.id === state.point.destination) || {};
   const eventId = state.point.id;
-
-  const typeOffers = getOffers(type);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -52,11 +44,13 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
       </div>
 
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
+        <label class="visually-hidden" for="event-start-time">From</label>
+        <input class="event__input event__input--time" id="event-start-time" type="text" name="event-start-time" value="${
+  dateFrom ? dayjs(dateFrom).format('DD/MM/YY HH:mm') : ''
+}">
         &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
+        <label class="visually-hidden" for="event-end-time">To</label>
+        <input class="event__input  event__input--time" id="event-end-time" type="text" name="event-end-time" value="${dateTo ? dayjs(dateTo).format('DD/MM/YY HH:mm') : ''}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -71,10 +65,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
       <button class="event__reset-btn" type="reset">Cancel</button>
     </header>
     <section class="event__details">
-      <section class="event__section  event__section--offers">
-        ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
-        ${markUpOfferSelectores(typeOffers, state.point.offers)}
-      </section>
+    ${markUpOffers(state.point, getOffers)}
       <section class="event__section  event__section--destination">
         ${currentDestination.description ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
         <p class="event__destination-description">${currentDestination.description ? currentDestination.description : ''}</p>
@@ -86,7 +77,7 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
 </li>`;
 }
 
-export default class NewTripEventsAddPointView extends AbstractStatefulView {
+export default class NewPointView extends AbstractStatefulView {
   #initialPoint = null;
   #destination = null;
   #eventInputDestination = null;
@@ -96,33 +87,26 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
   #rollupButtonSave;
   #rollupButtonCancel;
   #resetAddForm = null;
-  #submitTest = null;
+  #onSubmitSave = null;
   #offers = null;
   #getOffers = null;
 
-  constructor({ offers, destination, point, resetForm, onSubmitSave,getOffers}) {
+  constructor({ offers, destination, resetForm, onSubmitSave, getOffers }) {
     super();
-    this.#initialPoint = { ...point,
-      id: nanoid(),
-      type: point.type.toLowerCase(),
-    };
 
     this.#getOffers = getOffers;
     this._setState({
-      point: { ...point,
-        id: nanoid(),
-        type: point.type.toLowerCase(),
-      },
+      point: { ...defaultPoint },
     });
     this.#destination = destination;
     this.#resetAddForm = resetForm;
-    this.#submitTest = onSubmitSave;
+    this.#onSubmitSave = onSubmitSave;
     this.offers = offers;
     this._restoreHandlers();
   }
 
   get template() {
-    return createTripEventsAddPointElements(this._state, this.#destination,this.offers,this.#getOffers);
+    return createTripEventsAddPointElements(this._state, this.#destination, this.offers, this.#getOffers);
   }
 
   _restoreHandlers() {
@@ -199,22 +183,16 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
   };
 
   #setDatepickerStart() {
-    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-start-time"]'), {
-      dateFormat: 'd/m/y h:i',
-      enableTime: true,
-      'time_24hr': true,
-      defaultDate: this._state.point.dateFrom,
+    this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time'), {
+      ...DEFAULT_PICKER_OPTIONS,
       maxDate: this._state.point.dateFrom,
       onChange: this.#dateFromChangeHandler,
     });
   }
 
   #setDatepickerEnd() {
-    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-end-time"]'), {
-      dateFormat: 'd/m/y h:i',
-      enableTime: true,
-      'time_24hr': true,
-      defaultDate: this._state.point.dateTo,
+    this.#datepickerStart = flatpickr(this.element.querySelector('#event-end-time'), {
+      ...DEFAULT_PICKER_OPTIONS,
       minDate: this._state.point.dateTo,
       onChange: this.#dateToChangeHandler,
     });
@@ -222,10 +200,18 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
-    this.#submitTest({...this._state});
-    this.resetStateVue();
-    this.#resetAddForm();
+
+    if (this.#isValid()) {
+      this.#onSubmitSave(this._state);
+      this.resetStateVue();
+      this.#resetAddForm();
+    }
   };
+
+  #isValid() {
+    const point = this._state.point;
+    return point.destination && point.dateFrom && point.dateTo && point.basePrice;
+  }
 
   #onSubmitCancelHand = (evt) => {
     evt.preventDefault();
@@ -235,8 +221,7 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
 
   resetStateVue = () => {
     this.updateElement({
-      point: { ...this.#initialPoint },
+      point: { ...defaultPoint },
     });
   };
 }
-

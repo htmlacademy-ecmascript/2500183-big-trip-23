@@ -1,28 +1,21 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
-import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
 import { EVENT_TYPES } from '../mock/const.js';
-
-const createEventTypeTemplate = (type, pointType, id) => `
-  <div class="event__type-item">
-    <input id="event-type-${type.toLowerCase()}-${id}" class="event__type-input visually-hidden" type="radio" name="event-type-${id}" value="${type.toLowerCase()}" ${type.toLowerCase() === pointType ? 'checked' : ''}>
-    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${id}">${type}</label>
-  </div>
-`;
+import { DEFAULT_PICKER_OPTIONS } from '../const.js';
+import { createEventTypeTemplate } from '../template/type-event.js';
+import { markUpOffers } from '../template/offers-selector.js';
 
 const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
   const currentDestination = destination.find((element) => element.id === state.point.destination);
-  const typeOffers = getOffers(state.point.type);
-
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -73,10 +66,7 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
       </button>
     </header>
     <section class="event__details">
-      <section class="event__section  event__section--offers">
-        ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
-        ${markUpOfferSelectores(typeOffers, state.point.offers)}
-      </section>
+    ${markUpOffers(state.point, getOffers)}
 
       <section class="event__section  event__section--destination">
         ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
@@ -88,7 +78,7 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
 </li>`;
 }
 
-export default class NewTripEventsEditPointView extends AbstractStatefulView {
+export default class EditPointView extends AbstractStatefulView {
   #destination = null;
   #initialPoint = null;
   #onEditClick = null;
@@ -218,9 +208,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   #setDatepickerStart() {
     this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-start-time"]'), {
-      dateFormat: 'd/m/y h:i',
-      enableTime: true,
-      'time_24hr': true,
+      ...DEFAULT_PICKER_OPTIONS,
       defaultDate: this._state.point.dateFrom,
       maxDate: this._state.point.dateFrom,
       onChange: this.#dateFromChangeHandler,
@@ -229,9 +217,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
 
   #setDatepickerEnd() {
     this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-end-time"]'), {
-      dateFormat: 'd/m/y h:i',
-      enableTime: true,
-      'time_24hr': true,
+      ...DEFAULT_PICKER_OPTIONS,
       defaultDate: this._state.point.dateTo,
       minDate: this._state.point.dateTo,
       onChange: this.#dateToChangeHandler,

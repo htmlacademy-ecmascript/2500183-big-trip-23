@@ -1,7 +1,7 @@
 import { render, replace, remove } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
-import NewTripEventsPointView from '../view/trip-events-points-view';
-import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
+import PointView from '../view/trip-events-points-view';
+import EditPointView from '../view/trip-events-edit-point-view';
 import { updateItem } from '../utils/data.js';
 import { UpdateType, UserAction } from '../mock/const.js';
 
@@ -23,7 +23,7 @@ export default class PointPresenter {
   #mode = Mode.DEFAULT;
   #closeAddForm = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction,closeAddForm }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction, closeAddForm }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -45,7 +45,7 @@ export default class PointPresenter {
     const prevPointComponent = this.#tripPointComponent;
     const prevPointEditComponent = this.#tripEditComponent;
 
-    this.#tripPointComponent = new NewTripEventsPointView({
+    this.#tripPointComponent = new PointView({
       point: this.#point,
       destination,
       onEditClick: () => {
@@ -53,11 +53,11 @@ export default class PointPresenter {
         this.#closeAddForm();
       },
       getOffers,
-      onFavoritClick: () => {
+      onFavoriteClick: () => {
         this.#updateFavorite(this.#point);
       },
     });
-    this.#tripEditComponent = new NewTripEventsEditPointView({
+    this.#tripEditComponent = new EditPointView({
       point,
       destination,
       onEditClick: () => {
