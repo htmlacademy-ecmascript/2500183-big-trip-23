@@ -1,8 +1,9 @@
 import { render, replace, remove } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
-import NewTripEventsPointView from '../view/trip-events-points-view';
-import NewTripEventsEditPointView from '../view/trip-events-edit-point-view';
+import PointView from '../view/trip-events-points-view';
+import EditPointView from '../view/trip-events-edit-point-view';
 import { updateItem } from '../utils/data.js';
+import { UpdateType, UserAction } from '../mock/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -13,64 +14,58 @@ export default class PointPresenter {
   #containerListComponent = null;
   #destination = null;
   #pointModel = null;
-  #handlePointUpdates = null;
   #handleModeChange = null;
-  #point = [];
+  #point = null;
   #tripPointComponent = null;
   #tripEditComponent = null;
   #escapeHandler = null;
+  #handleViewAction = null;
   #mode = Mode.DEFAULT;
+  #closeAddForm = null;
 
-  constructor({ container, destination, pointModel, onPointUpdate, onModeChange }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction, closeAddForm }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
-    this.#handlePointUpdates = onPointUpdate;
     this.#handleModeChange = onModeChange;
+    this.#handleViewAction = onViewAction;
+    this.#closeAddForm = closeAddForm;
   }
 
   init(point) {
-    this.#renderPointsTest(point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
-  }
-
-  rerender() {
-
-    this.#mode = Mode.DEFAULT;
-    render(this.#tripPointComponent, this.#containerListComponent);
-  }
-
-  #renderPointsTest(point, destination, getOffers) {
     this.#point = point;
+    this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
+  }
+
+  #renderPoint(point, destination, getOffers) {
+    this.#point = point;
+
+    this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
 
     const prevPointComponent = this.#tripPointComponent;
     const prevPointEditComponent = this.#tripEditComponent;
 
-    this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
-
-    this.#tripPointComponent = new NewTripEventsPointView({
+    this.#tripPointComponent = new PointView({
       point: this.#point,
       destination,
       onEditClick: () => {
         this.#changeEditViewPoint();
+        this.#closeAddForm();
       },
       getOffers,
-      onFavoritClick: () => {
+      onFavoriteClick: () => {
         this.#updateFavorite(this.#point);
       },
     });
-    this.#tripEditComponent = new NewTripEventsEditPointView({
+    this.#tripEditComponent = new EditPointView({
       point,
       destination,
       onEditClick: () => {
         this.#changeBackEditViewPoint();
       },
-      onSubmitSave: () => {
-        this.#savePoint();
-      },
-      onSubmitDelete: () => {
-        this.#deletePoint();
-      },
       getOffers,
+      onDelete: () => this.#handleDeleteClick(),
+      onSubmitSave: this.#handleFormSubmit, // изменить имя,когда закончу
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -93,6 +88,7 @@ export default class PointPresenter {
   destroy() {
     remove(this.#tripPointComponent);
     remove(this.#tripEditComponent);
+    this.#escapeHandler.enable();
   }
 
   resetView() {
@@ -112,23 +108,22 @@ export default class PointPresenter {
     replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
-    //this.#tripEditComponent.reset();
-  };
-
-  #savePoint = () => {
-    replace(this.#tripPointComponent, this.#tripEditComponent);
-    this.#escapeHandler.disable();
-    this.#mode = Mode.DEFAULT;
-  };
-
-  #deletePoint = () => {
-    replace(this.#tripPointComponent, this.#tripEditComponent);
-    this.#escapeHandler.disable();
-    this.#mode = Mode.DEFAULT;
   };
 
   #updateFavorite(point) {
     const updatePoint = updateItem(point, { isFavorite: !point.isFavorite });
-    this.#handlePointUpdates(updatePoint);
+    this.#handleViewAction(UserAction.UPDATE_POINT, UpdateType.PATCH, updatePoint);
   }
+
+  #handleDeleteClick = () => {
+    this.#handleViewAction(UserAction.DELETE_POINT, UpdateType.MINOR, this.#point);
+    this.#escapeHandler.disable();
+    this.#mode = Mode.DEFAULT;
+  };
+
+  #handleFormSubmit = ({ point }) => {
+    this.#handleViewAction(UserAction.UPDATE_POINT, UpdateType.MINOR, point);
+    this.#escapeHandler.disable();
+    this.#mode = Mode.DEFAULT;
+  };
 }

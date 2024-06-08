@@ -1,4 +1,4 @@
-export function markUpOfferSelectores(offers, selected = []) {
+export function markUpOfferSelectors(offers, selected = []) {
   selected = new Set(selected);
   const isChecked = (id) => (selected.has(id) ? 'checked' : '');
   return offers
@@ -15,3 +15,11 @@ export function markUpOfferSelectores(offers, selected = []) {
     )
     .join('');
 }
+
+export const markUpOffers = ({ offers, type }, getOffers) => {
+  const typeOffers = getOffers(type);
+  return `<section class="event__section  event__section--offers">
+${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
+${markUpOfferSelectors(typeOffers, offers)}
+</section>`;
+};

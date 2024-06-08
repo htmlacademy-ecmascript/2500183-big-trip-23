@@ -1,27 +1,21 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 import { markUpDestinationPhotos } from '../template/pictures.js';
-import { markUpOfferSelectores } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
-
-const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-
-const createEventTypeTemplate = (type, pointType, id) => `
-  <div class="event__type-item">
-    <input id="event-type-${type.toLowerCase()}-${id}" class="event__type-input visually-hidden" type="radio" name="event-type-${id}" value="${type.toLowerCase()}" ${type.toLowerCase() === pointType ? 'checked' : ''}>
-    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${id}">${type}</label>
-  </div>
-`;
+import { EVENT_TYPES } from '../mock/const.js';
+import { DEFAULT_PICKER_OPTIONS } from '../const.js';
+import { createEventTypeTemplate } from '../template/type-event.js';
+import { markUpOffers } from '../template/offers-selector.js';
 
 const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
-  const { type, dateFrom, dateTo, basePrice,id } = state.point;
+  const { type, dateFrom, dateTo, basePrice, id } = state.point;
   const currentDestination = destination.find((element) => element.id === state.point.destination);
-  const typeOffers = getOffers(state.point.type);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -40,17 +34,15 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
           </fieldset>
         </div>
       </div>
-
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name)}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${generateDestList(destination)}
         </datalist>
       </div>
-
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
         <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
@@ -64,7 +56,7 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price"  min="1" value="${he.encode(basePrice.toString())}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -74,13 +66,10 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
       </button>
     </header>
     <section class="event__details">
-      <section class="event__section  event__section--offers">
-        ${typeOffers.length ? '<h3 class="event__section-title  event__section-title--offers">Offers</h3>' : ''}
-        ${markUpOfferSelectores(typeOffers, state.point.offers)}
-      </section>
+    ${markUpOffers(state.point, getOffers)}
 
       <section class="event__section  event__section--destination">
-        ${currentDestination.description.length || currentDestination.pictures.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
         <p class="event__destination-description">${currentDestination.description}</p>
         ${markUpDestinationPhotos(currentDestination.pictures)}
       </section>
@@ -89,31 +78,32 @@ function createTripEventsEditPointElements(state, destination, getOffers) {
 </li>`;
 }
 
-export default class NewTripEventsEditPointView extends AbstractStatefulView {
+export default class EditPointView extends AbstractStatefulView {
   #destination = null;
   #initialPoint = null;
   #onEditClick = null;
   #rollupButton = null;
   #rollupButtonSave = null;
   #rollupButtonDelete = null;
-  #submitSavePoint = null;
-  #submitDeletePoint = null;
   #getOffers = null;
   #eventTypeGroup = null;
   #eventInputDestination = null;
   #datepickerStart = null;
+  #handleDeleteClik = null;
+  #handleEditSubmit = null;
+  #eventInputPrice = null;
 
-  constructor({ point, destination, onEditClick, onSubmitSave, onSubmitDelete, getOffers }) {
+  constructor({ point, destination, onEditClick, getOffers, onDelete, onSubmitSave }) {
     super();
     this.#initialPoint = point;
     this._setState({
-      point: {...point},
+      point: { ...point },
     });
     this.#destination = destination;
     this.#onEditClick = onEditClick;
     this.#getOffers = getOffers;
-    this.#submitSavePoint = onSubmitSave;
-    this.#submitDeletePoint = onSubmitDelete;
+    this.#handleDeleteClik = onDelete;
+    this.#handleEditSubmit = onSubmitSave;
     this._restoreHandlers();
   }
 
@@ -127,12 +117,15 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.#rollupButtonDelete = this.element.querySelector('.event__reset-btn');
     this.#eventTypeGroup = this.element.querySelector('.event__type-group');
     this.#eventInputDestination = this.element.querySelector('.event__input--destination');
+    this.#eventInputPrice = this.element.querySelector('.event__input--price');
 
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
     this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
     this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
     this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
+
+    this.#eventInputPrice.addEventListener('change', this.#priceInputHandler);
 
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
@@ -145,7 +138,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        type: newType
+        type: newType,
       },
     });
   };
@@ -161,28 +154,28 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        destination: typeDestination.id
-      }
+        destination: typeDestination.id,
+      },
     });
   };
 
-
   #onClick = (evt) => {
     evt.preventDefault();
-    this.reset();
+    this.resetStateVue();
     this.#onEditClick();
   };
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
-    this.reset();
-    this.#submitSavePoint();
+    if (this.#handleEditSubmit) {
+      this.#handleEditSubmit({ ...this._state });
+    }
+    this.resetStateVue();
   };
 
   #onSubmitDeleteHand = (evt) => {
     evt.preventDefault();
-    this.reset();
-    this.#submitDeletePoint();
+    this.#handleDeleteClik(this._state.point);
   };
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -190,7 +183,7 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
       point: {
         ...this._state.point,
         dateFrom: userDate,
-      }
+      },
     });
   };
 
@@ -199,43 +192,41 @@ export default class NewTripEventsEditPointView extends AbstractStatefulView {
       point: {
         ...this._state.point,
         dateTo: userDate,
-      }
+      },
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    const userPrice = evt.target.value;
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        basePrice: userPrice,
+      },
     });
   };
 
   #setDatepickerStart() {
-    this.#datepickerStart = flatpickr(
-      this.element.querySelector('[name ="event-start-time"]'),
-      {
-        dateFormat: 'd/m/y h:i',
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.point.dateFrom,
-        maxDate: this._state.point.dateFrom,
-        onChange: this.#dateFromChangeHandler
-      }
-    );
+    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-start-time"]'), {
+      ...DEFAULT_PICKER_OPTIONS,
+      defaultDate: this._state.point.dateFrom,
+      maxDate: this._state.point.dateFrom,
+      onChange: this.#dateFromChangeHandler,
+    });
   }
 
   #setDatepickerEnd() {
-    this.#datepickerStart = flatpickr(
-      this.element.querySelector('[name ="event-end-time"]'),
-      {
-        dateFormat: 'd/m/y h:i',
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.point.dateTo,
-        minDate: this._state.point.dateTo,
-        onChange: this.#dateToChangeHandler,
-      }
-    );
+    this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-end-time"]'), {
+      ...DEFAULT_PICKER_OPTIONS,
+      defaultDate: this._state.point.dateTo,
+      minDate: this._state.point.dateTo,
+      onChange: this.#dateToChangeHandler,
+    });
   }
 
-  reset = () => {
+  resetStateVue = () => {
     this.updateElement({
-      point: {...this.#initialPoint},
+      point: { ...this.#initialPoint },
     });
   };
-
 }
-

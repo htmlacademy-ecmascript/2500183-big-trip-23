@@ -1,7 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
 import { getDateCalc } from '../mock/util.js';
-//import {upadateItem} from '../utils/data.js';
 
 function createOffersList(offersList) {
   let str = '';
@@ -27,7 +26,7 @@ function createTripEventsPointElements(point, destination, getOffers) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${currentDestination.name}</h3>
+    <h3 class="event__title">${type} ${currentDestination.length ? currentDestination.name : ''}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${dayjs(dateFrom)}">${dayjs(dateFrom).format('HH:mm')}</time>
@@ -56,32 +55,28 @@ function createTripEventsPointElements(point, destination, getOffers) {
 </li>`;
 }
 
-export default class NewTripEventsPointView extends AbstractView {
+export default class PointView extends AbstractView {
   #point = null;
   #destination = null;
   #offers = null;
   #onEditClick = null;
   #rollupButton = null;
   #getOffers = null;
-  #onFavoritClick = null;
+  #onFavoriteClick = null;
   #favoriteButton = null;
 
-  constructor({ point, destination, offers, onEditClick, getOffers, onFavoritClick }) {
+  constructor({ point, destination, offers, onEditClick, getOffers, onFavoriteClick }) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
     this.#getOffers = getOffers;
     this.#onEditClick = onEditClick;
-    this.#onFavoritClick = onFavoritClick;
+    this.#onFavoriteClick = onFavoriteClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#favoriteButton = this.element.querySelector('.event__favorite-btn');
-    this.#favoriteButton.addEventListener('click', this.#onClickTest);
-  }
-
-  get template() {
-    return createTripEventsPointElements(this.#point, this.#destination, this.#getOffers);
+    this.#favoriteButton.addEventListener('click', this.#onClickFavorite);
   }
 
   #onClick = (evt) => {
@@ -89,8 +84,12 @@ export default class NewTripEventsPointView extends AbstractView {
     this.#onEditClick();
   };
 
-  #onClickTest = (evt) => {
+  #onClickFavorite = (evt) => {
     evt.preventDefault();
-    this.#onFavoritClick();
+    this.#onFavoriteClick();
   };
+
+  get template() {
+    return createTripEventsPointElements(this.#point, this.#destination, this.#getOffers);
+  }
 }
