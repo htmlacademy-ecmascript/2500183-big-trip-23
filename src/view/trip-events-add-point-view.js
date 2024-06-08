@@ -156,7 +156,6 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
         destination: typeDestination.id,
       },
     });
-    console.log(typeDestination);
   };
 
   #eventTypeHandler = (evt) => {
