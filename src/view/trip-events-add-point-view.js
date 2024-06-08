@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid';
 import { EVENT_TYPES} from '../mock/const.js';
 import he from 'he';
 
-const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
+const generateDestList = (destination) => `${destination.map((elem) => `<option value="${elem.name}"></option>`).join('')}`;
 
 const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">
@@ -18,13 +18,9 @@ const createEventTypeTemplate = (type, pointType, id) => `
 `;
 
 function createTripEventsAddPointElements(state,destination,offers,getOffers) {
-  const { type, dateFrom, dateTo, basePrice, id } = state.point;
-
-  let currentDestination = destination.find((element) => element.id === state.point.destination) || {};
-
-  if (state.point.destination.length) {
-    currentDestination = destination.find((element) => element.id === state.point.destination);
-  }
+  const { type, dateFrom, dateTo, basePrice, id} = state.point;
+  const currentDestination = destination.find((element) => element.id === state.point.destination) || {};
+  const eventId = state.point.id;
 
   const typeOffers = getOffers(type);
 
@@ -49,8 +45,8 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.length ? he.encode(currentDestination.name) : ''}" list="destination-list-1">
-        <datalist id="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-${eventId}" type="text" name="event-destination" value="${currentDestination.name ? he.encode(currentDestination.name) : ''}" list="destination-${eventId}">
+        <datalist id="destination-${eventId}">
           ${generateDestList(destination)}
         </datalist>
       </div>
@@ -80,9 +76,9 @@ function createTripEventsAddPointElements(state,destination,offers,getOffers) {
         ${markUpOfferSelectores(typeOffers, state.point.offers)}
       </section>
       <section class="event__section  event__section--destination">
-        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        <p class="event__destination-description"></p>
-        ${currentDestination.length && currentDestination.pictures ? markUpDestinationPhotos(currentDestination.pictures) : ''}
+        ${currentDestination.description ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+        <p class="event__destination-description">${currentDestination.description ? currentDestination.description : ''}</p>
+        ${currentDestination.pictures ? markUpDestinationPhotos(currentDestination.pictures) : ''}
       </section>
 
     </section>
@@ -160,6 +156,7 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
         destination: typeDestination.id,
       },
     });
+    console.log(typeDestination);
   };
 
   #eventTypeHandler = (evt) => {
