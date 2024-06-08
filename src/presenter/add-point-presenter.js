@@ -61,6 +61,8 @@ export default class AddPointPresenter {
     this.#handleModeChange();
     this.#buttonAddPoint.disabled = true;
     this.#mode = ModeAdded.ADDED;
+    this.#resetSorting(SortType.DAY);
+    this.#filterModel.setFilter(UpdateType.MAJOR, FiltersTypes.EVERYTHING);
   };
 
   #onEscKeyDown = () => {
@@ -83,7 +85,5 @@ export default class AddPointPresenter {
 
   handleAddFormSubmit = ({ point }) => {
     this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
-    this.#resetSorting(SortType.DAY);
-    this.#filterModel.setFilter(UpdateType.MAJOR, FiltersTypes.EVERYTHING);
   };
 }
