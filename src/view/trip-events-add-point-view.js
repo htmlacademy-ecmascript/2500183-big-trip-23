@@ -240,7 +240,3 @@ export default class NewTripEventsAddPointView extends AbstractStatefulView {
   };
 }
 
-/*
-<button class="event__rollup-btn" type="button">
-</button> - убрал кнопку из разметки, спросить можно ли так!!!
-*/

@@ -40,10 +40,10 @@ export default class PointPresenter {
   #renderPoint(point, destination, getOffers) {
     this.#point = point;
 
+    this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
+
     const prevPointComponent = this.#tripPointComponent;
     const prevPointEditComponent = this.#tripEditComponent;
-
-    this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
 
     this.#tripPointComponent = new NewTripEventsPointView({
       point: this.#point,

@@ -1,8 +1,9 @@
 import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
 import { filterBy, FiltersTypes} from '../tools/filter.js';//TripEmptyMessages
-import { remove, render } from '../framework/render.js';
+import { remove, render,replace } from '../framework/render.js';
 
+import TripEmptyPointView from '../view/trip-empty-point-view.js';
 import NewTripEventsSortView from '../view/trip-events-sort-view';
 import NewTripEventsListView from '../view/trip-events-list-view';
 import PointPresenter from './point-presenter.js';
@@ -20,10 +21,11 @@ export default class MainPresenter {
   #filterType = FiltersTypes.EVERYTHING;
   #addPointPresenter = null;
   #closeAddForm = null;
+  #tripEmptyPoint = null;
 
   constructor({ boardContainer, pointModel, filterModel, addPointContainer}) {
     this.#boardContainer = boardContainer;
-    this.#pointModel = pointModel;
+    this.#pointModel = pointModel; //pointModel
     this.#filterModel = filterModel;
     this.#addPointContainer = addPointContainer;
     this.#addPointPresenter = new AddPointPresenter({
@@ -40,18 +42,18 @@ export default class MainPresenter {
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
   }
 
   init() {
-    this.#rendeAddPoint();
     this.#renderEventsBody();
+    this.#rendeAddPoint();
   }
 
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
-    const filteredPoints = filterBy[this.#filterType](points);
-    // console.log(TripEmptyMessages[this.#filterType]); // пример пустого сообщения!!!
+    const filteredPoints = filterBy[this.#filterType](points);//
     return sortPoints(filteredPoints, this.#activeSortType);
   }
 
@@ -65,6 +67,7 @@ export default class MainPresenter {
 
   #renderEventsBody() {
     this.#renderSort();
+    //this.#renderEmptyPoint();
     this.#renderPoints();
   }
 
@@ -83,6 +86,9 @@ export default class MainPresenter {
   }
 
   #renderPoints() {
+    if(!this.points.length){
+      this.#renderEmptyPoint();
+    }
     this.points.forEach((point) => {
       // здесь точка этапа фильтроВ
       const pointPresenter = new PointPresenter({
@@ -158,4 +164,18 @@ export default class MainPresenter {
   #rendeAddPoint() {
     this.#addPointPresenter.init();
   }
+
+  #renderEmptyPoint = () =>{
+    const prevEmptyPointComponent = this.#tripEmptyPoint;
+
+    this.#tripEmptyPoint = new TripEmptyPointView({filterType:this.#filterModel.filter});
+
+    if (prevEmptyPointComponent === null) {
+      render(this.#tripEmptyPoint,this.#containerListComponent.element);
+      return;
+    }
+    replace(this.#tripEmptyPoint, prevEmptyPointComponent);
+    remove(prevEmptyPointComponent);
+  };
 }
+

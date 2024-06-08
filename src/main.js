@@ -9,9 +9,11 @@ const filterModel = new FilterModel();
 const pointModel = new PointModel();
 pointModel.init();
 
+
 const siteHeaderFilterElement = document.querySelector('.trip-controls__filters');
 const siteHeaderTripMainContainer = document.querySelector('.trip-main');
 const mainPageElem = document.querySelector('.trip-events');
+
 
 const headerPagePresenter = new HeaderPresenter({ boardContainer: siteHeaderTripMainContainer });
 const filterPresenter = new FilterPresenter({ pointModel: pointModel, filterModel: filterModel, filterContainer: siteHeaderFilterElement });
@@ -25,3 +27,4 @@ const mainPagePresenter = new MainPresenter({
 filterPresenter.init();
 headerPagePresenter.init();
 mainPagePresenter.init();
+
