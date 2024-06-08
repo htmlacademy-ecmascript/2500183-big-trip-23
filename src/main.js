@@ -1,5 +1,5 @@
 import MainPresenter from './presenter/main-presenter.js';
-import HeaderPresenter from './presenter/head-presenter.js';
+import HeaderPresenter from './presenter/header-presenter.js';
 import PointModel from './mock/model/points-model.js';
 import FilterModel from './mock/model/filter-model.js';
 

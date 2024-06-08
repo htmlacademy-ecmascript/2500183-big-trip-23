@@ -14,7 +14,7 @@ function createTripInfoElements() {
 </section>`;
 }
 
-export default class NewTripInfoHeader extends AbstractView {
+export default class InfoHeader extends AbstractView {
   get template() {
     return createTripInfoElements();
   }

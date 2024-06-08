@@ -2,18 +2,8 @@ import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
 import { getDateCalc } from '../mock/util.js';
 
-function createOffersList(offersList) {
-  let str = '';
-  if (offersList.length > 0) {
-    offersList.forEach((element) => {
-      str += `<li class="event__offer">
-                <span class="event__offer-title">${element.title} &plus;&euro;&nbsp;</span>
-                <span class="event__offer-price">${element.price}</span>
-              </li>`;
-    });
-  }
-  return str;
-}
+import { createOffersList } from '../template/create-offers-list.js';
+
 
 function createTripEventsPointElements(point, destination, getOffers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
@@ -26,7 +16,7 @@ function createTripEventsPointElements(point, destination, getOffers) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${currentDestination.length ? currentDestination.name : ''}</h3>
+    <h3 class="event__title">${type} ${currentDestination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${dayjs(dateFrom)}">${dayjs(dateFrom).format('HH:mm')}</time>

@@ -1,6 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
-import NewPointView from '../view/trip-events-add-point-view';
+import NewPointView from '../view/new-point-view.js';
 import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { defaultPoint } from '../mock/const.js';
 import { FiltersTypes } from '../tools/filter.js';
@@ -10,7 +10,7 @@ const ModeAdded = {
   ADDED: 'ADDED',
 };
 
-export default class AddPointPresenter {
+export default class NewPointPresenter {
   #containerListComponent = null;
   #destination = null;
   #pointModel = null;

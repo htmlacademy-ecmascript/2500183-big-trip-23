@@ -1,5 +1,5 @@
 import { TripEmptyMessages } from '../tools/filter.js';
-import AbstractView from '../framework/view/abstract-view';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createTripListEmptyTemplate = (filterType) => {
   const currentPageMessageTextTipe = TripEmptyMessages[filterType];
@@ -7,7 +7,7 @@ const createTripListEmptyTemplate = (filterType) => {
       ${currentPageMessageTextTipe}
     </p>`;
 };
-export default class TripEmptyPointView extends AbstractView {
+export default class EmptyPointView extends AbstractView {
   #filterType = null;
 
   constructor({ filterType }) {

@@ -3,14 +3,14 @@ import { sortPoints } from '../tools/sort.js';
 import { filterBy, FiltersTypes } from '../tools/filter.js'; //TripEmptyMessages
 import { remove, render, replace } from '../framework/render.js';
 
-import TripEmptyPointView from '../view/trip-empty-point-view.js';
-import NewTripEventsSortView from '../view/trip-events-sort-view';
-import NewTripEventsListView from '../view/trip-events-list-view';
+import EmptyPointView from '../view/empty-point-view.js';
+import EventsSortView from '../view/events-sort-view.js';
+import EventsListView from '../view/events-list-view.js';
 import PointPresenter from './point-presenter.js';
-import AddPointPresenter from './add-point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 export default class MainPresenter {
-  #containerListComponent = new NewTripEventsListView();
+  #containerListComponent = new EventsListView();
   #boardContainer = null;
   #pointModel = null;
   #addPointContainer = null;
@@ -28,7 +28,7 @@ export default class MainPresenter {
     this.#pointModel = pointModel; //pointModel
     this.#filterModel = filterModel;
     this.#addPointContainer = addPointContainer;
-    this.#addPointPresenter = new AddPointPresenter({
+    this.#addPointPresenter = new NewPointPresenter({
       container: this.#containerListComponent.element,
       destination: this.destinations,
       pointModel: this.#pointModel,
@@ -75,7 +75,7 @@ export default class MainPresenter {
       remove(this.#newTripEventsSortView);
     }
 
-    this.#newTripEventsSortView = new NewTripEventsSortView({
+    this.#newTripEventsSortView = new EventsSortView({
       onSortChanges: this.#handleSortChange,
       activeSortType: this.#activeSortType,
     });
@@ -167,7 +167,7 @@ export default class MainPresenter {
   #renderEmptyPoint = () => {
     const prevEmptyPointComponent = this.#tripEmptyPoint;
 
-    this.#tripEmptyPoint = new TripEmptyPointView({ filterType: this.#filterModel.filter });
+    this.#tripEmptyPoint = new EmptyPointView({ filterType: this.#filterModel.filter });
 
     if (prevEmptyPointComponent === null) {
       render(this.#tripEmptyPoint, this.#containerListComponent.element);

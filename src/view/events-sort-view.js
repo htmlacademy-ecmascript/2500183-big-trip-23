@@ -16,7 +16,7 @@ const getSortTemplate = (activeSortType) =>
     .join('')}
 </form>`;
 
-export default class NewTripEventsSortView extends AbstractView {
+export default class EventsSortView extends AbstractView {
   #handleSortChange = null;
   #activeSortType = '';
 

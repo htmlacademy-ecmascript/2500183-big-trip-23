@@ -1,4 +1,4 @@
-export function markUpOfferSelectors(offers, selected = []) {
+export const markUpOfferSelectors = (offers, selected = []) => {
   selected = new Set(selected);
   const isChecked = (id) => (selected.has(id) ? 'checked' : '');
   return offers
@@ -14,7 +14,7 @@ export function markUpOfferSelectors(offers, selected = []) {
   </div>`,
     )
     .join('');
-}
+};
 
 export const markUpOffers = ({ offers, type }, getOffers) => {
   const typeOffers = getOffers(type);

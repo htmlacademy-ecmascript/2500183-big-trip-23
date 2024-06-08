@@ -203,7 +203,7 @@ export default class NewPointView extends AbstractStatefulView {
 
     if (this.#isValid()) {
       this.#onSubmitSave(this._state);
-      this.resetStateVue();
+      this.resetState();
       this.#resetAddForm();
     }
   };
@@ -215,11 +215,11 @@ export default class NewPointView extends AbstractStatefulView {
 
   #onSubmitCancelHand = (evt) => {
     evt.preventDefault();
-    this.resetStateVue();
+    this.resetState();
     this.#resetAddForm();
   };
 
-  resetStateVue = () => {
+  resetState = () => {
     this.updateElement({
       point: { ...defaultPoint },
     });

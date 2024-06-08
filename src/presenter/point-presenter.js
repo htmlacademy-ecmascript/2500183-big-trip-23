@@ -1,7 +1,7 @@
 import { render, replace, remove } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
-import PointView from '../view/trip-events-points-view';
-import EditPointView from '../view/trip-events-edit-point-view';
+import PointView from '../view/point-view.js';
+import EditPointView from '../view/edit-point-view';
 import { updateItem } from '../utils/data.js';
 import { UpdateType, UserAction } from '../mock/const.js';
 

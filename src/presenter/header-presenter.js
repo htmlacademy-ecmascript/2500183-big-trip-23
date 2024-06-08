@@ -1,5 +1,5 @@
 import { render, RenderPosition } from '../framework/render.js';
-import NewTripInfoHeader from '../view/trip-info-header';
+import InfoHeader from '../view/info-header.js';
 
 export default class HeaderPresenter {
   #boardContainer = null;
@@ -8,6 +8,6 @@ export default class HeaderPresenter {
   }
 
   init() {
-    render(new NewTripInfoHeader(), this.#boardContainer, RenderPosition.AFTERBEGIN);
+    render(new InfoHeader(), this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 }
