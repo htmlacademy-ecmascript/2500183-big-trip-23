@@ -10,6 +10,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 function createTripEventsEditPointElements(state, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
   const currentDestination = getCurrentDestination(state.point.destination,destination);
+
   return getTemplateEditPoint(type,id,destination,currentDestination,dateFrom,dateTo,basePrice,state.point,getOffers,);
 
 }
