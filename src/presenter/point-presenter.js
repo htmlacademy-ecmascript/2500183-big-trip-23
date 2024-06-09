@@ -23,6 +23,7 @@ export default class PointPresenter {
   #mode = Mode.DEFAULT;
   #closeAddForm = null;
 
+
   constructor({ container, destination, pointModel, onModeChange, onViewAction, closeAddForm }) {
     this.#containerListComponent = container;
     this.#destination = destination;
@@ -37,7 +38,7 @@ export default class PointPresenter {
     this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
   }
 
-  #renderPoint(point, destination, getOffers) {
+  #renderPoint(point, destination, getOffers,getDestinationId) {
     this.#point = point;
 
     this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
@@ -56,6 +57,7 @@ export default class PointPresenter {
       onFavoriteClick: () => {
         this.#updateFavorite(this.#point);
       },
+      getDestinationId,
     });
     this.#tripEditComponent = new EditPointView({
       point,

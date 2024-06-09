@@ -1,81 +1,17 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import dayjs from 'dayjs';
-import { markUpDestinationPhotos } from '../template/pictures.js';
-import flatpickr from 'flatpickr';
 
-import 'flatpickr/dist/flatpickr.min.css';
-import he from 'he';
-
-import { EVENT_TYPES } from '../mock/const.js';
 import { DEFAULT_PICKER_OPTIONS } from '../const.js';
-import { createEventTypeTemplate } from '../template/type-event.js';
-import { markUpOffers } from '../template/offers-selector.js';
+import {getCurrentDestination} from'../tools/destination-tools.js';
+import {getTemplateEditPoint} from '../template/template-main-edt.js';
 
-const generateDestList = (destination) => `${destination.map((dest) => `<option value="${dest.name}"></option>`).join('')}`;
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
-  const currentDestination = destination.find((element) => element.id === state.point.destination);
+  const currentDestination = getCurrentDestination(state.point.destination,destination);
+  return getTemplateEditPoint(type,id,destination,currentDestination,dateFrom,dateTo,basePrice,state.point,getOffers,);
 
-  return `<li class="trip-events__item">
-  <form class="event event--edit" action="#" method="post">
-    <header class="event__header">
-      <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
-          <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
-        </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
-        <div class="event__type-list">
-          <fieldset class="event__type-group">
-            <legend class="visually-hidden">Event type</legend>
-            ${EVENT_TYPES.map((group) => createEventTypeTemplate(group, type, id)).join('')}
-          </fieldset>
-        </div>
-      </div>
-      <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
-        </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name)}" list="destination-list-1">
-        <datalist id="destination-list-1">
-          ${generateDestList(destination)}
-        </datalist>
-      </div>
-      <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
-        &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
-      </div>
-
-      <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
-          <span class="visually-hidden">Price</span>
-          &euro;
-        </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price"  min="1" value="${he.encode(basePrice.toString())}">
-      </div>
-
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
-    </header>
-    <section class="event__details">
-    ${markUpOffers(state.point, getOffers)}
-
-      <section class="event__section  event__section--destination">
-        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        <p class="event__destination-description">${currentDestination.description}</p>
-        ${markUpDestinationPhotos(currentDestination.pictures)}
-      </section>
-    </section>
-  </form>
-</li>`;
 }
 
 export default class EditPointView extends AbstractStatefulView {

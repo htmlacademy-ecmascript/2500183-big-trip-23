@@ -7,13 +7,13 @@ import flatpickr from 'flatpickr';
 import { EVENT_TYPES, defaultPoint } from '../mock/const.js';
 import he from 'he';
 import { DEFAULT_PICKER_OPTIONS } from '../const.js';
-import { createEventTypeTemplate } from '../template/type-event.js';
+import { createEventTypeTemplate} from '../template/type-event.js';
+import {generateDestList,getCurrentDestination} from'../tools/destination-tools.js';
 
-const generateDestList = (destination) => `${destination.map((elem) => `<option value="${elem.name}"></option>`).join('')}`;
 
 function createTripEventsAddPointElements(state, destination, offers, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
-  const currentDestination = destination.find((element) => element.id === state.point.destination) || {};
+  const currentDestination = getCurrentDestination(state.point.destination,destination) || {};
   const eventId = state.point.id;
 
   return `<li class="trip-events__item">

@@ -25,7 +25,7 @@ export default class MainPresenter {
 
   constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
-    this.#pointModel = pointModel; //pointModel
+    this.#pointModel = pointModel;
     this.#filterModel = filterModel;
     this.#addPointContainer = addPointContainer;
     this.#addPointPresenter = new NewPointPresenter({
@@ -46,13 +46,13 @@ export default class MainPresenter {
 
   init() {
     this.#renderEventsBody();
-    this.#rendeAddPoint();
+    this.#renderAddPoint();
   }
 
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
-    const filteredPoints = filterBy[this.#filterType](points); //
+    const filteredPoints = filterBy[this.#filterType](points);
     return sortPoints(filteredPoints, this.#activeSortType);
   }
 
@@ -160,7 +160,7 @@ export default class MainPresenter {
     }
   };
 
-  #rendeAddPoint() {
+  #renderAddPoint() {
     this.#addPointPresenter.init();
   }
 

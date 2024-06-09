@@ -3,11 +3,11 @@ import dayjs from 'dayjs';
 import { getDateCalc } from '../mock/util.js';
 
 import { createOffersList } from '../template/create-offers-list.js';
-
+import {getCurrentDestination} from'../tools/destination-tools.js';
 
 function createTripEventsPointElements(point, destination, getOffers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
-  const currentDestination = destination.find((element) => element.id === point.destination);
+  const currentDestination = getCurrentDestination(point.destination,destination);
   const typeOffers = getOffers(point.type);
 
   return `<li class="trip-events__item">
@@ -54,8 +54,9 @@ export default class PointView extends AbstractView {
   #getOffers = null;
   #onFavoriteClick = null;
   #favoriteButton = null;
+  #getDestinationId = null;
 
-  constructor({ point, destination, offers, onEditClick, getOffers, onFavoriteClick }) {
+  constructor({ point, destination, offers, onEditClick, getOffers, onFavoriteClick,getDestinationId }) {
     super();
     this.#point = point;
     this.#destination = destination;
@@ -67,6 +68,7 @@ export default class PointView extends AbstractView {
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#favoriteButton = this.element.querySelector('.event__favorite-btn');
     this.#favoriteButton.addEventListener('click', this.#onClickFavorite);
+    this.#getDestinationId = getDestinationId;
   }
 
   #onClick = (evt) => {
