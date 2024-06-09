@@ -1,6 +1,6 @@
 //import { testPoints } from '../points-live.js';для теста
-import { destination } from '../destinations.js';
-import { offers } from '../offers-my.js';
+//import { destination } from '../destinations.js';
+//import { offers } from '../offers-my.js';
 import Observable from '../../framework/observable.js';
 import {  UpdateType, UserAction } from '../const.js';
 
@@ -26,12 +26,18 @@ export default class PointModel extends Observable {
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#adaptToClient);
       console.log(this.#points);
+      const offers = await this.#pointsApiService.offers;
+      this.#offers = offers;
+
+      const destinations = await this.#pointsApiService.destinations;
+      this.#destinations = destinations;
+
     }catch(err) {
       this.#points = [];
     }
     //this.#points = testPoints;
-    this.#destinations = destination;
-    this.#offers = offers;
+    //this.#destinations = destination;
+    //this.#offers = offers;
 
     this.#types = this.#offers.map((offer) => offer.type);
     this._notify(UpdateType.INIT);
