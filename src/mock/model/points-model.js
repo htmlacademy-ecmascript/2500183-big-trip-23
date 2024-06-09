@@ -19,7 +19,7 @@ export default class PointModel extends Observable {
 
     this.#pointsApiService = pointsApiService;
 
-    console.log(this.#pointsApiService.points);
+    this.#pointsApiService.points.then((point) => console.log(point));
 
   }
 
