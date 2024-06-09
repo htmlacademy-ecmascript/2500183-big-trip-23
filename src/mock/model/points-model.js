@@ -1,7 +1,8 @@
-import { testPoints } from '../points-live.js';
+//import { testPoints } from '../points-live.js';для теста
 import { destination } from '../destinations.js';
 import { offers } from '../offers-my.js';
 import Observable from '../../framework/observable.js';
+import {  UpdateType, UserAction } from '../const.js';
 
 export default class PointModel extends Observable {
   #points = [];
@@ -18,27 +19,22 @@ export default class PointModel extends Observable {
     this.#offers = [];
 
     this.#pointsApiService = pointsApiService;
-
-    //this.#pointsApiService.points.then((point) => {
-     // console.log(point));
-    //}
-    this.#pointsApiService.points.then((points) => {
-      console.log(points);
-      // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-      // а ещё на сервере используется snake_case, а у нас camelCase.
-      // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-      // Есть вариант получше - паттерн "Адаптер"
-      console.log(points.map(this.#adaptToClient));
-    });
-
   }
 
-  init() {
-    this.#points = testPoints;
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+      console.log(this.#points);
+    }catch(err) {
+      this.#points = [];
+    }
+    //this.#points = testPoints;
     this.#destinations = destination;
     this.#offers = offers;
 
     this.#types = this.#offers.map((offer) => offer.type);
+    this._notify(UpdateType.INIT);
   }
 
   get types() {

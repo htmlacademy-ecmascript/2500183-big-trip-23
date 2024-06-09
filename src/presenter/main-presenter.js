@@ -157,6 +157,9 @@ export default class MainPresenter {
       case UpdateType.MAJOR:
         this.#clearPoints({ resetSortType: true });
         break;
+      case UpdateType.INIT:
+        this.#clearPoints({ resetSortType: true });
+        break;
     }
   };
 
