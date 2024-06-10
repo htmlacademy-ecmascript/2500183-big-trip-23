@@ -185,7 +185,7 @@ export default class NewPointView extends AbstractStatefulView {
   #setDatepickerStart() {
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time'), {
       ...DEFAULT_PICKER_OPTIONS,
-      maxDate: this._state.point.dateFrom,
+      maxDate: new Date(),
       onChange: this.#dateFromChangeHandler,
     });
   }
@@ -193,7 +193,7 @@ export default class NewPointView extends AbstractStatefulView {
   #setDatepickerEnd() {
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-end-time'), {
       ...DEFAULT_PICKER_OPTIONS,
-      minDate: this._state.point.dateTo,
+      minDate: new Date(),
       onChange: this.#dateToChangeHandler,
     });
   }
