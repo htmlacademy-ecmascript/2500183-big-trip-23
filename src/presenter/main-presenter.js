@@ -196,8 +196,6 @@ export default class MainPresenter {
   #renderLoadingMessage() {
     if(this.#isLoading) {
       render(this.#loadingComponent, this.#containerListComponent.element);
-    } else {
-      remove(this.#loadingComponent);
     }
   }
 }
