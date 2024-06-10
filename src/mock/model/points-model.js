@@ -22,7 +22,6 @@ export default class PointModel extends Observable {
     try {
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#adaptToClient);
-      console.log(this.#points);
       const offers = await this.#pointsApiService.offers;
       this.#offers = offers;
 
@@ -31,11 +30,9 @@ export default class PointModel extends Observable {
 
     }catch(err) {
       this.#points = [];
+      this.#destinations = [];
+      this.#offers = [];
     }
-    //this.#points = testPoints;
-    //this.#destinations = destination;
-    //this.#offers = offers;
-
     this.#types = this.#offers.map((offer) => offer.type);
     this._notify(UpdateType.INIT);
   }

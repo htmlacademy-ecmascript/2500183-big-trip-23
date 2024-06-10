@@ -58,7 +58,7 @@ export default class NewPointPresenter {
     render(this.#tripAddComponent, this.#containerListComponent, RenderPosition.AFTERBEGIN);
     this.#escapeHandler.enable();
     this.#handleModeChange();
-    this.#buttonAddPoint.disabled = true;
+    this.disableButton();
     this.#mode = ModeAdded.ADDED;
     this.#resetSorting(SortType.DAY);
     this.#filterModel.setFilter(UpdateType.MAJOR, FiltersTypes.EVERYTHING);
@@ -72,6 +72,10 @@ export default class NewPointPresenter {
 
   activateButton = () => {
     this.#buttonAddPoint.disabled = false;
+  };
+
+  disableButton = () => {
+    this.#buttonAddPoint.disabled = true;
   };
 
   removeAddForm = () => {
