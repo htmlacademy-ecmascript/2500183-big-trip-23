@@ -8,9 +8,10 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
-  const { type, dateFrom, dateTo, basePrice, id } = state.point;
+  const { type, dateFrom, dateTo, basePrice, id,isDeleting,isDisabled,isSaving } = state.point;
   const currentDestination = getCurrentDestination(state.point.destination,destination);
-  return getTemplateEditPoint(type,id,destination,currentDestination,dateFrom,dateTo,basePrice,state.point,getOffers,);
+
+  return getTemplateEditPoint(type,id,destination,currentDestination,dateFrom,dateTo,basePrice,state.point,getOffers,isDeleting,isDisabled,isSaving);
 
 }
 
@@ -33,7 +34,11 @@ export default class EditPointView extends AbstractStatefulView {
     super();
     this.#initialPoint = point;
     this._setState({
-      point: { ...point },
+      point: { ...point,
+        isDeleting: false,
+        isDisabled: false,
+        isSaving: false,
+      },
     });
     this.#destination = destination;
     this.#onEditClick = onEditClick;
@@ -104,6 +109,9 @@ export default class EditPointView extends AbstractStatefulView {
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
     if (this.#handleEditSubmit) {
+      delete this._state.point.isDisabled;//выделить в отдельный метод
+      delete this._state.point.isSaving;//выделить в отдельный метод
+      delete this._state.point.isDeleting;
       this.#handleEditSubmit({ ...this._state });
     }
     this.resetStateVue();

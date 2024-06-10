@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import he from 'he';
 
 
-export const getTemplateEditPoint = (type,id,destination,currentDestination,dateFrom,dateTo,basePrice,statePoint,getOffers,) => `<li class="trip-events__item">
+export const getTemplateEditPoint = (type,id,destination,currentDestination,dateFrom,dateTo,basePrice,statePoint,getOffers,isDeleting,isDisabled,isSaving) => `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -50,8 +50,8 @@ export const getTemplateEditPoint = (type,id,destination,currentDestination,date
         <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price"  min="1" value="${he.encode(basePrice.toString())}">
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset"${isDeleting ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
