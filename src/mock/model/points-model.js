@@ -1,8 +1,5 @@
-//import { testPoints } from '../points-live.js';для теста
-//import { destination } from '../destinations.js';
-//import { offers } from '../offers-my.js';
 import Observable from '../../framework/observable.js';
-import {  UpdateType, UserAction } from '../const.js';
+import {UpdateType, UserAction } from '../const.js';
 
 export default class PointModel extends Observable {
   #points = [];

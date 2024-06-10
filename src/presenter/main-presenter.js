@@ -85,9 +85,7 @@ export default class MainPresenter {
   }
 
   #renderPoints() {
-    if (!this.points.length) {
-      this.#renderEmptyPoint();
-    }
+    this.#showEmptyPoint();// показ пустой точки для фильтров!!!
     this.points.forEach((point) => {
       // здесь точка этапа фильтроВ
       const pointPresenter = new PointPresenter({
@@ -178,5 +176,16 @@ export default class MainPresenter {
     }
     replace(this.#tripEmptyPoint, prevEmptyPointComponent);
     remove(prevEmptyPointComponent);
+  };
+
+  #showEmptyPoint = () => {
+    if (!this.points.length) {
+      this.#renderEmptyPoint();
+    } else {
+      if(this.#tripEmptyPoint) {
+        remove(this.#tripEmptyPoint);
+        this.#tripEmptyPoint = null;
+      }
+    }
   };
 }
