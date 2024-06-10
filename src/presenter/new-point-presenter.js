@@ -41,10 +41,12 @@ export default class NewPointPresenter {
     this.#resetSorting = resetSorting;
     this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
     this.#filterModel = filterModel;
+
   }
 
-  init() {
+  init(destinations) {
     this.#buttonAddPoint.addEventListener('click', this.#clickAddPoint);
+    this.#destination = destinations;
   }
 
   #clickAddPoint = () => {

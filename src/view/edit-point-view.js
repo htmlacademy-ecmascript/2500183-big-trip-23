@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 import { DEFAULT_PICKER_OPTIONS } from '../const.js';
 import {getCurrentDestination} from'../tools/destination-tools.js';
-import {getTemplateEditPoint} from '../template/template-main-edt.js';
+import {getTemplateEditPoint} from '../template/template-main-edit.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -10,7 +10,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 function createTripEventsEditPointElements(state, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id } = state.point;
   const currentDestination = getCurrentDestination(state.point.destination,destination);
-
   return getTemplateEditPoint(type,id,destination,currentDestination,dateFrom,dateTo,basePrice,state.point,getOffers,);
 
 }

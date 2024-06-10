@@ -1,5 +1,5 @@
 import Observable from '../../framework/observable.js';
-import {UpdateType, UserAction } from '../const.js';
+import {UpdateType} from '../const.js';
 
 export default class PointModel extends Observable {
   #points = [];
@@ -72,9 +72,6 @@ export default class PointModel extends Observable {
       throw new Error('Can\'t update unexisting point');
     }
 
-    //this.#points = [...this.#points.slice(0, index), update, ...this.#points.slice(index + 1)];
-
-    //this._notify(updateType, update);
     try {
       const response = await this.#pointsApiService.updatePoint(update);
       const updatedPoint = this.#adaptToClient(response);

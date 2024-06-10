@@ -51,7 +51,6 @@ export default class MainPresenter {
   init() {
     this.#renderLoadingMessage();
     this.#renderEventsBody();
-    this.#renderAddPoint();
   }
 
   get points() {
@@ -158,15 +157,16 @@ export default class MainPresenter {
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
-        remove(this.#loadingComponent);
+        remove(this.#loadingComponent);// нужно будет переделать!!!
         this.#addPointPresenter.activateButton();
         this.#clearPoints({ resetSortType: true });
+        this.#renderAddPoint(this.destinations);
         break;
     }
   };
 
-  #renderAddPoint() {
-    this.#addPointPresenter.init();
+  #renderAddPoint(destinations) {
+    this.#addPointPresenter.init(destinations);
   }
 
   #renderEmptyPoint = () => {
@@ -196,7 +196,6 @@ export default class MainPresenter {
   #renderLoadingMessage() {
     if(this.#isLoading) {
       render(this.#loadingComponent, this.#containerListComponent.element);
-      return;
     } else {
       remove(this.#loadingComponent);
     }
