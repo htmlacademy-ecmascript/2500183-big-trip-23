@@ -110,8 +110,8 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
     this.setSaving();
     if (this.#handleEditSubmit) {
-      this.clearStatePoint();
       this.#handleEditSubmit({ ...this._state });
+      this.clearStatePoint();
     }
   };
 

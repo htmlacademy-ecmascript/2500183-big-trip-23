@@ -207,7 +207,6 @@ export default class NewPointView extends AbstractStatefulView {
       this.clearStatePoint();
 
       this.#onSubmitSave(this._state);
-      this.resetState();
       this.setSaving();
     }
   };
@@ -240,7 +239,7 @@ export default class NewPointView extends AbstractStatefulView {
   };
 
   clearStatePoint = () => {
-    delete this._state.point.isDisabled;//выделить в отдельный метод
+    delete this._state.point.isDisabled;
     delete this._state.point.isSaving;
   };
 }
