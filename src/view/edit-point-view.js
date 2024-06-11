@@ -201,4 +201,14 @@ export default class EditPointView extends AbstractStatefulView {
     delete this._state.point.isSaving;
     delete this._state.point.isDeleting;
   };
+
+  defaultStatePoint = () => {
+    this.updateElement({
+      point: { ...this._state.point,
+        isDeleting: false,
+        isDisabled: false,
+        isSaving: false,
+      },
+    });
+  };
 }

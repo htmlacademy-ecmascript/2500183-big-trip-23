@@ -91,4 +91,9 @@ export default class NewPointPresenter {
   handleAddFormSubmit = ({ point }) => {
     this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
   };
+
+  testShake = () => {
+    const defaultStatePoint = this.#tripAddComponent.defaultStatePoint;
+    this.#tripAddComponent.shake(defaultStatePoint);
+  };
 }

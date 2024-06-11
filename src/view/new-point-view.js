@@ -245,4 +245,13 @@ export default class NewPointView extends AbstractStatefulView {
     delete this._state.point.isDisabled;
     delete this._state.point.isSaving;
   };
+
+  defaultStatePoint = () => {
+    this.updateElement({
+      point: { ...defaultPoint,
+        isDisabled: false,
+        isSaving: false,
+      },
+    });
+  };
 }

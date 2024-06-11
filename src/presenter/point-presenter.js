@@ -128,4 +128,9 @@ export default class PointPresenter {
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };
+
+  testShake = () => {
+    const defaultStatePoint = this.#tripEditComponent.defaultStatePoint;
+    this.#tripEditComponent.shake(defaultStatePoint);
+  };
 }

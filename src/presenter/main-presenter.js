@@ -135,7 +135,8 @@ export default class MainPresenter {
         try {
           await this.#pointModel.updatePoint(updateType, update);
         } catch (err) {
-          throw new Error('Can\'t update point');
+          //throw new Error('Can\'t update point');
+          this.#pointPresenters.get(update.id).testShake();
         }
         break;
       case UserAction.ADD_POINT:
@@ -143,7 +144,7 @@ export default class MainPresenter {
           await this.#pointModel.addPoint(updateType, update);
           this.#addPointPresenter.removeAddForm();
         } catch (err) {
-          throw new Error('Can\'t add point');
+          this.#addPointPresenter.testShake();
         }
         break;
       case UserAction.DELETE_POINT:
