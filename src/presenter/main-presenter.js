@@ -141,6 +141,7 @@ export default class MainPresenter {
       case UserAction.ADD_POINT:
         try {
           await this.#pointModel.addPoint(updateType, update);
+          this.#addPointPresenter.removeAddForm();
         } catch (err) {
           throw new Error('Can\'t add point');
         }

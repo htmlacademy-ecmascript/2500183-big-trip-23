@@ -204,12 +204,11 @@ export default class NewPointView extends AbstractStatefulView {
   #onSubmitSaveHand = () => {
 
     if (this.#isValid()) {
-      delete this._state.point.isDisabled;//выделить в отдельный метод
-      delete this._state.point.isSaving;//выделить в отдельный метод
+      this.clearStatePoint();
 
       this.#onSubmitSave(this._state);
       this.resetState();
-      this.#resetAddForm();
+      this.setSaving();
     }
   };
 
@@ -228,5 +227,20 @@ export default class NewPointView extends AbstractStatefulView {
     this.updateElement({
       point: { ...defaultPoint },
     });
+  };
+
+  setSaving = () => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        isDisabled: true,
+        isSaving: true,
+      },
+    });
+  };
+
+  clearStatePoint = () => {
+    delete this._state.point.isDisabled;//выделить в отдельный метод
+    delete this._state.point.isSaving;
   };
 }
