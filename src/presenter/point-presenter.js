@@ -1,7 +1,7 @@
 import { render, replace, remove } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
-import PointView from '../view/trip-events-points-view';
-import EditPointView from '../view/trip-events-edit-point-view';
+import PointView from '../view/point-view.js';
+import EditPointView from '../view/edit-point-view';
 import { updateItem } from '../utils/data.js';
 import { UpdateType, UserAction } from '../mock/const.js';
 
@@ -23,6 +23,7 @@ export default class PointPresenter {
   #mode = Mode.DEFAULT;
   #closeAddForm = null;
 
+
   constructor({ container, destination, pointModel, onModeChange, onViewAction, closeAddForm }) {
     this.#containerListComponent = container;
     this.#destination = destination;
@@ -37,7 +38,7 @@ export default class PointPresenter {
     this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
   }
 
-  #renderPoint(point, destination, getOffers) {
+  #renderPoint(point, destination, getOffers,getDestinationId) {
     this.#point = point;
 
     this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
@@ -56,6 +57,7 @@ export default class PointPresenter {
       onFavoriteClick: () => {
         this.#updateFavorite(this.#point);
       },
+      getDestinationId,
     });
     this.#tripEditComponent = new EditPointView({
       point,

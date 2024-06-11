@@ -3,14 +3,15 @@ import { sortPoints } from '../tools/sort.js';
 import { filterBy, FiltersTypes } from '../tools/filter.js'; //TripEmptyMessages
 import { remove, render, replace } from '../framework/render.js';
 
-import TripEmptyPointView from '../view/trip-empty-point-view.js';
-import NewTripEventsSortView from '../view/trip-events-sort-view';
-import NewTripEventsListView from '../view/trip-events-list-view';
+import LoadingView from '../view/loading-view.js';
+import EmptyPointView from '../view/empty-point-view.js';
+import EventsSortView from '../view/events-sort-view.js';
+import EventsListView from '../view/events-list-view.js';
 import PointPresenter from './point-presenter.js';
-import AddPointPresenter from './add-point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 export default class MainPresenter {
-  #containerListComponent = new NewTripEventsListView();
+  #containerListComponent = new EventsListView();
   #boardContainer = null;
   #pointModel = null;
   #addPointContainer = null;
@@ -22,13 +23,15 @@ export default class MainPresenter {
   #addPointPresenter = null;
   #closeAddForm = null;
   #tripEmptyPoint = null;
+  #loadingComponent = new LoadingView();
+  #isLoading = true;
 
   constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
-    this.#pointModel = pointModel; //pointModel
+    this.#pointModel = pointModel;
     this.#filterModel = filterModel;
     this.#addPointContainer = addPointContainer;
-    this.#addPointPresenter = new AddPointPresenter({
+    this.#addPointPresenter = new NewPointPresenter({
       container: this.#containerListComponent.element,
       destination: this.destinations,
       pointModel: this.#pointModel,
@@ -42,17 +45,18 @@ export default class MainPresenter {
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#addPointPresenter.disableButton();
   }
 
   init() {
+    this.#renderLoadingMessage();
     this.#renderEventsBody();
-    this.#rendeAddPoint();
   }
 
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
-    const filteredPoints = filterBy[this.#filterType](points); //
+    const filteredPoints = filterBy[this.#filterType](points);
     return sortPoints(filteredPoints, this.#activeSortType);
   }
 
@@ -65,8 +69,8 @@ export default class MainPresenter {
   }
 
   #renderEventsBody() {
+    this.#showEmptyPoint(); //показ пустой точки для фильтров!!!
     this.#renderSort();
-    //this.#renderEmptyPoint();
     this.#renderPoints();
   }
 
@@ -75,7 +79,7 @@ export default class MainPresenter {
       remove(this.#newTripEventsSortView);
     }
 
-    this.#newTripEventsSortView = new NewTripEventsSortView({
+    this.#newTripEventsSortView = new EventsSortView({
       onSortChanges: this.#handleSortChange,
       activeSortType: this.#activeSortType,
     });
@@ -85,14 +89,10 @@ export default class MainPresenter {
   }
 
   #renderPoints() {
-    if (!this.points.length) {
-      this.#renderEmptyPoint();
-    }
     this.points.forEach((point) => {
-      // здесь точка этапа фильтроВ
       const pointPresenter = new PointPresenter({
         container: this.#containerListComponent.element,
-        destination: this.destinations, // заменил на геттер !!!
+        destination: this.destinations,
         pointModel: this.#pointModel,
         onModeChange: this.#handleModeChange,
         onViewAction: this.#handleViewAction,
@@ -109,7 +109,6 @@ export default class MainPresenter {
   };
 
   #handleSortChange = (nextSortType) => {
-    // работаю над сортировкооооойййй........
     if (this.#activeSortType === nextSortType) {
       return;
     }
@@ -120,7 +119,6 @@ export default class MainPresenter {
   };
 
   #clearPoints({ resetSortType = false } = {}) {
-    // тут логика установки сортировки!!!
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
@@ -157,17 +155,24 @@ export default class MainPresenter {
       case UpdateType.MAJOR:
         this.#clearPoints({ resetSortType: true });
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);// нужно будет переделать!!!
+        this.#addPointPresenter.activateButton();
+        this.#clearPoints({ resetSortType: true });
+        this.#renderAddPoint(this.destinations);
+        break;
     }
   };
 
-  #rendeAddPoint() {
-    this.#addPointPresenter.init();
+  #renderAddPoint(destinations) {
+    this.#addPointPresenter.init(destinations);
   }
 
   #renderEmptyPoint = () => {
     const prevEmptyPointComponent = this.#tripEmptyPoint;
 
-    this.#tripEmptyPoint = new TripEmptyPointView({ filterType: this.#filterModel.filter });
+    this.#tripEmptyPoint = new EmptyPointView({ filterType: this.#filterModel.filter });
 
     if (prevEmptyPointComponent === null) {
       render(this.#tripEmptyPoint, this.#containerListComponent.element);
@@ -176,4 +181,21 @@ export default class MainPresenter {
     replace(this.#tripEmptyPoint, prevEmptyPointComponent);
     remove(prevEmptyPointComponent);
   };
+
+  #showEmptyPoint = () => {
+    if (!this.points.length && !this.#isLoading) {
+      this.#renderEmptyPoint();
+    } else {
+      if(this.#tripEmptyPoint) {
+        remove(this.#tripEmptyPoint);
+        this.#tripEmptyPoint = null;
+      }
+    }
+  };
+
+  #renderLoadingMessage() {
+    if(this.#isLoading) {
+      render(this.#loadingComponent, this.#containerListComponent.element);
+    }
+  }
 }

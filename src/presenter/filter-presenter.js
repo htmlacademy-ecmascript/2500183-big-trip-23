@@ -1,5 +1,5 @@
 import { render, replace, remove } from '../framework/render.js';
-import Filters from '../view/trip-filters-view.js'; //новое
+import FiltersView from '../view/filters-view.js';
 
 import { FiltersTypes, filterBy } from '../tools/filter.js';
 
@@ -33,7 +33,7 @@ export default class FilterPresenter {
     const currentFilterType = this.#filterModel.filter;
     const onFilterTypeChange = this.#handleFilterTypeChange;
 
-    this.#filterComponent = new Filters(filters, currentFilterType, onFilterTypeChange);
+    this.#filterComponent = new FiltersView(filters, currentFilterType, onFilterTypeChange);
 
     if (prevFilterComponent === null) {
       render(this.#filterComponent, this.#filterContainer);

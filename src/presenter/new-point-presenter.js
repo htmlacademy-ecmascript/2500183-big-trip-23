@@ -1,6 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
-import NewPointView from '../view/trip-events-add-point-view';
+import NewPointView from '../view/new-point-view.js';
 import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { defaultPoint } from '../mock/const.js';
 import { FiltersTypes } from '../tools/filter.js';
@@ -10,7 +10,7 @@ const ModeAdded = {
   ADDED: 'ADDED',
 };
 
-export default class AddPointPresenter {
+export default class NewPointPresenter {
   #containerListComponent = null;
   #destination = null;
   #pointModel = null;
@@ -41,10 +41,12 @@ export default class AddPointPresenter {
     this.#resetSorting = resetSorting;
     this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
     this.#filterModel = filterModel;
+
   }
 
-  init() {
+  init(destinations) {
     this.#buttonAddPoint.addEventListener('click', this.#clickAddPoint);
+    this.#destination = destinations;
   }
 
   #clickAddPoint = () => {
@@ -58,7 +60,7 @@ export default class AddPointPresenter {
     render(this.#tripAddComponent, this.#containerListComponent, RenderPosition.AFTERBEGIN);
     this.#escapeHandler.enable();
     this.#handleModeChange();
-    this.#buttonAddPoint.disabled = true;
+    this.disableButton();
     this.#mode = ModeAdded.ADDED;
     this.#resetSorting(SortType.DAY);
     this.#filterModel.setFilter(UpdateType.MAJOR, FiltersTypes.EVERYTHING);
@@ -72,6 +74,10 @@ export default class AddPointPresenter {
 
   activateButton = () => {
     this.#buttonAddPoint.disabled = false;
+  };
+
+  disableButton = () => {
+    this.#buttonAddPoint.disabled = true;
   };
 
   removeAddForm = () => {

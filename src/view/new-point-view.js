@@ -7,13 +7,13 @@ import flatpickr from 'flatpickr';
 import { EVENT_TYPES, defaultPoint } from '../mock/const.js';
 import he from 'he';
 import { DEFAULT_PICKER_OPTIONS } from '../const.js';
-import { createEventTypeTemplate } from '../template/type-event.js';
+import { createEventTypeTemplate} from '../template/type-event.js';
+import {generateDestList,getCurrentDestination} from'../tools/destination-tools.js';
 
-const generateDestList = (destination) => `${destination.map((elem) => `<option value="${elem.name}"></option>`).join('')}`;
 
 function createTripEventsAddPointElements(state, destination, offers, getOffers) {
-  const { type, dateFrom, dateTo, basePrice, id } = state.point;
-  const currentDestination = destination.find((element) => element.id === state.point.destination) || {};
+  const { type, dateFrom, dateTo, basePrice, id,isDisabled,isSaving } = state.point;
+  const currentDestination = getCurrentDestination(state.point.destination,destination) || {};
   const eventId = state.point.id;
 
   return `<li class="trip-events__item">
@@ -61,7 +61,7 @@ function createTripEventsAddPointElements(state, destination, offers, getOffers)
         <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price"  min="1" value="${he.encode(basePrice.toString())}">
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
     </header>
     <section class="event__details">
@@ -96,7 +96,10 @@ export default class NewPointView extends AbstractStatefulView {
 
     this.#getOffers = getOffers;
     this._setState({
-      point: { ...defaultPoint },
+      point: { ...defaultPoint,
+        isDisabled: false,
+        isSaving: false,
+      },
     });
     this.#destination = destination;
     this.#resetAddForm = resetForm;
@@ -185,7 +188,7 @@ export default class NewPointView extends AbstractStatefulView {
   #setDatepickerStart() {
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time'), {
       ...DEFAULT_PICKER_OPTIONS,
-      maxDate: this._state.point.dateFrom,
+      maxDate: new Date(),
       onChange: this.#dateFromChangeHandler,
     });
   }
@@ -193,17 +196,19 @@ export default class NewPointView extends AbstractStatefulView {
   #setDatepickerEnd() {
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-end-time'), {
       ...DEFAULT_PICKER_OPTIONS,
-      minDate: this._state.point.dateTo,
+      minDate: new Date(),
       onChange: this.#dateToChangeHandler,
     });
   }
 
-  #onSubmitSaveHand = (evt) => {
-    evt.preventDefault();
+  #onSubmitSaveHand = () => {
 
     if (this.#isValid()) {
+      delete this._state.point.isDisabled;//выделить в отдельный метод
+      delete this._state.point.isSaving;//выделить в отдельный метод
+
       this.#onSubmitSave(this._state);
-      this.resetStateVue();
+      this.resetState();
       this.#resetAddForm();
     }
   };
@@ -215,11 +220,11 @@ export default class NewPointView extends AbstractStatefulView {
 
   #onSubmitCancelHand = (evt) => {
     evt.preventDefault();
-    this.resetStateVue();
+    this.resetState();
     this.#resetAddForm();
   };
 
-  resetStateVue = () => {
+  resetState = () => {
     this.updateElement({
       point: { ...defaultPoint },
     });
