@@ -2,6 +2,7 @@ import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
 import { filterBy, FiltersTypes } from '../tools/filter.js'; //TripEmptyMessages
 import { remove, render, replace } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 import LoadingView from '../view/loading-view.js';
 import EmptyPointView from '../view/empty-point-view.js';
@@ -9,6 +10,11 @@ import EventsSortView from '../view/events-sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class MainPresenter {
   #containerListComponent = new EventsListView();
@@ -25,6 +31,11 @@ export default class MainPresenter {
   #tripEmptyPoint = null;
   #loadingComponent = new LoadingView();
   #isLoading = true;
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
@@ -130,6 +141,7 @@ export default class MainPresenter {
   }
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         try {
@@ -155,6 +167,7 @@ export default class MainPresenter {
         }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = async (updateType, data) => {
