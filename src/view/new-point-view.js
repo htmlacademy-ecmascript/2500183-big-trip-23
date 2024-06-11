@@ -201,13 +201,15 @@ export default class NewPointView extends AbstractStatefulView {
     });
   }
 
-  #onSubmitSaveHand = () => {
-
+  #onSubmitSaveHand = (evt) => {
+    evt.preventDefault();
     if (this.#isValid()) {
       this.clearStatePoint();
 
       this.#onSubmitSave(this._state);
       this.setSaving();
+    }else {
+      evt.preventDefault();
     }
   };
 
