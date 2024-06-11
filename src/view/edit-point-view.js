@@ -9,7 +9,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id,isDeleting,isDisabled,isSaving } = state.point;
-  const currentDestination = getCurrentDestination(state.point.destination,destination);
+  const currentDestination = getCurrentDestination(state.point.destination,destination) || {};
 
   return getTemplateEditPoint(type,id,destination,currentDestination,dateFrom,dateTo,basePrice,state.point,getOffers,isDeleting,isDisabled,isSaving);
 
@@ -108,18 +108,20 @@ export default class EditPointView extends AbstractStatefulView {
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
+    this.setSaving();
     if (this.#handleEditSubmit) {
-      delete this._state.point.isDisabled;//выделить в отдельный метод
-      delete this._state.point.isSaving;//выделить в отдельный метод
-      delete this._state.point.isDeleting;
+      this.clearStatePoint();
       this.#handleEditSubmit({ ...this._state });
     }
-    this.resetStateVue();
   };
 
   #onSubmitDeleteHand = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClik(this._state.point);
+    this.setDeleting();
+    if (this.#handleDeleteClik) {
+      this.clearStatePoint();
+      this.#handleDeleteClik(this._state.point);
+    }
   };
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -172,5 +174,31 @@ export default class EditPointView extends AbstractStatefulView {
     this.updateElement({
       point: { ...this.#initialPoint },
     });
+  };
+
+  setSaving = () => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        isDisabled: true,
+        isSaving: true,
+      },
+    });
+  };
+
+  setDeleting = () => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        isDeleting: true,
+        isDisabled: true,
+      },
+    });
+  };
+
+  clearStatePoint = () => {
+    delete this._state.point.isDisabled;
+    delete this._state.point.isSaving;
+    delete this._state.point.isDeleting;
   };
 }

@@ -69,7 +69,7 @@ export default class MainPresenter {
   }
 
   #renderEventsBody() {
-    this.#showEmptyPoint(); //показ пустой точки для фильтров!!!
+    this.#showEmptyPoint();
     this.#renderSort();
     this.#renderPoints();
   }
@@ -129,21 +129,33 @@ export default class MainPresenter {
     }
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, update);
+        try {
+          await this.#pointModel.updatePoint(updateType, update);
+        } catch (err) {
+          throw new Error('Can\'t update point');
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, update);
+        try {
+          await this.#pointModel.addPoint(updateType, update);
+        } catch (err) {
+          throw new Error('Can\'t add point');
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, update);
+        try {
+          this.#pointModel.deletePoint(updateType, update);
+        } catch (err) {
+          throw new Error('Can\'t delete point');
+        }
         break;
     }
   };
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = async (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id).init(data);
