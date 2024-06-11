@@ -210,6 +210,7 @@ export default class NewPointView extends AbstractStatefulView {
       this.setSaving();
     }else {
       evt.preventDefault();
+      this.shake();
     }
   };
 
