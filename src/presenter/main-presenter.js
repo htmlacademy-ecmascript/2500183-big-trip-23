@@ -60,6 +60,7 @@ export default class MainPresenter {
   }
 
   init() {
+    this.#uiBlocker.block();
     this.#renderLoadingMessage();
     this.#renderEventsBody();
   }
@@ -183,6 +184,7 @@ export default class MainPresenter {
         this.#clearPoints({ resetSortType: true });
         break;
       case UpdateType.INIT:
+        this.#uiBlocker.unblock();
         this.#isLoading = false;
         remove(this.#loadingComponent);// нужно будет переделать!!!
         this.#addPointPresenter.activateButton();
