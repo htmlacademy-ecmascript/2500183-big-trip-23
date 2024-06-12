@@ -43,4 +43,22 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-export { SortType, EVENT_TYPES, defaultPoint, defaultDestination, UpdateType, UserAction };
+const timeType = {
+  MINUTES: 60,
+  HOURS: 24,
+};
+
+const DateFormat = {
+  DATE_MONTH: 'MMM D',
+  MONTH_DAY: 'D MMM',
+  DATE: 'YYYY-MM-DD',
+  TIME: 'HH:mm',
+  DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
+  DATE_TIME: 'DD/MM/YY HH:mm',
+  DAY: 'DD[d] HH[h] mm[m]',
+  HOURS: 'HH[h] mm[m]',
+  MINUTES: 'mm[m]',
+  DATE_PICKER: 'd/m/y H:i'
+};
+
+export { SortType, EVENT_TYPES, defaultPoint, defaultDestination, UpdateType, UserAction,timeType,DateFormat};
