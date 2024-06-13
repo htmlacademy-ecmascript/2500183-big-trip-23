@@ -184,7 +184,7 @@ export default class MainPresenter {
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearPoints();
+        this.#clearPoints({ resetSortType: true });
         this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:

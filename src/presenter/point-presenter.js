@@ -110,6 +110,7 @@ export default class PointPresenter {
     replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
+   // this.#tripEditComponent.resetStateView();
   };
 
   #updateFavorite(point) {
