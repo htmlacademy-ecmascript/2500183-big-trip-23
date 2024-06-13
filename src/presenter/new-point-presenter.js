@@ -27,8 +27,9 @@ export default class NewPointPresenter {
   #mode = ModeAdded.DEFAULT;
   #resetSorting = null;
   #filterModel = null;
+  #deletingEmptyPoint = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer, resetSorting, filterModel }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer, resetSorting, filterModel,deletingEmptyPoint }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -41,7 +42,7 @@ export default class NewPointPresenter {
     this.#resetSorting = resetSorting;
     this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
     this.#filterModel = filterModel;
-
+    this.#deletingEmptyPoint = deletingEmptyPoint;
   }
 
   init(destinations) {
@@ -64,6 +65,7 @@ export default class NewPointPresenter {
     this.#mode = ModeAdded.ADDED;
     this.#resetSorting(SortType.DAY);
     this.#filterModel.setFilter(UpdateType.MAJOR, FiltersTypes.EVERYTHING);
+    this.#deletingEmptyPoint(this.#mode);
   };
 
   #onEscKeyDown = () => {

@@ -16,6 +16,11 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
+const ModeAdded = {
+  DEFAULT: 'DEFAULT',
+  ADDED: 'ADDED',
+};
+
 export default class MainPresenter {
   #containerListComponent = new EventsListView();
   #boardContainer = null;
@@ -51,6 +56,7 @@ export default class MainPresenter {
       addPointContainer: this.#addPointContainer,
       resetSorting: this.#handleSortChange,
       filterModel: this.#filterModel,
+      deletingEmptyPoint:this.deletingEmptyPoint,
     });
     this.#closeAddForm = this.#addPointPresenter.removeAddForm;
 
@@ -227,4 +233,13 @@ export default class MainPresenter {
       render(this.#loadingComponent, this.#containerListComponent.element);
     }
   }
+
+  deletingEmptyPoint = (marker) => {
+    if(marker === ModeAdded.ADDED) {
+      if(this.#tripEmptyPoint) {
+        remove(this.#tripEmptyPoint);
+        this.#tripEmptyPoint = null;
+      }
+    }
+  };
 }
