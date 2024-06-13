@@ -57,6 +57,7 @@ export default class MainPresenter {
       resetSorting: this.#handleSortChange,
       filterModel: this.#filterModel,
       deletingEmptyPoint:this.deletingEmptyPoint,
+      recoveryEmptyPoint:this.recoveryEmptyPoint
     });
     this.#closeAddForm = this.#addPointPresenter.removeAddForm;
 
@@ -237,8 +238,16 @@ export default class MainPresenter {
   deletingEmptyPoint = (marker) => {
     if(marker === ModeAdded.ADDED) {
       if(this.#tripEmptyPoint) {
-        remove(this.#tripEmptyPoint);
+        remove(this.#tripEmptyPoint,this.#containerListComponent);
         this.#tripEmptyPoint = null;
+      }
+    }
+  };
+
+  recoveryEmptyPoint = (marker) => {
+    if(marker === ModeAdded.DEFAULT) {
+      if(!this.#tripEmptyPoint) {
+        this.#renderEmptyPoint();
       }
     }
   };

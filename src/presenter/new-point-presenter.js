@@ -28,8 +28,9 @@ export default class NewPointPresenter {
   #resetSorting = null;
   #filterModel = null;
   #deletingEmptyPoint = null;
+  #recoveryEmptyPoint = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer, resetSorting, filterModel,deletingEmptyPoint }) {
+  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer, resetSorting, filterModel,deletingEmptyPoint,recoveryEmptyPoint }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -43,6 +44,7 @@ export default class NewPointPresenter {
     this.#escapeHandler = new EscapeHandler(this.#onEscKeyDown);
     this.#filterModel = filterModel;
     this.#deletingEmptyPoint = deletingEmptyPoint;
+    this.#recoveryEmptyPoint = recoveryEmptyPoint;
   }
 
   init(destinations) {
@@ -87,6 +89,7 @@ export default class NewPointPresenter {
       remove(this.#tripAddComponent);
       this.activateButton();
       this.#mode = ModeAdded.DEFAULT;
+      this.#recoveryEmptyPoint(this.#mode);
     }
   };
 
