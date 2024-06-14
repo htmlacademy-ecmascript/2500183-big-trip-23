@@ -65,6 +65,20 @@ export default class PointModel extends Observable {
     return this.#offers.find((offer) => offer.type === type).offers || [];
   }
 
+  getOffersByCheckedType(point) {
+    const offers = [];
+    const typpedOffers = this.getOffersByType(point.type);
+
+    point.offers.forEach((pointOfferID) => {
+      const matchedOffer = typpedOffers.find((offer) => offer.id === pointOfferID);
+      if (matchedOffer) {
+        offers.push(matchedOffer);
+      }
+    });
+
+    return offers;
+  }
+
   async updatePoint(updateType, update) {
     const index = this.#points.findIndex((task) => task.id === update.id);
 

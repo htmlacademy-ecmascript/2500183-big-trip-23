@@ -1,38 +1,36 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {calculateDuration,displayTime,displayDate,displayDateTime,displayDateMonth} from '../mock/util.js';
+import dayjs from 'dayjs';
+import { getDateCalc } from '../mock/util.js';
 
-import { createOffers } from '../template/create-offers.js';
+import { createOffersList } from '../template/create-offers-list.js';
 import {getCurrentDestination} from'../tools/destination-tools.js';
 
-function createTripEventsPointElements(point, destination, getOffers) {
+function createTripEventsPointElements(point, destination, offers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
   const currentDestination = getCurrentDestination(point.destination,destination);
-  const typeOffers = getOffers(point.type);
 
   return `<li class="trip-events__item">
   <div class="event">
-      <time class="event__date" datetime="${displayDate(dateFrom)}">${displayDateMonth(dateFrom)}</time>
+    <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${dayjs(dateFrom).format('MMM DD')}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${currentDestination.name}</h3>
-     <div class="event__schedule">
-    <p class="event__time">
-      <time class="event__start-time" datetime="${displayDateTime(dateFrom)}">${displayTime(dateFrom)}</time>
-      &mdash;
-      <time class="event__end-time" datetime="${displayDateTime(dateTo)}">${displayTime(dateTo)}</time>
-    </p>
-    <p class="event__duration">${calculateDuration(dateFrom, dateTo)}</p>
-  </div>
+    <div class="event__schedule">
+      <p class="event__time">
+        <time class="event__start-time" datetime="${dayjs(dateFrom)}">${dayjs(dateFrom).format('HH:mm')}</time>
+        &mdash;
+        <time class="event__end-time" datetime="${dayjs(dateTo)}">${dayjs(dateTo).format('HH:mm')}</time>
+      </p>
+      <p class="event__duration">${getDateCalc(dayjs(dateFrom), dayjs(dateTo))}</p>
+    </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
-      ${typeOffers.length > 0 ? `
-        <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-         ${typeOffers.map((offer) => createOffers(offer.title, offer.price)).join('')}
-        </ul>
-      ` : ''}
+    <h4 class="visually-hidden">Offers:</h4>
+    <ul class="event__selected-offers">
+      ${createOffersList(offers)}
+    </ul>
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''} " type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -52,24 +50,20 @@ export default class PointView extends AbstractView {
   #offers = null;
   #onEditClick = null;
   #rollupButton = null;
-  #getOffers = null;
   #onFavoriteClick = null;
   #favoriteButton = null;
-  #getDestinationId = null;
 
-  constructor({ point, destination, offers, onEditClick, getOffers, onFavoriteClick,getDestinationId }) {
+  constructor({ point, destination, offers, onEditClick, onFavoriteClick }) {
     super();
     this.#point = point;
     this.#destination = destination;
     this.#offers = offers;
-    this.#getOffers = getOffers;
     this.#onEditClick = onEditClick;
     this.#onFavoriteClick = onFavoriteClick;
     this.#rollupButton = this.element.querySelector('.event__rollup-btn');
     this.#rollupButton.addEventListener('click', this.#onClick);
     this.#favoriteButton = this.element.querySelector('.event__favorite-btn');
     this.#favoriteButton.addEventListener('click', this.#onClickFavorite);
-    this.#getDestinationId = getDestinationId;
   }
 
   #onClick = (evt) => {
@@ -83,6 +77,6 @@ export default class PointView extends AbstractView {
   };
 
   get template() {
-    return createTripEventsPointElements(this.#point, this.#destination, this.#getOffers);
+    return createTripEventsPointElements(this.#point, this.#destination, this.#offers);
   }
 }

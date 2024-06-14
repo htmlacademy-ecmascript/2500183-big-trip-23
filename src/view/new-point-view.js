@@ -13,7 +13,8 @@ import {generateDestList,getCurrentDestination} from'../tools/destination-tools.
 
 function createTripEventsAddPointElements(state, destination, offers, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id,isDisabled,isSaving } = state.point;
-  const currentDestination = getCurrentDestination(state.point.destination,destination) || {};
+
+  const currentDestination = getCurrentDestination(state.point.destination, destination);
   const eventId = state.point.id;
 
   return `<li class="trip-events__item">
@@ -35,9 +36,9 @@ function createTripEventsAddPointElements(state, destination, offers, getOffers)
       </div>
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
+            ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${eventId}" type="text" name="event-destination" value="${currentDestination.name ? he.encode(currentDestination.name) : ''}" list="destination-${eventId}">
+        <input class="event__input  event__input--destination" id="event-destination-${eventId}" type="text" name="event-destination" value="${currentDestination && currentDestination.name ? he.encode(currentDestination.name) : ''}" list="destination-${eventId}">
         <datalist id="destination-${eventId}">
           ${generateDestList(destination)}
         </datalist>
@@ -45,9 +46,7 @@ function createTripEventsAddPointElements(state, destination, offers, getOffers)
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time">From</label>
-        <input class="event__input event__input--time" id="event-start-time" type="text" name="event-start-time" value="${
-  dateFrom ? dayjs(dateFrom).format('DD/MM/YY HH:mm') : ''
-}">
+        <input class="event__input event__input--time" id="event-start-time" type="text" name="event-start-time" value="${dateFrom ? dayjs(dateFrom).format('DD/MM/YY HH:mm') : ''}">
         &mdash;
         <label class="visually-hidden" for="event-end-time">To</label>
         <input class="event__input  event__input--time" id="event-end-time" type="text" name="event-end-time" value="${dateTo ? dayjs(dateTo).format('DD/MM/YY HH:mm') : ''}">
@@ -65,13 +64,15 @@ function createTripEventsAddPointElements(state, destination, offers, getOffers)
       <button class="event__reset-btn" type="reset">Cancel</button>
     </header>
     <section class="event__details">
-    ${markUpOffers(state.point, getOffers)}
-      <section class="event__section  event__section--destination">
-        ${currentDestination.description ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        <p class="event__destination-description">${currentDestination.description ? currentDestination.description : ''}</p>
-        ${currentDestination.pictures ? markUpDestinationPhotos(currentDestination.pictures) : ''}
-      </section>
+      ${markUpOffers(state.point, getOffers)}
 
+      ${currentDestination && (currentDestination.description || currentDestination.pictures.length) ? `
+        <section class="event__section  event__section--destination">
+          ${currentDestination ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+          <p class="event__destination-description">${currentDestination.description}</p>
+          ${markUpDestinationPhotos(currentDestination.pictures ? currentDestination.pictures : '')}
+        </section>
+      ` : ''}
     </section>
   </form>
 </li>`;
@@ -81,6 +82,7 @@ export default class NewPointView extends AbstractStatefulView {
   #initialPoint = null;
   #destination = null;
   #eventInputDestination = null;
+  #eventAvailableOffers = null;
   #eventTypeGroup = null;
   #eventInputPrice = null;
   #datepickerStart;
@@ -104,24 +106,26 @@ export default class NewPointView extends AbstractStatefulView {
     this.#destination = destination;
     this.#resetAddForm = resetForm;
     this.#onSubmitSave = onSubmitSave;
-    this.offers = offers;
+    this.#offers = offers;
     this._restoreHandlers();
   }
 
   get template() {
-    return createTripEventsAddPointElements(this._state, this.#destination, this.offers, this.#getOffers);
+    return createTripEventsAddPointElements(this._state, this.#destination, this.#offers, this.#getOffers);
   }
 
   _restoreHandlers() {
     this.#eventInputDestination = this.element.querySelector('.event__input--destination');
     this.#eventTypeGroup = this.element.querySelector('.event__type-group');
     this.#eventInputPrice = this.element.querySelector('.event__input--price');
+    this.#eventAvailableOffers = this.element.querySelectorAll('.event__available-offers');
     this.#rollupButtonSave = this.element.querySelector('.event__save-btn');
     this.#rollupButtonCancel = this.element.querySelector('.event__reset-btn');
 
     this.#rollupButtonCancel.addEventListener('click', this.#onSubmitCancelHand);
     this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
     this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
+    this.#eventAvailableOffers.forEach((checkbox) => checkbox.addEventListener('change', this.#offersCheckboxHandler));
     this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
     this.#eventInputPrice.addEventListener('change', this.#priceInputHandler);
 
@@ -167,6 +171,23 @@ export default class NewPointView extends AbstractStatefulView {
     });
   };
 
+  #offersCheckboxHandler = (evt) => {
+    const setOfOffers = new Set(this._state.point.offers);
+
+    if (setOfOffers.has(evt.target.id) && !evt.target.checked) {
+      setOfOffers.delete(evt.target.id);
+    } else {
+      setOfOffers.add(evt.target.id);
+    }
+
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        offers: Array.from(setOfOffers)
+      },
+    });
+  };
+
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({
       point: {
@@ -201,16 +222,14 @@ export default class NewPointView extends AbstractStatefulView {
     });
   }
 
-  #onSubmitSaveHand = (evt) => {
-    evt.preventDefault();
+  #onSubmitSaveHand = () => {
     if (this.#isValid()) {
-      this.clearStatePoint();
+      delete this._state.point.isDisabled;//выделить в отдельный метод
+      delete this._state.point.isSaving;//выделить в отдельный метод
 
       this.#onSubmitSave(this._state);
-      this.setSaving();
-    }else {
-      evt.preventDefault();
-      this.shake();
+      this.#resetAddForm();
+      this.resetState();
     }
   };
 
@@ -228,30 +247,6 @@ export default class NewPointView extends AbstractStatefulView {
   resetState = () => {
     this.updateElement({
       point: { ...defaultPoint },
-    });
-  };
-
-  setSaving = () => {
-    this.updateElement({
-      point: {
-        ...this._state.point,
-        isDisabled: true,
-        isSaving: true,
-      },
-    });
-  };
-
-  clearStatePoint = () => {
-    delete this._state.point.isDisabled;
-    delete this._state.point.isSaving;
-  };
-
-  defaultStatePoint = () => {
-    this.updateElement({
-      point: { ...defaultPoint,
-        isDisabled: false,
-        isSaving: false,
-      },
     });
   };
 }

@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { SortType } from '../mock/const.js';
 
-const DISABLED_SORT_TYPES = [SortType.EVENT, SortType.OFFERS];
+const DISABLED_SORT_TYPES = [SortType.OFFERS];
 const SORT_PREFIX = 'sort-';
 
 const getSortTemplate = (activeSortType) =>
@@ -9,7 +9,7 @@ const getSortTemplate = (activeSortType) =>
   ${Object.values(SortType)
     .map(
       (sortType) => `<div class="trip-sort__item  trip-sort__item--${sortType}">
-      <input id="sort-${sortType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortType}"${sortType === activeSortType ? 'checked' : ''}${DISABLED_SORT_TYPES.includes(sortType) ? 'disabled' : ''}>
+      <input id="sort-${sortType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortType}"${sortType === activeSortType ? 'checked' : ''} ${DISABLED_SORT_TYPES.includes(sortType) ? 'disabled' : ''}>
       <label class="trip-sort__btn" for="sort-${sortType}">${sortType}</label>
     </div>`,
     )

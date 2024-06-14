@@ -1,14 +1,18 @@
+import dayjs from 'dayjs';
 import { SortType } from '../mock/const.js';
 
-const sortBy = {
-  [SortType.DAY]: (points) => [...points].sort((firstPoint, secondPoint) => new Date(firstPoint.dateFrom) - new Date(secondPoint.dateFrom)),
-  [SortType.TIME]: (points) => [...points].sort((firstPoint, secondPoint) => {
-    const durationFirstPoint = new Date(firstPoint.dateTo).getTime() - new Date(firstPoint.dateFrom).getTime();
-    const durationSecondPoint = new Date(secondPoint.dateTo).getTime() - new Date(secondPoint.dateFrom).getTime();
-    return durationSecondPoint - durationFirstPoint;
+const getTimeDifferens = ({ dateFrom, dateTo }) => new Date(dateTo).getTime() - new Date(dateFrom).getTime();
+
+const sortPointBy = {
+  [SortType.DAY]: (points) => points.toSorted((a, b) => dayjs(a.dateFrom).diff(b.dateFrom)),
+  [SortType.EVENT]: (points, pointModel) => points.toSorted((a, b) => {
+    const eventNameA = `${a.type} ${pointModel.getDestinationById(a.destination)?.name}`;
+    const eventNameB = `${b.type} ${pointModel.getDestinationById(b.destination)?.name}`;
+
+    return eventNameA.localeCompare(eventNameB);
   }),
-  [SortType.PRICE]: (points) => [...points].sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice),
+  [SortType.TIME]: (points) => points.toSorted((a, b) => getTimeDifferens(b) - getTimeDifferens(a)),
+  [SortType.PRICE]: (points) => points.toSorted((a, b) => b.basePrice - a.basePrice),
 };
 
-export const sortPoints = (points, sortType) => sortBy[sortType](points);
-
+export const sortPoints = (sortType, points, pointModel) => sortPointBy[sortType](points, pointModel);

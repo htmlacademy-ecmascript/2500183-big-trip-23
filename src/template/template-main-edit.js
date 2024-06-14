@@ -8,7 +8,8 @@ import dayjs from 'dayjs';
 import he from 'he';
 
 
-export const getTemplateEditPoint = (type,id,destination,currentDestination,dateFrom,dateTo,basePrice,statePoint,getOffers,isDeleting,isDisabled,isSaving) => `<li class="trip-events__item">
+export const getTemplateEditPoint = (type, id, destination, currentDestination, dateFrom, dateTo, basePrice, statePoint, getOffers, isDeleting, isDisabled, isSaving) => `
+<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -26,9 +27,7 @@ export const getTemplateEditPoint = (type,id,destination,currentDestination,date
         </div>
       </div>
       <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
-        </label>
+        <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name)}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${generateDestList(destination)}
@@ -57,13 +56,15 @@ export const getTemplateEditPoint = (type,id,destination,currentDestination,date
       </button>
     </header>
     <section class="event__details">
-    ${markUpOffers(statePoint, getOffers)}
+      ${markUpOffers(statePoint, getOffers)}
 
-    ${currentDestination ? '<section class="event__section  event__section--destination">' : ''}
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${currentDestination.description}</p>
-        ${markUpDestinationPhotos(currentDestination.pictures)}
-      </section>
+      ${currentDestination && (currentDestination.description || currentDestination.pictures.length) ? `
+        <section class="event__section  event__section--destination">
+          ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+          <p class="event__destination-description">${currentDestination.description}</p>
+          ${markUpDestinationPhotos(currentDestination.pictures)}
+        </section>
+      ` : ''}
     </section>
   </form>
 </li>`;

@@ -57,13 +57,15 @@ export const getTemplateNewPoint = (type,id,destination,currentDestination,dateF
       </button>
     </header>
     <section class="event__details">
-    ${markUpOffers(statePoint, getOffers)}
+      ${markUpOffers(statePoint, getOffers)}
 
-      <section class="event__section  event__section--destination">
-        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        <p class="event__destination-description">${currentDestination.description}</p>
-        ${markUpDestinationPhotos(currentDestination.pictures ? currentDestination.pictures : '')}
-      </section>
+      ${currentDestination.length ? `
+        <section class="event__section  event__section--destination">
+          ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+          <p class="event__destination-description">${currentDestination.description}</p>
+          ${markUpDestinationPhotos(currentDestination.pictures ? currentDestination.pictures : '')}
+        </section>
+      ` : ''}
     </section>
   </form>
 </li>`;

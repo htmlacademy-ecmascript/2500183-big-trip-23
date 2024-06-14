@@ -9,10 +9,9 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 function createTripEventsEditPointElements(state, destination, getOffers) {
   const { type, dateFrom, dateTo, basePrice, id,isDeleting,isDisabled,isSaving } = state.point;
-  const currentDestination = getCurrentDestination(state.point.destination,destination) || {};
+  const currentDestination = getCurrentDestination(state.point.destination, destination);
 
-  return getTemplateEditPoint(type,id,destination,currentDestination,dateFrom,dateTo,basePrice,state.point,getOffers,isDeleting,isDisabled,isSaving);
-
+  return getTemplateEditPoint(type, id, destination, currentDestination, dateFrom, dateTo, basePrice, state.point, getOffers, isDeleting, isDisabled, isSaving);
 }
 
 export default class EditPointView extends AbstractStatefulView {
@@ -64,7 +63,9 @@ export default class EditPointView extends AbstractStatefulView {
     this.#rollupButtonSave.addEventListener('click', this.#onSubmitSaveHand);
     this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
     this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
+
     this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
+    this.#eventInputDestination.addEventListener('blur', this.#destinationTypeHandler);
 
     this.#eventInputPrice.addEventListener('change', this.#priceInputHandler);
 
@@ -89,9 +90,17 @@ export default class EditPointView extends AbstractStatefulView {
     const newDestination = evt.target.value;
 
     const typeDestination = this.#destination.find((destination) => destination.name === newDestination);
+
     if (!typeDestination) {
+      this.updateElement({
+        point: {
+          ...this._state.point,
+        }
+      });
+      this.shake();
       return;
     }
+
     this.updateElement({
       point: {
         ...this._state.point,
@@ -102,26 +111,24 @@ export default class EditPointView extends AbstractStatefulView {
 
   #onClick = (evt) => {
     evt.preventDefault();
-    this.resetStateView();
+    this.resetStateVue();
     this.#onEditClick();
   };
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
-    this.setSaving();
     if (this.#handleEditSubmit) {
-      this.clearStatePoint();
+      delete this._state.point.isDisabled;//выделить в отдельный метод
+      delete this._state.point.isSaving;//выделить в отдельный метод
+      delete this._state.point.isDeleting;
       this.#handleEditSubmit({ ...this._state });
     }
+    this.resetStateVue();
   };
 
   #onSubmitDeleteHand = (evt) => {
     evt.preventDefault();
-    this.setDeleting();
-    if (this.#handleDeleteClik) {
-      this.clearStatePoint();
-      this.#handleDeleteClik(this._state.point);
-    }
+    this.#handleDeleteClik(this._state.point);
   };
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -170,45 +177,9 @@ export default class EditPointView extends AbstractStatefulView {
     });
   }
 
-  resetStateView = () => {
+  resetStateVue = () => {
     this.updateElement({
       point: { ...this.#initialPoint },
-    });
-  };
-
-  setSaving = () => {
-    this.updateElement({
-      point: {
-        ...this._state.point,
-        isDisabled: true,
-        isSaving: true,
-      },
-    });
-  };
-
-  setDeleting = () => {
-    this.updateElement({
-      point: {
-        ...this._state.point,
-        isDeleting: true,
-        isDisabled: true,
-      },
-    });
-  };
-
-  clearStatePoint = () => {
-    delete this._state.point.isDisabled;
-    delete this._state.point.isSaving;
-    delete this._state.point.isDeleting;
-  };
-
-  defaultStatePoint = () => {
-    this.updateElement({
-      point: { ...this._state.point,
-        isDeleting: false,
-        isDisabled: false,
-        isSaving: false,
-      },
     });
   };
 }

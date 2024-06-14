@@ -2,7 +2,6 @@ import { UpdateType, UserAction, SortType } from '../mock/const.js';
 import { sortPoints } from '../tools/sort.js';
 import { filterBy, FiltersTypes } from '../tools/filter.js'; //TripEmptyMessages
 import { remove, render, replace } from '../framework/render.js';
-import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 import LoadingView from '../view/loading-view.js';
 import EmptyPointView from '../view/empty-point-view.js';
@@ -10,16 +9,6 @@ import EventsSortView from '../view/events-sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
-
-const ModeAdded = {
-  DEFAULT: 'DEFAULT',
-  ADDED: 'ADDED',
-};
 
 export default class MainPresenter {
   #containerListComponent = new EventsListView();
@@ -37,16 +26,12 @@ export default class MainPresenter {
   #loadingComponent = new LoadingView();
   #isLoading = true;
 
-  #uiBlocker = new UiBlocker({
-    lowerLimit: TimeLimit.LOWER_LIMIT,
-    upperLimit: TimeLimit.UPPER_LIMIT
-  });
-
   constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
     this.#addPointContainer = addPointContainer;
+
     this.#addPointPresenter = new NewPointPresenter({
       container: this.#containerListComponent.element,
       destination: this.destinations,
@@ -56,9 +41,8 @@ export default class MainPresenter {
       addPointContainer: this.#addPointContainer,
       resetSorting: this.#handleSortChange,
       filterModel: this.#filterModel,
-      deletingEmptyPoint:this.deletingEmptyPoint,
-      recoveryEmptyPoint:this.recoveryEmptyPoint
     });
+
     this.#closeAddForm = this.#addPointPresenter.removeAddForm;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
@@ -67,7 +51,6 @@ export default class MainPresenter {
   }
 
   init() {
-    this.#uiBlocker.block();
     this.#renderLoadingMessage();
     this.#renderEventsBody();
   }
@@ -76,7 +59,7 @@ export default class MainPresenter {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
     const filteredPoints = filterBy[this.#filterType](points);
-    return sortPoints(filteredPoints, this.#activeSortType);
+    return sortPoints(this.#activeSortType, filteredPoints, this.#pointModel);
   }
 
   get destinations() {
@@ -88,7 +71,7 @@ export default class MainPresenter {
   }
 
   #renderEventsBody() {
-    this.#showEmptyPoint();
+    this.#showEmptyPoint(); //показ пустой точки для фильтров!!!
     this.#renderSort();
     this.#renderPoints();
   }
@@ -125,15 +108,17 @@ export default class MainPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
+    remove(this.#tripEmptyPoint);
   };
 
   #handleSortChange = (nextSortType) => {
     if (this.#activeSortType === nextSortType) {
       return;
     }
+
     this.#activeSortType = nextSortType;
     this.#clearPoints();
-    sortPoints(this.#pointModel.points, this.#activeSortType);
+    sortPoints(this.#activeSortType, this.#pointModel.points, this.#pointModel);
     this.#renderEventsBody();
   };
 
@@ -148,50 +133,38 @@ export default class MainPresenter {
     }
   }
 
-  #handleViewAction = async (actionType, updateType, update) => {
-    this.#uiBlocker.block();
+  #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        try {
-          await this.#pointModel.updatePoint(updateType, update);
-        } catch (err) {
-          //throw new Error('Can\'t update point');
-          this.#pointPresenters.get(update.id).testShake();
-        }
+        this.#pointModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        try {
-          await this.#pointModel.addPoint(updateType, update);
-          this.#addPointPresenter.removeAddForm();
-        } catch (err) {
-          this.#addPointPresenter.testShake();
+        this.#pointModel.addPoint(updateType, update);
+        break;
+      case UserAction.CANCEL:
+        if (this.#pointModel.points.length === 0) {
+          render(this.#tripEmptyPoint, this.#containerListComponent.element);
         }
         break;
       case UserAction.DELETE_POINT:
-        try {
-          this.#pointModel.deletePoint(updateType, update);
-        } catch (err) {
-          throw new Error('Can\'t delete point');
-        }
+        this.#pointModel.deletePoint(updateType, update);
         break;
     }
-    this.#uiBlocker.unblock();
   };
 
-  #handleModelEvent = async (updateType, data) => {
+  #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearPoints({ resetSortType: true });
+        this.#clearPoints();
         this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:
         this.#clearPoints({ resetSortType: true });
         break;
       case UpdateType.INIT:
-        this.#uiBlocker.unblock();
         this.#isLoading = false;
         remove(this.#loadingComponent);// нужно будет переделать!!!
         this.#addPointPresenter.activateButton();
@@ -214,6 +187,7 @@ export default class MainPresenter {
       render(this.#tripEmptyPoint, this.#containerListComponent.element);
       return;
     }
+
     replace(this.#tripEmptyPoint, prevEmptyPointComponent);
     remove(prevEmptyPointComponent);
   };
@@ -234,21 +208,4 @@ export default class MainPresenter {
       render(this.#loadingComponent, this.#containerListComponent.element);
     }
   }
-
-  deletingEmptyPoint = (marker) => {
-    if(marker === ModeAdded.ADDED) {
-      if(this.#tripEmptyPoint) {
-        remove(this.#tripEmptyPoint,this.#containerListComponent);
-        this.#tripEmptyPoint = null;
-      }
-    }
-  };
-
-  recoveryEmptyPoint = (marker) => {
-    if(marker === ModeAdded.DEFAULT) {
-      if(!this.#tripEmptyPoint) {
-        this.#renderEmptyPoint();
-      }
-    }
-  };
 }

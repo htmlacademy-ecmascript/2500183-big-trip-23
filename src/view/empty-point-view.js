@@ -3,10 +3,9 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 const createTripListEmptyTemplate = (filterType) => {
   const currentPageMessageTextTipe = TripEmptyMessages[filterType];
-  return `<p class="trip-events__msg">
-      ${currentPageMessageTextTipe}
-    </p>`;
+  return `<p class="trip-events__msg">${currentPageMessageTextTipe}</p>`;
 };
+
 export default class EmptyPointView extends AbstractView {
   #filterType = null;
 
