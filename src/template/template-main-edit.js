@@ -59,8 +59,8 @@ export const getTemplateEditPoint = (type,id,destination,currentDestination,date
     <section class="event__details">
     ${markUpOffers(statePoint, getOffers)}
 
-      <section class="event__section  event__section--destination">
-        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+    ${currentDestination ? '<section class="event__section  event__section--destination">' : ''}
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${currentDestination.description}</p>
         ${markUpDestinationPhotos(currentDestination.pictures)}
       </section>

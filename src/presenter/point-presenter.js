@@ -107,10 +107,10 @@ export default class PointPresenter {
   };
 
   #changeBackEditViewPoint = () => {
+    this.#tripEditComponent.resetStateView();
     replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
-   // this.#tripEditComponent.resetStateView();
   };
 
   #updateFavorite(point) {
