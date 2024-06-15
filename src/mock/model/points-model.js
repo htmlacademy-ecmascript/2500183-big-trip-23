@@ -7,6 +7,7 @@ export default class PointModel extends Observable {
   #offers = [];
   #types = [];
   #pointsApiService = null;
+  #isServerUnavailable = false;
 
   constructor({pointsApiService}) {
     super();
@@ -32,6 +33,7 @@ export default class PointModel extends Observable {
       this.#points = [];
       this.#destinations = [];
       this.#offers = [];
+      this.isServerUnavailable = true;
     }
     this.#types = this.#offers.map((offer) => offer.type);
     this._notify(UpdateType.INIT);

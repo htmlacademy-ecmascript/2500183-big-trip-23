@@ -111,7 +111,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #onClick = (evt) => {
     evt.preventDefault();
-    this.resetStateVue();
+    this.resetStateView();
     this.#onEditClick();
   };
 
@@ -123,7 +123,7 @@ export default class EditPointView extends AbstractStatefulView {
       delete this._state.point.isDeleting;
       this.#handleEditSubmit({ ...this._state });
     }
-    this.resetStateVue();
+    this.resetStateView();
   };
 
   #onSubmitDeleteHand = (evt) => {
@@ -177,7 +177,7 @@ export default class EditPointView extends AbstractStatefulView {
     });
   }
 
-  resetStateVue = () => {
+  resetStateView = () => {
     this.updateElement({
       point: { ...this.#initialPoint },
     });
