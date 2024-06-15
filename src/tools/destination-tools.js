@@ -2,4 +2,4 @@ const generateDestList = (destination) => `${destination.map((elem) => `<option 
 
 const getCurrentDestination = (destinationId, destination) => destination.find((element) => element.id === destinationId);
 
-export {generateDestList,getCurrentDestination};
+export { generateDestList, getCurrentDestination };

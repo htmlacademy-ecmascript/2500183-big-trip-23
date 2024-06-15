@@ -1,5 +1,5 @@
-import Observable from '../../framework/observable.js';
-import {UpdateType} from '../const.js';
+import Observable from '../framework/observable.js';
+import { UpdateType } from '../const.js';
 
 export default class PointModel extends Observable {
   #points = [];
@@ -7,9 +7,8 @@ export default class PointModel extends Observable {
   #offers = [];
   #types = [];
   #pointsApiService = null;
-  #isServerUnavailable = false;
 
-  constructor({pointsApiService}) {
+  constructor({ pointsApiService }) {
     super();
 
     this.#points = [];
@@ -20,6 +19,8 @@ export default class PointModel extends Observable {
   }
 
   async init() {
+    let isError = false;
+
     try {
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#adaptToClient);
@@ -28,15 +29,15 @@ export default class PointModel extends Observable {
 
       const destinations = await this.#pointsApiService.destinations;
       this.#destinations = destinations;
-
-    }catch(err) {
+    } catch (err) {
+      isError = true;
       this.#points = [];
       this.#destinations = [];
       this.#offers = [];
-      this.isServerUnavailable = true;
     }
+
     this.#types = this.#offers.map((offer) => offer.type);
-    this._notify(UpdateType.INIT);
+    this._notify(UpdateType.INIT, { isError });
   }
 
   get types() {
@@ -91,13 +92,12 @@ export default class PointModel extends Observable {
     try {
       const response = await this.#pointsApiService.updatePoint(update);
       const updatedPoint = this.#adaptToClient(response);
-      this.#points = [
-        ...this.#points.slice(0, index),
-        updatedPoint,
-        ...this.#points.slice(index + 1),
-      ];
-      this._notify(updateType, updatedPoint);
-    } catch(err) {
+
+      this.#points = [...this.#points.slice(0, index), updatedPoint, ...this.#points.slice(index + 1)];
+
+      this._notify(updateType, { point: updatedPoint, isError: false });
+    } catch (err) {
+      this._notify(updateType, { point: update, isError: true });
       throw new Error('Can\'t update point');
     }
   }
@@ -106,15 +106,18 @@ export default class PointModel extends Observable {
     try {
       const response = await this.#pointsApiService.addPoint(update);
       const newPoint = this.#adaptToClient(response);
+
       this.#points = [newPoint, ...this.#points];
-      this._notify(updateType, newPoint);
-    } catch(err) {
+
+      this._notify(updateType, { point: newPoint, isError: false });
+    } catch (err) {
+      this._notify(updateType, { point: update, isError: true });
       throw new Error('Can\'t add point');
     }
   }
 
   async deletePoint(updateType, update) {
-    const index = this.#points.findIndex((point) => point.id === update.id);
+    const index = this.points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
@@ -122,18 +125,19 @@ export default class PointModel extends Observable {
 
     try {
       await this.#pointsApiService.deletePoint(update);
-      this.#points = [
-        ...this.#points.slice(0, index),
-        ...this.#points.slice(index + 1),
-      ];
-      this._notify(updateType);
-    } catch(err) {
+
+      this.#points = [...this.points.slice(0, index), ...this.points.slice(index + 1)];
+
+      this._notify(updateType, { point: update, isError: false });
+    } catch (err) {
+      this._notify(updateType, { point: update, isError: true });
       throw new Error('Can\'t delete point');
     }
   }
 
   #adaptToClient(point) {
-    const adaptedPoint = {...point,
+    const adaptedPoint = {
+      ...point,
       basePrice: point['base_price'],
       dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
       dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],

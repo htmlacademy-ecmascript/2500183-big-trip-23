@@ -1,14 +1,26 @@
-import { EVENT_TYPES } from '../mock/const.js';
-import { createEventTypeTemplate } from '../template/type-event.js';
-import {generateDestList} from'../tools/destination-tools.js';
-import { markUpOffers } from '../template/offers-selector.js';
-import { markUpDestinationPhotos } from '../template/pictures.js';
+import { EVENT_TYPES } from '../const.js';
+import { createEventTypeTemplate } from './type-event';
+import { generateDestList } from '../tools/destination-tools.js';
+import { markUpOffers } from './offers-selector.js';
+import { markUpDestinationPhotos } from './pictures.js';
 
 import dayjs from 'dayjs';
 import he from 'he';
 
-
-export const getTemplateEditPoint = (type, id, destination, currentDestination, dateFrom, dateTo, basePrice, statePoint, getOffers, isDeleting, isDisabled, isSaving) => `
+export const getTemplateEditPoint = (
+  type,
+  id,
+  destination,
+  currentDestination,
+  dateFrom,
+  dateTo,
+  basePrice,
+  statePoint,
+  getOffers,
+  isDeleting,
+  isDisabled,
+  isSaving,
+) => `
 <li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -28,7 +40,7 @@ export const getTemplateEditPoint = (type, id, destination, currentDestination, 
       </div>
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(currentDestination.name)}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination ? he.encode(currentDestination.name) : ''}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${generateDestList(destination)}
         </datalist>
@@ -50,7 +62,7 @@ export const getTemplateEditPoint = (type, id, destination, currentDestination, 
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-      <button class="event__reset-btn" type="reset"${isDeleting ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+      <button class="event__reset-btn" type="reset" ${isDeleting ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -58,13 +70,17 @@ export const getTemplateEditPoint = (type, id, destination, currentDestination, 
     <section class="event__details">
       ${markUpOffers(statePoint, getOffers)}
 
-      ${currentDestination && (currentDestination.description || currentDestination.pictures.length) ? `
+      ${
+  currentDestination && (currentDestination.description || currentDestination.pictures.length)
+    ? `
         <section class="event__section  event__section--destination">
           ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
           <p class="event__destination-description">${currentDestination.description}</p>
           ${markUpDestinationPhotos(currentDestination.pictures)}
         </section>
-      ` : ''}
+      `
+    : ''
+}
     </section>
   </form>
 </li>`;

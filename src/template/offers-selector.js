@@ -1,4 +1,4 @@
-export const markUpOfferSelectors = (offers = [], point) => {
+const markUpOfferSelectors = (offers = [], point) => {
   const isChecked = (offer) => point.offers.some((offerId) => offerId === offer.id);
 
   return offers
@@ -16,7 +16,7 @@ export const markUpOfferSelectors = (offers = [], point) => {
     .join('');
 };
 
-export const markUpOffers = (statePoint, getOffers) => {
+const markUpOffers = (statePoint, getOffers) => {
   const typeOffers = getOffers(statePoint.type);
 
   if (typeOffers.length === 0) {
@@ -31,3 +31,5 @@ export const markUpOffers = (statePoint, getOffers) => {
     </div>
   </section>`;
 };
+
+export { markUpOffers };
