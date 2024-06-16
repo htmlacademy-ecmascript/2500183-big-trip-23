@@ -5,9 +5,7 @@ const createFailedLoadPointsTemplate = () =>
     Failed to load latest route information
   </p>`;
 
-
 export default class LoadingView extends AbstractView {
-
   get template() {
     return createFailedLoadPointsTemplate();
   }

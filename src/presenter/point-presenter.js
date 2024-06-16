@@ -3,7 +3,7 @@ import EscapeHandler from '../tools/escape-handler.js';
 import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view';
 import { updateItem } from '../utils/data.js';
-import { UpdateType, UserAction } from '../mock/const.js';
+import { UpdateType, UserAction } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -23,7 +23,6 @@ export default class PointPresenter {
   #mode = Mode.DEFAULT;
   #closeAddForm = null;
 
-
   constructor({ container, destination, pointModel, onModeChange, onViewAction, closeAddForm }) {
     this.#containerListComponent = container;
     this.#destination = destination;
@@ -35,10 +34,10 @@ export default class PointPresenter {
 
   init(point) {
     this.#point = point;
-    this.#renderPoint(this.#point, this.#destination, this.#pointModel.getOffersByType.bind(this.#pointModel));
+    this.#renderPoint(this.#point, this.#destination);
   }
 
-  #renderPoint(point, destination, getOffers,getDestinationId) {
+  #renderPoint(point, destination) {
     this.#point = point;
 
     this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
@@ -46,28 +45,30 @@ export default class PointPresenter {
     const prevPointComponent = this.#tripPointComponent;
     const prevPointEditComponent = this.#tripEditComponent;
 
+    const pointOffers = this.#pointModel.getOffersByCheckedType(point);
+
     this.#tripPointComponent = new PointView({
       point: this.#point,
       destination,
+      offers: pointOffers,
       onEditClick: () => {
         this.#changeEditViewPoint();
         this.#closeAddForm();
       },
-      getOffers,
       onFavoriteClick: () => {
         this.#updateFavorite(this.#point);
       },
-      getDestinationId,
     });
+
     this.#tripEditComponent = new EditPointView({
       point,
       destination,
       onEditClick: () => {
         this.#changeBackEditViewPoint();
       },
-      getOffers,
+      getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
       onDelete: () => this.#handleDeleteClick(),
-      onSubmitSave: this.#handleFormSubmit, // изменить имя,когда закончу
+      onSubmitSave: this.#handleFormSubmit,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -107,6 +108,7 @@ export default class PointPresenter {
   };
 
   #changeBackEditViewPoint = () => {
+    this.#tripEditComponent.resetStateView();
     replace(this.#tripPointComponent, this.#tripEditComponent);
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
@@ -119,6 +121,7 @@ export default class PointPresenter {
 
   #handleDeleteClick = () => {
     this.#handleViewAction(UserAction.DELETE_POINT, UpdateType.MINOR, this.#point);
+
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };
@@ -128,4 +131,18 @@ export default class PointPresenter {
     this.#escapeHandler.disable();
     this.#mode = Mode.DEFAULT;
   };
+
+  enableEscHandler() {
+    this.#escapeHandler.enable();
+  }
+
+  shakeForm = () => {
+    const defaultStatePoint = this.#tripEditComponent.defaultStatePoint;
+    this.#tripEditComponent.shake(defaultStatePoint);
+  };
+
+  shakePoint() {
+    const defaultStatePoint = this.#tripEditComponent.defaultStatePoint;
+    this.#tripPointComponent.shake(defaultStatePoint);
+  }
 }

@@ -1,14 +1,23 @@
-import { EVENT_TYPES } from '../mock/const.js';
+import { EVENT_TYPES } from '../const.js';
 import { createEventTypeTemplate } from './type-event.js';
-import {generateDestList} from'../tools/destination-tools.js';
+import { generateDestList } from '../tools/destination-tools.js';
 import { markUpOffers } from './offers-selector.js';
 import { markUpDestinationPhotos } from './pictures.js';
 
 import dayjs from 'dayjs';
 import he from 'he';
 
-
-export const getTemplateNewPoint = (type,id,destination,currentDestination,dateFrom,dateTo,basePrice,statePoint,getOffers,) => `<li class="trip-events__item">
+export const getTemplateNewPoint = (
+  type,
+  id,
+  destination,
+  currentDestination,
+  dateFrom,
+  dateTo,
+  basePrice,
+  statePoint,
+  getOffers,
+) => `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -57,13 +66,19 @@ export const getTemplateNewPoint = (type,id,destination,currentDestination,dateF
       </button>
     </header>
     <section class="event__details">
-    ${markUpOffers(statePoint, getOffers)}
+      ${markUpOffers(statePoint, getOffers)}
 
-      <section class="event__section  event__section--destination">
-        ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
-        <p class="event__destination-description">${currentDestination.description}</p>
-        ${markUpDestinationPhotos(currentDestination.pictures ? currentDestination.pictures : '')}
-      </section>
+      ${
+  currentDestination.length
+    ? `
+        <section class="event__section  event__section--destination">
+          ${currentDestination.length ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+          <p class="event__destination-description">${currentDestination.description}</p>
+          ${markUpDestinationPhotos(currentDestination.pictures ? currentDestination.pictures : '')}
+        </section>
+      `
+    : ''
+}
     </section>
   </form>
 </li>`;

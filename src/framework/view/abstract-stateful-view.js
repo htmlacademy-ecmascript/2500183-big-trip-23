@@ -41,11 +41,15 @@ export default class AbstractStatefulView extends AbstractView {
   #rerenderElement() {
     const prevElement = this.element;
     const parent = prevElement.parentElement;
+
     this.removeElement();
 
     const newElement = this.element;
 
-    parent.replaceChild(newElement, prevElement);
+    // Иначе падает тест «Нажатие на кнопку «New Event» закрывает открытую форму редактирования точки маршрута»
+    if (parent) {
+      parent.replaceChild(newElement, prevElement);
+    }
 
     this._restoreHandlers();
   }
