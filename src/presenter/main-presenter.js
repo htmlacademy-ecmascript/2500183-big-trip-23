@@ -229,7 +229,7 @@ export default class MainPresenter {
 
       case UpdateType.MAJOR:
         if (isError) {
-          this.#addPointPresenter.init();
+          //this.#addPointPresenter.init();
         } else {
           this.#clearPoints({ resetSortType: true });
           this.#renderEventsBody();
