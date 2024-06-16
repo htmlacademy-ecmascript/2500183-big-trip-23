@@ -4,15 +4,14 @@ import { markUpDestinationPhotos } from '../template/pictures.js';
 import { markUpOffers } from '../template/offers-selector.js';
 import flatpickr from 'flatpickr';
 
-import { EVENT_TYPES, defaultPoint } from '../mock/const.js';
+import { EVENT_TYPES, defaultPoint } from '../const.js';
 import he from 'he';
 import { DEFAULT_PICKER_OPTIONS } from '../const.js';
-import { createEventTypeTemplate} from '../template/type-event.js';
-import {generateDestList,getCurrentDestination} from'../tools/destination-tools.js';
+import { createEventTypeTemplate } from '../template/type-event.js';
+import { generateDestList, getCurrentDestination } from '../tools/destination-tools.js';
 
-
-function createTripEventsAddPointElements(state, destination, offers, getOffers) {
-  const { type, dateFrom, dateTo, basePrice, id,isDisabled,isSaving } = state.point;
+function createTripEventsAddPointElements(state, destination, offers, getOffers, basePrice) {
+  const { type, dateFrom, dateTo, id, isDisabled, isSaving } = state.point;
 
   const currentDestination = getCurrentDestination(state.point.destination, destination);
   const eventId = state.point.id;
@@ -66,13 +65,17 @@ function createTripEventsAddPointElements(state, destination, offers, getOffers)
     <section class="event__details">
       ${markUpOffers(state.point, getOffers)}
 
-      ${currentDestination && (currentDestination.description || currentDestination.pictures.length) ? `
+      ${
+  currentDestination && (currentDestination.description || currentDestination.pictures.length)
+    ? `
         <section class="event__section  event__section--destination">
           ${currentDestination ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
           <p class="event__destination-description">${currentDestination.description}</p>
           ${markUpDestinationPhotos(currentDestination.pictures ? currentDestination.pictures : '')}
         </section>
-      ` : ''}
+      `
+    : ''
+}
     </section>
   </form>
 </li>`;
@@ -88,30 +91,31 @@ export default class NewPointView extends AbstractStatefulView {
   #datepickerStart;
   #rollupButtonSave;
   #rollupButtonCancel;
-  #resetAddForm = null;
   #onSubmitSave = null;
+  #onButtonCancel;
   #offers = null;
   #getOffers = null;
 
-  constructor({ offers, destination, resetForm, onSubmitSave, getOffers }) {
-    super();
+  #basePrice = 0;
 
+  constructor({ offers, destination, onSubmitSave, onButtonCancel, getOffers }) {
+    super();
+    this.#initialPoint = defaultPoint;
     this.#getOffers = getOffers;
     this._setState({
-      point: { ...defaultPoint,
-        isDisabled: false,
-        isSaving: false,
-      },
+      point: { ...defaultPoint, isDisabled: false, isSaving: false },
     });
     this.#destination = destination;
-    this.#resetAddForm = resetForm;
+    // this.#resetAddForm = resetForm;
     this.#onSubmitSave = onSubmitSave;
+    this.#onButtonCancel = onButtonCancel;
     this.#offers = offers;
+    this.#basePrice = defaultPoint.basePrice;
     this._restoreHandlers();
   }
 
   get template() {
-    return createTripEventsAddPointElements(this._state, this.#destination, this.#offers, this.#getOffers);
+    return createTripEventsAddPointElements(this._state, this.#destination, this.#offers, this.#getOffers, this.#basePrice);
   }
 
   _restoreHandlers() {
@@ -136,15 +140,16 @@ export default class NewPointView extends AbstractStatefulView {
   #destinationTypeHandler = (evt) => {
     evt.preventDefault();
     const newDestination = evt.target.value;
-
     const typeDestination = this.#destination.find((destination) => destination.name === newDestination);
+
     if (!typeDestination) {
-      return;
+      this.shake();
     }
+
     this.updateElement({
       point: {
         ...this._state.point,
-        destination: typeDestination.id,
+        destination: typeDestination ? typeDestination.id : '',
       },
     });
   };
@@ -156,19 +161,15 @@ export default class NewPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
+        offers: this.#initialPoint.type === newType ? this.#initialPoint.offers : [], // Обнуляем офферы в стейте на случай, если мы что-то натыкали в оффреах, а потом сменили тип
         type: newType,
       },
     });
   };
 
   #priceInputHandler = (evt) => {
-    const userPrice = evt.target.value;
-    this.updateElement({
-      point: {
-        ...this._state.point,
-        basePrice: userPrice,
-      },
-    });
+    evt.preventDefault();
+    this.#basePrice = +evt.target.value;
   };
 
   #offersCheckboxHandler = (evt) => {
@@ -183,7 +184,7 @@ export default class NewPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        offers: Array.from(setOfOffers)
+        offers: Array.from(setOfOffers),
       },
     });
   };
@@ -224,13 +225,14 @@ export default class NewPointView extends AbstractStatefulView {
 
   #onSubmitSaveHand = (evt) => {
     evt.preventDefault();
+    this._state.point.basePrice = this.#basePrice;
 
     if (this.#isValid()) {
       this.clearStatePoint();
 
       this.#onSubmitSave(this._state);
       this.setSaving();
-      this.#resetAddForm();
+      // this.#resetAddForm();
       this.resetState();
     } else {
       this.shake();
@@ -245,7 +247,7 @@ export default class NewPointView extends AbstractStatefulView {
   #onSubmitCancelHand = (evt) => {
     evt.preventDefault();
     this.resetState();
-    this.#resetAddForm();
+    this.#onButtonCancel();
   };
 
   resetState = () => {
@@ -271,10 +273,7 @@ export default class NewPointView extends AbstractStatefulView {
 
   defaultStatePoint = () => {
     this.updateElement({
-      point: { ...defaultPoint,
-        isDisabled: false,
-        isSaving: false,
-      },
+      point: { ...defaultPoint, isDisabled: false, isSaving: false },
     });
   };
 }

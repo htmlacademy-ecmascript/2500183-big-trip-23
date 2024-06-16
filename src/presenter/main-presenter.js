@@ -1,6 +1,6 @@
-import { UpdateType, UserAction, SortType } from '../mock/const.js';
+import { UpdateType, UserAction, SortType } from '../const.js';
 import { sortPoints } from '../tools/sort.js';
-import { filterBy, FiltersTypes } from '../tools/filter.js'; //TripEmptyMessages
+import { filterBy, FiltersTypes, TripEmptyMessages } from '../tools/filter.js'; //TripEmptyMessages
 import { remove, render, replace } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
@@ -39,7 +39,7 @@ export default class MainPresenter {
 
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
-    upperLimit: TimeLimit.UPPER_LIMIT
+    upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
   constructor({ boardContainer, pointModel, filterModel, addPointContainer }) {
@@ -57,8 +57,8 @@ export default class MainPresenter {
       addPointContainer: this.#addPointContainer,
       resetSorting: this.#handleSortChange,
       filterModel: this.#filterModel,
-      deletingEmptyPoint:this.deletingEmptyPoint,
-      recoveryEmptyPoint:this.recoveryEmptyPoint
+      deletingEmptyPoint: this.deletingEmptyPoint,
+      recoveryEmptyPoint: this.recoveryEmptyPoint,
     });
 
     this.#closeAddForm = this.#addPointPresenter.removeAddForm;
@@ -70,7 +70,6 @@ export default class MainPresenter {
 
   init() {
     this.#uiBlocker.block();
-    this.#renderLoadingMessage();
     this.#renderEventsBody();
   }
 
@@ -110,9 +109,6 @@ export default class MainPresenter {
   }
 
   #renderPoints() {
-
-    console.log('points',  this.points);
-
     this.points.forEach((point) => {
       const pointPresenter = new PointPresenter({
         container: this.#containerListComponent.element,
@@ -145,14 +141,15 @@ export default class MainPresenter {
   };
 
   #clearPoints({ resetSortType = false } = {}) {
-    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.forEach((presenter) => {
+      presenter.destroy();
+    });
+
     this.#pointPresenters.clear();
 
     if (resetSortType) {
-      console.log('render');
       this.#activeSortType = SortType.DAY;
       this.#filterType = FiltersTypes.EVERYTHING;
-      this.#renderEventsBody();
     }
   }
 
@@ -161,16 +158,14 @@ export default class MainPresenter {
 
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        console.log('UPDATE');
         try {
           await this.#pointModel.updatePoint(updateType, update);
         } catch (err) {
           //throw new Error('Can\'t update point');
-          this.#pointPresenters.get(update.id).testShake();
         }
         break;
+
       case UserAction.ADD_POINT:
-        console.log('ADD');
         try {
           await this.#pointModel.addPoint(updateType, update);
           this.#addPointPresenter.removeAddForm();
@@ -178,46 +173,71 @@ export default class MainPresenter {
           this.#addPointPresenter.testShake();
         }
         break;
+
       case UserAction.CANCEL:
         if (this.#pointModel.points.length === 0) {
+          this.#tripEmptyPoint = new EmptyPointView({ message: 'Click New Event to create your first point' });
           render(this.#tripEmptyPoint, this.#containerListComponent.element);
         }
+
         break;
+
       case UserAction.DELETE_POINT:
-        console.log('DELETE_POINT');
         try {
           await this.#pointModel.deletePoint(updateType, update);
         } catch (err) {
-          throw new Error('Can\'t delete point');
+          // throw new Error('Can\'t delete point');
         }
         break;
     }
 
-    console.log('UNBLOCK');
     this.#uiBlocker.unblock();
   };
 
-  #handleModelEvent = async (updateType, data) => {
-    console.log('sfsfsdfsdf', updateType);
-
+  #handleModelEvent = async (updateType, { point, isError }) => {
     switch (updateType) {
-      case UpdateType.PATCH:
-        this.#pointPresenters.get(data.id).init(data);
-        break;
-      case UpdateType.MINOR:
-        this.#clearPoints({ resetSortType: true });
-        this.#renderEventsBody();
-        break;
-      case UpdateType.MAJOR:
-        this.#clearPoints({ resetSortType: true });
-        break;
       case UpdateType.INIT:
         this.#uiBlocker.unblock();
         this.#isLoading = false;
-        remove(this.#loadingComponent);// нужно будет переделать!!!
-        this.#addPointPresenter.activateButton();
-        this.#clearPoints({ resetSortType: true });
-        this.#renderAddPoint(this.destinations);
+
+        if (isError) {
+          this.#renderEmptyPoint('Failed to load latest route information');
+        } else {
+          this.#addPointPresenter.activateButton();
+
+          this.#clearPoints({ resetSortType: true });
+          this.#renderEventsBody();
+          this.#renderAddPoint(this.destinations);
+        }
+
+        break;
+
+      case UpdateType.PATCH:
+        if (isError) {
+          this.#clearPoints();
+          this.#renderEventsBody();
+          this.#pointPresenters.get(point.id).shakePoint();
+        } else {
+          this.#pointPresenters.get(point.id).init(point);
+        }
+        break;
+
+      case UpdateType.MINOR:
+        if (isError) {
+          this.#pointPresenters.get(point.id).shakeForm();
+          this.#pointPresenters.get(point.id).enableEscHandler();
+        } else {
+          this.#clearPoints();
+          this.#renderEventsBody();
+        }
+        break;
+
+      case UpdateType.MAJOR:
+        if (!isError) {
+          this.#clearPoints({ resetSortType: true });
+          this.#renderEventsBody();
+          this.#uiBlocker.unblock();
+        }
         break;
     }
   };
@@ -226,40 +246,38 @@ export default class MainPresenter {
     this.#addPointPresenter.init(destinations);
   }
 
-  #renderEmptyPoint = () => {
+  #renderEmptyPoint = (message) => {
     const prevEmptyPointComponent = this.#tripEmptyPoint;
-
-    this.#tripEmptyPoint = new EmptyPointView({ filterType: this.#filterModel.filter });
+    this.#tripEmptyPoint = new EmptyPointView({ message });
 
     if (prevEmptyPointComponent === null) {
       render(this.#tripEmptyPoint, this.#containerListComponent.element);
-      return;
+    } else {
+      replace(this.#tripEmptyPoint, prevEmptyPointComponent);
+      remove(prevEmptyPointComponent);
     }
-
-    replace(this.#tripEmptyPoint, prevEmptyPointComponent);
-    remove(prevEmptyPointComponent);
   };
 
   #showEmptyPoint = () => {
+    if (this.#isLoading) {
+      this.#renderEmptyPoint('Loading...'); // Failed to load latest route information
+      return;
+    }
+
     if (!this.points.length && !this.#isLoading) {
-      this.#renderEmptyPoint();
+      const message = TripEmptyMessages[this.#filterModel.filter];
+      this.#renderEmptyPoint(message);
     } else {
-      if(this.#tripEmptyPoint) {
+      if (this.#tripEmptyPoint) {
         remove(this.#tripEmptyPoint);
         this.#tripEmptyPoint = null;
       }
     }
   };
 
-  #renderLoadingMessage() {
-    if(this.#isLoading) {
-      render(this.#loadingComponent, this.#containerListComponent.element);
-    }
-  }
-
   deletingEmptyPoint = (marker) => {
-    if(marker === ModeAdded.ADDED) {
-      if(this.#tripEmptyPoint) {
+    if (marker === ModeAdded.ADDED) {
+      if (this.#tripEmptyPoint) {
         remove(this.#tripEmptyPoint);
         this.#tripEmptyPoint = null;
       }
@@ -267,8 +285,8 @@ export default class MainPresenter {
   };
 
   recoveryEmptyPoint = (marker) => {
-    if(marker === ModeAdded.DEFAULT) {
-      if(!this.#tripEmptyPoint) {
+    if (marker === ModeAdded.DEFAULT) {
+      if (!this.#tripEmptyPoint && this.#pointModel.points.length === 0) {
         this.#renderEmptyPoint();
       }
     }

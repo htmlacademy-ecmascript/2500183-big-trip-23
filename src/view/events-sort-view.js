@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { SortType } from '../mock/const.js';
+import { SortType } from '../const.js';
 
 const DISABLED_SORT_TYPES = [SortType.OFFERS];
 const SORT_PREFIX = 'sort-';

@@ -1,13 +1,12 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {calculateDuration,displayTime,displayDate,displayDateTime,displayDateMonth} from '../mock/util.js';
+import { calculateDuration, displayTime, displayDate, displayDateTime, displayDateMonth } from '../utils/util.js';
 
-import { createOffers } from '../template/create-offers.js';
-import {getCurrentDestination} from'../tools/destination-tools.js';
-import {createOffersList} from '../template/create-offers-list';
+import { getCurrentDestination } from '../tools/destination-tools.js';
+import { createOffersList } from '../template/create-offers-list';
 
 function createTripEventsPointElements(point, destination, offers) {
   const { type, isFavorite, dateFrom, dateTo, basePrice } = point;
-  const currentDestination = getCurrentDestination(point.destination,destination);
+  const currentDestination = getCurrentDestination(point.destination, destination);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -27,12 +26,16 @@ function createTripEventsPointElements(point, destination, offers) {
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
-    ${offers.length > 0 ? `
+    ${
+  offers.length > 0
+    ? `
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
         ${createOffersList(offers)}
       </ul>
-    ` : ''}
+    `
+    : ''
+}
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''} " type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

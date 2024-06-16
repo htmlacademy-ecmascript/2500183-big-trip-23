@@ -1,8 +1,8 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EscapeHandler from '../tools/escape-handler.js';
 import NewPointView from '../view/new-point-view.js';
-import { UpdateType, UserAction, SortType } from '../mock/const.js';
-import { defaultPoint } from '../mock/const.js';
+import { UpdateType, UserAction, SortType } from '../const.js';
+import { defaultPoint } from '../const.js';
 import { FiltersTypes } from '../tools/filter.js';
 
 const ModeAdded = {
@@ -30,7 +30,18 @@ export default class NewPointPresenter {
   #deletingEmptyPoint = null;
   #recoveryEmptyPoint = null;
 
-  constructor({ container, destination, pointModel, onModeChange, onViewAction, addPointContainer, resetSorting, filterModel,deletingEmptyPoint,recoveryEmptyPoint }) {
+  constructor({
+    container,
+    destination,
+    pointModel,
+    onModeChange,
+    onViewAction,
+    addPointContainer,
+    resetSorting,
+    filterModel,
+    deletingEmptyPoint,
+    recoveryEmptyPoint,
+  }) {
     this.#containerListComponent = container;
     this.#destination = destination;
     this.#pointModel = pointModel;
@@ -56,8 +67,9 @@ export default class NewPointPresenter {
     this.#tripAddComponent = new NewPointView({
       offers: this.#pointModel.offers,
       destination: this.#destination,
-      resetForm: this.removeAddForm,
+      // resetForm: this.removeAddForm,
       onSubmitSave: this.handleAddFormSubmit,
+      onButtonCancel: this.#onEscKeyDown,
       getOffers: this.#getOffers,
     });
 
@@ -75,7 +87,9 @@ export default class NewPointPresenter {
     this.activateButton();
     this.#escapeHandler.disable();
 
-    this.removeAddForm();
+    // this.removeAddForm();
+    this.#handleViewAction(UserAction.CANCEL);
+    remove(this.#tripAddComponent);
   };
 
   activateButton = () => {
@@ -102,7 +116,7 @@ export default class NewPointPresenter {
   };
 
   testShake = () => {
-    const defaultStatePoint = this.#tripAddComponent.defaultStatePoint;
-    this.#tripAddComponent.shake(defaultStatePoint);
+    // const defaultStatePoint = this.#tripAddComponent.defaultStatePoint;
+    this.#tripAddComponent.shake();
   };
 }

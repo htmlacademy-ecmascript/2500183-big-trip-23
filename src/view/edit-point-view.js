@@ -1,17 +1,30 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 import { DEFAULT_PICKER_OPTIONS } from '../const.js';
-import {getCurrentDestination} from'../tools/destination-tools.js';
-import {getTemplateEditPoint} from '../template/template-main-edit.js';
+import { getCurrentDestination } from '../tools/destination-tools.js';
+import { getTemplateEditPoint } from '../template/template-main-edit.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-function createTripEventsEditPointElements(state, destination, getOffers) {
-  const { type, dateFrom, dateTo, basePrice, id,isDeleting,isDisabled,isSaving } = state.point;
+function createTripEventsEditPointElements(state, destination, basePrice, getOffers) {
+  const { type, dateFrom, dateTo, id, isDeleting, isDisabled, isSaving } = state.point;
   const currentDestination = getCurrentDestination(state.point.destination, destination);
 
-  return getTemplateEditPoint(type, id, destination, currentDestination, dateFrom, dateTo, basePrice, state.point, getOffers, isDeleting, isDisabled, isSaving);
+  return getTemplateEditPoint(
+    type,
+    id,
+    destination,
+    currentDestination,
+    dateFrom,
+    dateTo,
+    basePrice,
+    state.point,
+    getOffers,
+    isDeleting,
+    isDisabled,
+    isSaving,
+  );
 }
 
 export default class EditPointView extends AbstractStatefulView {
@@ -21,34 +34,40 @@ export default class EditPointView extends AbstractStatefulView {
   #rollupButton = null;
   #rollupButtonSave = null;
   #rollupButtonDelete = null;
+
+  #basePrice = 0;
+
   #getOffers = null;
+
   #eventTypeGroup = null;
   #eventInputDestination = null;
+  #eventInputOffers = null;
+
   #datepickerStart = null;
-  #handleDeleteClik = null;
+  #handleDeleteClick = null;
   #handleEditSubmit = null;
   #eventInputPrice = null;
 
   constructor({ point, destination, onEditClick, getOffers, onDelete, onSubmitSave }) {
     super();
     this.#initialPoint = point;
+    this.#basePrice = point.basePrice;
+
     this._setState({
-      point: { ...point,
-        isDeleting: false,
-        isDisabled: false,
-        isSaving: false,
-      },
+      point: { ...point, isDeleting: false, isDisabled: false, isSaving: false },
     });
+
     this.#destination = destination;
     this.#onEditClick = onEditClick;
     this.#getOffers = getOffers;
-    this.#handleDeleteClik = onDelete;
+    this.#handleDeleteClick = onDelete;
     this.#handleEditSubmit = onSubmitSave;
+
     this._restoreHandlers();
   }
 
   get template() {
-    return createTripEventsEditPointElements(this._state, this.#destination, this.#getOffers);
+    return createTripEventsEditPointElements(this._state, this.#destination, this.#basePrice, this.#getOffers);
   }
 
   _restoreHandlers() {
@@ -64,9 +83,11 @@ export default class EditPointView extends AbstractStatefulView {
     this.#rollupButtonDelete.addEventListener('click', this.#onSubmitDeleteHand);
     this.#eventTypeGroup.addEventListener('change', this.#eventTypeHandler);
 
-    this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
-    this.#eventInputDestination.addEventListener('blur', this.#destinationTypeHandler);
+    this.#eventInputOffers = this.element.querySelectorAll('.event__offer-checkbox');
 
+    this.#eventInputDestination.addEventListener('change', this.#destinationTypeHandler);
+
+    this.#eventInputOffers.forEach((checkbox) => checkbox.addEventListener('change', this.#changeOffersHandler.bind(this)));
     this.#eventInputPrice.addEventListener('change', this.#priceInputHandler);
 
     this.#setDatepickerStart();
@@ -80,6 +101,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
+        offers: this.#initialPoint.type === newType ? this.#initialPoint.offers : [], // Обнуляем офферы в стейте на случай, если мы что-то натыкали в оффреах, а потом сменили тип
         type: newType,
       },
     });
@@ -88,52 +110,36 @@ export default class EditPointView extends AbstractStatefulView {
   #destinationTypeHandler = (evt) => {
     evt.preventDefault();
     const newDestination = evt.target.value;
-
     const typeDestination = this.#destination.find((destination) => destination.name === newDestination);
 
     if (!typeDestination) {
-      this.updateElement({
-        point: {
-          ...this._state.point,
-        }
-      });
       this.shake();
-      return;
     }
 
     this.updateElement({
       point: {
         ...this._state.point,
-        destination: typeDestination.id,
+        destination: typeDestination ? typeDestination.id : '',
       },
     });
   };
 
-  #onClick = (evt) => {
-    evt.preventDefault();
-    this.resetStateView();
-    this.#onEditClick();
-  };
+  #changeOffersHandler(evt) {
+    const setOfOffers = new Set(this._state.point.offers);
 
-  #onSubmitSaveHand = (evt) => {
-    evt.preventDefault();
-    this.setSaving();
-    if (this.#handleEditSubmit) {
-      this.clearStatePoint();
-      this.#handleEditSubmit({ ...this._state });
+    if (setOfOffers.has(evt.target.id) && !evt.target.checked) {
+      setOfOffers.delete(evt.target.id);
+    } else {
+      setOfOffers.add(evt.target.id);
     }
-  };
 
-  #onSubmitDeleteHand = (evt) => {
-    evt.preventDefault();
-    this.setDeleting();
-
-    if (this.#handleDeleteClik) {
-      console.log('this._state.point', this._state.point);
-      this.#handleDeleteClik(this._state.point);
-      this.clearStatePoint();
-    }
-  };
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        offers: Array.from(setOfOffers),
+      },
+    });
+  }
 
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({
@@ -154,13 +160,8 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #priceInputHandler = (evt) => {
-    const userPrice = evt.target.value;
-    this.updateElement({
-      point: {
-        ...this._state.point,
-        basePrice: userPrice,
-      },
-    });
+    evt.preventDefault();
+    this.#basePrice = +evt.target.value;
   };
 
   #setDatepickerStart() {
@@ -180,6 +181,34 @@ export default class EditPointView extends AbstractStatefulView {
       onChange: this.#dateToChangeHandler,
     });
   }
+
+  #onClick = (evt) => {
+    evt.preventDefault();
+    this.resetStateView();
+    this.#onEditClick();
+  };
+
+  #onSubmitSaveHand = (evt) => {
+    evt.preventDefault();
+    this.setSaving();
+
+    if (this.#handleEditSubmit) {
+      this.clearStatePoint();
+      this._state.point.basePrice = this.#basePrice;
+
+      this.#handleEditSubmit({ ...this._state });
+    }
+  };
+
+  #onSubmitDeleteHand = (evt) => {
+    evt.preventDefault();
+    this.setDeleting();
+
+    if (this.#handleDeleteClick) {
+      this.#handleDeleteClick(this._state.point);
+      this.clearStatePoint();
+    }
+  };
 
   resetStateView = () => {
     this.updateElement({
@@ -215,11 +244,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   defaultStatePoint = () => {
     this.updateElement({
-      point: { ...this._state.point,
-        isDeleting: false,
-        isDisabled: false,
-        isSaving: false,
-      },
+      point: { ...this._state.point, isDeleting: false, isDisabled: false, isSaving: false },
     });
   };
 }
