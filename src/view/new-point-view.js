@@ -161,7 +161,7 @@ export default class NewPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        offers: this.#initialPoint.type === newType ? this.#initialPoint.offers : [], // Обнуляем офферы в стейте на случай, если мы что-то натыкали в оффреах, а потом сменили тип
+        offers: this.#initialPoint.type === newType ? this.#initialPoint.offers : [],
         type: newType,
       },
     });
@@ -232,7 +232,6 @@ export default class NewPointView extends AbstractStatefulView {
 
       this.#onSubmitSave(this._state);
       this.setSaving();
-      // this.#resetAddForm();
       this.resetState();
     } else {
       this.shake();

@@ -161,7 +161,7 @@ export default class MainPresenter {
         try {
           await this.#pointModel.updatePoint(updateType, update);
         } catch (err) {
-          //throw new Error('Can\'t update point');
+          throw new Error('Can\'t update point');
         }
         break;
 
@@ -186,7 +186,7 @@ export default class MainPresenter {
         try {
           await this.#pointModel.deletePoint(updateType, update);
         } catch (err) {
-          // throw new Error('Can\'t delete point');
+          throw new Error('Can\'t delete point');
         }
         break;
     }
@@ -234,7 +234,7 @@ export default class MainPresenter {
 
       case UpdateType.MAJOR:
         if (isError) {
-          // this.#addPointPresenter.init();
+          this.#addPointPresenter.init();
         } else {
           this.#clearPoints({ resetSortType: true });
           this.#renderEventsBody();
@@ -261,7 +261,7 @@ export default class MainPresenter {
 
   #showEmptyPoint = () => {
     if (this.#isLoading) {
-      this.#renderEmptyPoint('Loading...'); // Failed to load latest route information
+      this.#renderEmptyPoint('Loading...');
       return;
     }
 

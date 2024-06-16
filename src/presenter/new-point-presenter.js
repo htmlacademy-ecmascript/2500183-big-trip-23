@@ -67,7 +67,6 @@ export default class NewPointPresenter {
     this.#tripAddComponent = new NewPointView({
       offers: this.#pointModel.offers,
       destination: this.#destination,
-      // resetForm: this.removeAddForm,
       onSubmitSave: this.handleAddFormSubmit,
       onButtonCancel: this.#onEscKeyDown,
       getOffers: this.#getOffers,
@@ -86,8 +85,6 @@ export default class NewPointPresenter {
   #onEscKeyDown = () => {
     this.activateButton();
     this.#escapeHandler.disable();
-
-    // this.removeAddForm();
     this.#handleViewAction(UserAction.CANCEL);
     remove(this.#tripAddComponent);
   };
@@ -116,7 +113,6 @@ export default class NewPointPresenter {
   };
 
   testShake = () => {
-    // const defaultStatePoint = this.#tripAddComponent.defaultStatePoint;
     this.#tripAddComponent.shake();
   };
 }
