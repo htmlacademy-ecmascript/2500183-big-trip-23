@@ -1,6 +1,6 @@
-import { UpdateType, UserAction, SortType } from '../const.js';
+import { UpdateType, UserAction, SortType, TimeLimit} from '../const.js';
 import { sortPoints } from '../tools/sort.js';
-import { filterBy, FiltersTypes, TripEmptyMessages } from '../tools/filter.js'; //TripEmptyMessages
+import { filterBy, FiltersTypes, TripEmptyMessages } from '../tools/filter.js';
 import { remove, render, replace } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
@@ -10,11 +10,6 @@ import EventsSortView from '../view/events-sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
 
 const ModeAdded = {
   DEFAULT: 'DEFAULT',

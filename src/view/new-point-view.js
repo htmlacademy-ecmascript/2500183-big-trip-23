@@ -106,7 +106,6 @@ export default class NewPointView extends AbstractStatefulView {
       point: { ...defaultPoint, isDisabled: false, isSaving: false },
     });
     this.#destination = destination;
-    // this.#resetAddForm = resetForm;
     this.#onSubmitSave = onSubmitSave;
     this.#onButtonCancel = onButtonCancel;
     this.#offers = offers;

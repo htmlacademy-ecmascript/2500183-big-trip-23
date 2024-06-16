@@ -56,4 +56,9 @@ const DateFormat = {
   DATE_PICKER: 'd/m/y H:i',
 };
 
-export { SortType, EVENT_TYPES, defaultPoint, UpdateType, UserAction, timeType, DateFormat };
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+export { SortType, EVENT_TYPES, defaultPoint, UpdateType, UserAction, timeType, DateFormat, TimeLimit };
