@@ -66,11 +66,9 @@ export default class PointPresenter {
       onEditClick: () => {
         this.#changeBackEditViewPoint();
       },
-      sdf: 'asdasd',
-      asdas: 'aasd',
       getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
-      onDelete: () => this.#handleDeleteClick(), // забайндить вместо стрелки? типа this.#handleDeleteClick.bind(this) хз,будет ли работать
-      onSubmitSave: this.#handleFormSubmit, // изменить имя,когда закончу
+      onDelete: () => this.#handleDeleteClick(),
+      onSubmitSave: this.#handleFormSubmit,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {

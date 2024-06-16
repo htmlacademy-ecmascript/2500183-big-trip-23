@@ -115,8 +115,7 @@ export default class NewPointPresenter {
     this.#handleViewAction(UserAction.ADD_POINT, UpdateType.MAJOR, point);
   };
 
-  testShake = () => {
-    // const defaultStatePoint = this.#tripAddComponent.defaultStatePoint;
+  showShake = () => {
     this.#tripAddComponent.shake();
   };
 }

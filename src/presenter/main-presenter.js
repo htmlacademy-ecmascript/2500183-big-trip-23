@@ -1,4 +1,4 @@
-import { UpdateType, UserAction, SortType } from '../const.js';
+import { UpdateType, UserAction, SortType, TimeLimit, ModeAdded} from '../const.js';
 import { sortPoints } from '../tools/sort.js';
 import { filterBy, FiltersTypes, TripEmptyMessages } from '../tools/filter.js'; //TripEmptyMessages
 import { remove, render, replace } from '../framework/render.js';
@@ -11,15 +11,6 @@ import EventsListView from '../view/events-list-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
-
-const ModeAdded = {
-  DEFAULT: 'DEFAULT',
-  ADDED: 'ADDED',
-};
 
 export default class MainPresenter {
   #containerListComponent = new EventsListView();
@@ -170,7 +161,7 @@ export default class MainPresenter {
           await this.#pointModel.addPoint(updateType, update);
           this.#addPointPresenter.removeAddForm();
         } catch (err) {
-          this.#addPointPresenter.testShake();
+          this.#addPointPresenter.showShake();
         }
         break;
 
@@ -260,7 +251,7 @@ export default class MainPresenter {
 
   #showEmptyPoint = () => {
     if (this.#isLoading) {
-      this.#renderEmptyPoint('Loading...'); // Failed to load latest route information
+      this.#renderEmptyPoint('Loading...');
       return;
     }
 
