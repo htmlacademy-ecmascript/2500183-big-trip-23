@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { DateFormat } from '../const.js';
-import { timeType } from '../const';
+import {DateFormat} from '../mock/const.js';
+import { timeType, } from './const';
 
 dayjs.extend(duration);
 
@@ -15,11 +15,12 @@ function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+
 function getDateCalc(dateTo, dateFrom) {
   const timeDurations = [
-    { sign: 'D', value: dayjs(dateTo).diff(dateFrom, 'd') },
-    { sign: 'H', value: dayjs(dateTo).diff(dateFrom, 'h') % timeType.HOURS },
-    { sign: 'M', value: dayjs(dateTo).diff(dateFrom, 'm') % timeType.MINUTES },
+    {sign:'D', value: dayjs(dateTo).diff(dateFrom, 'd')},
+    {sign: 'H', value: dayjs(dateTo).diff(dateFrom, 'h') % timeType.HOURS},
+    {sign: 'M', value: dayjs(dateTo).diff(dateFrom, 'm') % timeType.MINUTES},
   ];
   const resultDurations = [];
   for (let i = 0; i < timeDurations.length; i++) {
@@ -46,7 +47,7 @@ const getDuration = (dateFrom, dateTo) => {
 
   const time = durationValue.format('DD[D] HH[H] mm[M]').split('');
 
-  if (durationValue.get('day') !== daysValue) {
+  if(durationValue.get('day') !== daysValue) {
     time[0] = `${daysValue}D`;
   }
   return time.join('');
@@ -70,19 +71,10 @@ const calculateDuration = (dateFrom, dateTo) => {
   }
 };
 
-const displayTime = (time) => (time ? dayjs(time).format(DateFormat.TIME) : '');
-const displayDate = (date) => (date ? dayjs(date).format(DateFormat.DATE) : '');
-const displayDateTime = (date, dateFormat = DateFormat.DATE_TIME_SYSTEM) => (date ? dayjs(date).format(dateFormat) : '');
-const displayDateMonth = (date) => (date ? dayjs(date).format(DateFormat.DATE_MONTH) : '');
 
-export {
-  getRandomInt,
-  getRandomArrayElement,
-  getDateCalc,
-  getDuration,
-  calculateDuration,
-  displayTime,
-  displayDate,
-  displayDateTime,
-  displayDateMonth,
-};
+const displayTime = (time) => time ? dayjs(time).format(DateFormat.TIME) : '';
+const displayDate = (date) => date ? dayjs(date).format(DateFormat.DATE) : '';
+const displayDateTime = (date, dateFormat = DateFormat.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
+const displayDateMonth = (date) => date ? dayjs(date).format(DateFormat.DATE_MONTH) : '';
+
+export { getRandomInt, getRandomArrayElement, getDateCalc,getDuration,calculateDuration,displayTime,displayDate,displayDateTime,displayDateMonth};

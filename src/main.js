@@ -1,10 +1,10 @@
 import MainPresenter from './presenter/main-presenter.js';
 import HeaderPresenter from './presenter/header-presenter.js';
-import PointModel from './model/points-model.js';
-import FilterModel from './model/filter-model.js';
+import PointModel from './mock/model/points-model.js';
+import FilterModel from './mock/model/filter-model.js';
 import PointsApiService from './points-api-service.js';
 
-const AUTHORIZATION = 'Basic test';
+const AUTHORIZATION = 'Basic Anzorik2sda04';
 const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 import FilterPresenter from './presenter/filter-presenter.js';

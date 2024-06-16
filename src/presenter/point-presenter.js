@@ -3,7 +3,7 @@ import EscapeHandler from '../tools/escape-handler.js';
 import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view';
 import { updateItem } from '../utils/data.js';
-import { UpdateType, UserAction } from '../const.js';
+import { UpdateType, UserAction } from '../mock/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -23,6 +23,7 @@ export default class PointPresenter {
   #mode = Mode.DEFAULT;
   #closeAddForm = null;
 
+
   constructor({ container, destination, pointModel, onModeChange, onViewAction, closeAddForm }) {
     this.#containerListComponent = container;
     this.#destination = destination;
@@ -37,7 +38,7 @@ export default class PointPresenter {
     this.#renderPoint(this.#point, this.#destination);
   }
 
-  #renderPoint(point, destination) {
+  #renderPoint(point, destination, getDestinationId) {
     this.#point = point;
 
     this.#escapeHandler = new EscapeHandler(this.#changeBackEditViewPoint.bind(this.#changeBackEditViewPoint));
@@ -51,6 +52,7 @@ export default class PointPresenter {
       point: this.#point,
       destination,
       offers: pointOffers,
+      getDestinationId,
       onEditClick: () => {
         this.#changeEditViewPoint();
         this.#closeAddForm();
@@ -66,8 +68,6 @@ export default class PointPresenter {
       onEditClick: () => {
         this.#changeBackEditViewPoint();
       },
-      sdf: 'asdasd',
-      asdas: 'aasd',
       getOffers: this.#pointModel.getOffersByType.bind(this.#pointModel),
       onDelete: () => this.#handleDeleteClick(), // забайндить вместо стрелки? типа this.#handleDeleteClick.bind(this) хз,будет ли работать
       onSubmitSave: this.#handleFormSubmit, // изменить имя,когда закончу
@@ -134,17 +134,8 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
-  enableEscHandler() {
-    this.#escapeHandler.enable();
-  }
-
-  shakeForm = () => {
+  testShake = () => {
     const defaultStatePoint = this.#tripEditComponent.defaultStatePoint;
     this.#tripEditComponent.shake(defaultStatePoint);
   };
-
-  shakePoint() {
-    const defaultStatePoint = this.#tripEditComponent.defaultStatePoint;
-    this.#tripPointComponent.shake(defaultStatePoint);
-  }
 }

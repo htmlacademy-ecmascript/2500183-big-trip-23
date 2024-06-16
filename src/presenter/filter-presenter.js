@@ -3,7 +3,7 @@ import FiltersView from '../view/filters-view.js';
 
 import { FiltersTypes, filterBy } from '../tools/filter.js';
 
-import { UpdateType } from '../const';
+import { UpdateType } from '../mock/const';
 
 export default class FilterPresenter {
   #pointModel = null;

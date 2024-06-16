@@ -3,7 +3,6 @@ import InfoHeader from '../view/info-header.js';
 
 export default class HeaderPresenter {
   #boardContainer = null;
-
   constructor({ boardContainer }) {
     this.#boardContainer = boardContainer;
   }
