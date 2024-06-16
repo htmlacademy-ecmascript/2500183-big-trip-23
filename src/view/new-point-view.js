@@ -232,7 +232,6 @@ export default class NewPointView extends AbstractStatefulView {
 
       this.#onSubmitSave(this._state);
       this.setSaving();
-      // this.#resetAddForm();
       this.resetState();
     } else {
       this.shake();
