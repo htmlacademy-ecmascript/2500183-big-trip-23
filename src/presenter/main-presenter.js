@@ -152,7 +152,7 @@ export default class MainPresenter {
         try {
           await this.#pointModel.updatePoint(updateType, update);
         } catch (err) {
-          //throw new Error('Can\'t update point');
+          this.#pointPresenters.get(update.id).shakeForm();
         }
         break;
 
@@ -177,7 +177,7 @@ export default class MainPresenter {
         try {
           await this.#pointModel.deletePoint(updateType, update);
         } catch (err) {
-          // throw new Error('Can\'t delete point');
+          this.#pointPresenters.get(update.id).shakeForm();
         }
         break;
     }
