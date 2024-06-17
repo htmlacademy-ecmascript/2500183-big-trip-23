@@ -1,6 +1,6 @@
 import { UpdateType, UserAction, SortType, TimeLimit, ModeAdded} from '../const.js';
 import { sortPoints } from '../tools/sort.js';
-import { filterBy, FiltersTypes, TripEmptyMessages } from '../tools/filter.js'; //TripEmptyMessages
+import { filterBy, FiltersTypes, TripEmptyMessages } from '../tools/filter.js';
 import { remove, render, replace } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
