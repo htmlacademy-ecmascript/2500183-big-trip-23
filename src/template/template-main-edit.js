@@ -74,7 +74,7 @@ export const getTemplateEditPoint = (
   currentDestination && (currentDestination.description || currentDestination.pictures.length)
     ? `
         <section class="event__section  event__section--destination">
-          ${currentDestination ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
+          ${currentDestination.description ? '<h3 class="event__section-title  event__section-title--destination">Destination</h3>' : ''}
           <p class="event__destination-description">${currentDestination.description}</p>
           ${markUpDestinationPhotos(currentDestination.pictures)}
         </section>
