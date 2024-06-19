@@ -38,10 +38,6 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const timeType = {
-  MINUTES: 60,
-  HOURS: 24,
-};
 
 const DateFormat = {
   DATE_MONTH: 'MMM D',
@@ -66,4 +62,4 @@ const ModeAdded = {
   ADDED: 'ADDED',
 };
 
-export { SortType, EVENT_TYPES, defaultPoint, UpdateType, UserAction, timeType, DateFormat,TimeLimit,ModeAdded };
+export { SortType, EVENT_TYPES, defaultPoint, UpdateType, UserAction, DateFormat,TimeLimit,ModeAdded };
