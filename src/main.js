@@ -1,5 +1,6 @@
 import MainPresenter from './presenter/main-presenter.js';
 import HeaderPresenter from './presenter/header-presenter.js';
+
 import PointModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
 import PointsApiService from './points-api-service.js';
