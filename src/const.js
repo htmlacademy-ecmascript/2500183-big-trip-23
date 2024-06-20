@@ -2,6 +2,7 @@
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const DEFAULT_PICKER_OPTIONS = {
+  static: true,
   dateFormat: 'd/m/y H:i',
   enableTime: true,
   time_24hr: true,

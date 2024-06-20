@@ -189,19 +189,37 @@ export default class NewPointView extends AbstractStatefulView {
   };
 
   #dateFromChangeHandler = ([userDate]) => {
+    const start = dayjs(userDate);
+    const finish = dayjs(this._state.point.dateTo);
+
+    if (start >= finish) {
+      this._state.point.dateTo = start.add(5, 'minute').toString();
+    }
+
+    this._state.point.dateFrom = userDate;
     this.updateElement({
       point: {
         ...this._state.point,
-        dateFrom: userDate,
+        dateFrom: this._state.point.dateFrom,
+        dateTo: this._state.point.dateTo,
       },
     });
   };
 
   #dateToChangeHandler = ([userDate]) => {
+    const start = dayjs(this._state.point.dateFrom);
+    const finish = dayjs(userDate);
+
+    if (start >= finish) {
+      this._state.dateFrom = start.subtract(5, 'minute').toString();
+    }
+
+    this._state.point.dateTo = userDate;
     this.updateElement({
       point: {
         ...this._state.point,
-        dateTo: userDate,
+        dateFrom: this._state.point.dateFrom,
+        dateTo: this._state.point.dateTo,
       },
     });
   };
@@ -209,15 +227,17 @@ export default class NewPointView extends AbstractStatefulView {
   #setDatepickerStart() {
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time'), {
       ...DEFAULT_PICKER_OPTIONS,
-      maxDate: new Date(),
+      minDate: 'today',
       onChange: this.#dateFromChangeHandler,
     });
   }
 
   #setDatepickerEnd() {
+    const currentStartDate = this._state.dateFrom === '' ? 'today' : dayjs(this._state.dateFrom).toString();
+
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-end-time'), {
       ...DEFAULT_PICKER_OPTIONS,
-      minDate: new Date(),
+      minDate: currentStartDate,
       onChange: this.#dateToChangeHandler,
     });
   }

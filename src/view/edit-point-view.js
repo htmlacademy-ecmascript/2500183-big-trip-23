@@ -4,6 +4,7 @@ import { DEFAULT_PICKER_OPTIONS } from '../const.js';
 import { getCurrentDestination } from '../tools/destination-tools.js';
 import { getTemplateEditPoint } from '../template/template-main-edit.js';
 
+import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -142,19 +143,30 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   #dateFromChangeHandler = ([userDate]) => {
+    const start = dayjs(userDate);
+    const finish = dayjs(this._state.point.dateTo);
+
+    if (start >= finish) {
+      this._state.point.dateTo = start.add(5, 'minute').toString();
+    }
+
+    this._state.point.dateFrom = userDate;
     this.updateElement({
       point: {
         ...this._state.point,
-        dateFrom: userDate,
+        dateFrom: this._state.point.dateFrom,
+        dateTo: this._state.point.dateTo,
       },
     });
   };
 
   #dateToChangeHandler = ([userDate]) => {
+    this._state.point.dateTo = userDate;
     this.updateElement({
       point: {
         ...this._state.point,
-        dateTo: userDate,
+        dateFrom: this._state.point.dateFrom,
+        dateTo: this._state.point.dateTo,
       },
     });
   };
@@ -168,7 +180,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-start-time"]'), {
       ...DEFAULT_PICKER_OPTIONS,
       defaultDate: this._state.point.dateFrom,
-      maxDate: this._state.point.dateFrom,
+      minDate: 'today',
       onChange: this.#dateFromChangeHandler,
     });
   }
@@ -177,7 +189,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#datepickerStart = flatpickr(this.element.querySelector('[name ="event-end-time"]'), {
       ...DEFAULT_PICKER_OPTIONS,
       defaultDate: this._state.point.dateTo,
-      minDate: this._state.point.dateTo,
+      minDate: this._state.point.dateFrom,
       onChange: this.#dateToChangeHandler,
     });
   }
