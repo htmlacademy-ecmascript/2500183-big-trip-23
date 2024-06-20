@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
+const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export const DEFAULT_PICKER_OPTIONS = {
+const DEFAULT_PICKER_OPTIONS = {
+  static: true,
   dateFormat: 'd/m/y H:i',
   enableTime: true,
   time_24hr: true,
@@ -13,8 +15,6 @@ const SortType = {
   PRICE: 'price',
   OFFERS: 'offers',
 };
-
-const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const defaultPoint = {
   basePrice: 0,
@@ -38,10 +38,6 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const timeType = {
-  MINUTES: 60,
-  HOURS: 24,
-};
 
 const DateFormat = {
   DATE_MONTH: 'MMM D',
@@ -66,4 +62,4 @@ const ModeAdded = {
   ADDED: 'ADDED',
 };
 
-export { SortType, EVENT_TYPES, defaultPoint, UpdateType, UserAction, timeType, DateFormat,TimeLimit,ModeAdded };
+export { SortType, EVENT_TYPES, defaultPoint, UpdateType, UserAction, DateFormat, TimeLimit, ModeAdded, DEFAULT_PICKER_OPTIONS };

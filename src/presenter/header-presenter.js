@@ -1,5 +1,5 @@
 import { render, RenderPosition } from '../framework/render.js';
-import InfoHeader from '../view/info-header.js';
+import InfoHeaderView from '../view/info-header-view.js';
 
 export default class HeaderPresenter {
   #boardContainer = null;
@@ -9,6 +9,6 @@ export default class HeaderPresenter {
   }
 
   init() {
-    render(new InfoHeader(), this.#boardContainer, RenderPosition.AFTERBEGIN);
+    render(new InfoHeaderView(), this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 }
