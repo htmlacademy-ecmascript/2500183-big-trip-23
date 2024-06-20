@@ -6,7 +6,7 @@ import PointModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
 import PointsApiService from './points-api-service.js';
 
-const AUTHORIZATION = 'Basic test';
+const AUTHORIZATION = 'Basic test3';
 const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 const filterModel = new FilterModel();
