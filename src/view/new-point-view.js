@@ -233,7 +233,7 @@ export default class NewPointView extends AbstractStatefulView {
   }
 
   #setDatepickerEnd() {
-    const currentStartDate = this._state.dateFrom === '' ? 'today' : dayjs(this._state.dateFrom).toString();
+    const currentStartDate = this._state.point.dateFrom === '' ? 'today' : dayjs(this._state.point.dateFrom).toString();
 
     this.#datepickerStart = flatpickr(this.element.querySelector('#event-end-time'), {
       ...DEFAULT_PICKER_OPTIONS,
